@@ -1,0 +1,27 @@
+<%
+    /**
+     * 依赖的外部变量：
+     * title {String} 面板的标题
+     * type {String} scene|behaviorList|boneTree|timeLine
+    **/
+%>
+<div class="hd">
+    <span class="title"><%= title %></span>
+</div>
+<div class="bd">
+    <%
+        switch(type){
+            case 'scene':
+    %>
+            <%@ panel.scene.bd.html %>
+    <%
+                break;
+            case 'behaviorList':
+                break;
+            case 'boneTree':
+                break;
+            case 'timeLine':
+                break;
+        }
+    %>
+</div>
