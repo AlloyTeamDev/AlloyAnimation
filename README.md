@@ -1,3 +1,3 @@
 # AlloyStick
 
-Render engine and editor for skeleton annimation
+Render engine and editer for skeleton annimation
