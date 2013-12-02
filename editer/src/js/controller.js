@@ -6,10 +6,12 @@
 **/
 define([
     'exports',
-    'view.panel.scene'
+    'view.panel.action', 'view.panel.scene', 'view.panel.boneTree', 'view.panel.timeline',
+    'collection.bone'
 ], function(
     exports,
-	 scenePanelView
+    actionPanelView ,scenePanelView, boneTreePanelView, timelinePanelView,
+    boneCollection
 ){
     var scenePanelView;
 
@@ -20,6 +22,9 @@ define([
     **/
     exports.init = function(){
         // 渲染出各个面板
+        actionPanelView.render();
         scenePanelView.render();
+        boneTreePanelView.render();
+        timelinePanelView.render();
     };
 });
