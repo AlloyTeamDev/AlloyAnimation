@@ -20,8 +20,9 @@ require.config({
 });
 
 require([
-    // 'login',
     'controller'
 ], function(controller){
+    // TODO: 判断是否高级浏览器；登陆
+
     controller.init();
 });
