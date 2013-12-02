@@ -1,0 +1,34 @@
+/**
+util mixin and class
+
+@module
+**/
+
+/**
+给属性名加上浏览器厂商前缀
+@param {String} $prop 属性名
+
+**/
+@mixin prefix ($prop, $val...) {
+    -webkit-#{$prop}: $val;
+    -moz-#{$prop}: $val;
+    -ms-#{$prop}: $val;
+    #{$prop}: $val;
+}
+
+@mixin prefixVal ($prop, $val) {
+    #{$prop}: -webkit-#{$val};
+    #{$prop}: -moz-#{$val};
+    #{$prop}: -ms-#{$val};
+    #{$prop}: #{$val};
+}
+
+.clearfix:after {
+    content: '';
+    display: block;
+    overflow: hidden;
+    visibility: hidden;
+    height: 0;
+    line-height: 0;
+    font-size: 0;
+}

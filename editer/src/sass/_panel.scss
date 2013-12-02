@@ -1,0 +1,68 @@
+// 各个面板的布局
+
+@import "_util";
+
+// @extend-Only Selectors
+%leftPanel {
+    width: 30%;
+}
+%rightPanel {
+    width: 70%;
+}
+%topPanel {
+    height: 70%;
+    min-height: 210px;
+}
+%bottomPanel {
+    height: 30%;
+}
+
+
+html, body,
+#js-panelWrap {
+    width: 100%;
+    height: 100%;
+}
+
+#js-panelWrap {
+    @extend .clearfix;
+}
+
+.js-panel {
+    float: left;
+    overflow: hidden;
+
+    .hd {
+        height: 30px;
+        line-height: 30px;
+    }
+    .panelTitle {
+        display: inline-block;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+#js-actionPanel {
+    @extend %leftPanel;
+    @extend %topPanel;
+    background: #FB9966;
+}
+
+#js-scenePanel {
+    @extend %rightPanel;
+    @extend %topPanel;
+    background: darken(#fff, 5%);
+}
+
+#js-boneTreePanel {
+    @extend %leftPanel;
+    @extend %bottomPanel;
+    background: #91B493;
+}
+
+#js-timelinePanel {
+    @extend %rightPanel;
+    @extend %bottomPanel;
+    background: #3A8FB7;
+}
