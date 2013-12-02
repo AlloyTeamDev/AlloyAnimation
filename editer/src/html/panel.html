@@ -6,21 +6,36 @@
     **/
 %>
 <div class="hd">
-    <span class="title"><%= title %></span>
+    <span class="panelTitle"><%= title %></span>
+    <%
+        switch(type){
+            case 'action':
+                break;
+            case 'scene':
+    %>
+            <%@ panel.scene.hd.html %>
+    <%
+                break;
+            case 'boneTree':
+                break;
+            case 'timeline':
+                break;
+        }
+    %>
 </div>
 <div class="bd">
     <%
         switch(type){
+            case 'action':
+                break;
             case 'scene':
     %>
             <%@ panel.scene.bd.html %>
     <%
                 break;
-            case 'behaviorList':
-                break;
             case 'boneTree':
                 break;
-            case 'timeLine':
+            case 'timeline':
                 break;
         }
     %>

@@ -5,11 +5,11 @@
  * @module view.panel.Scene
 **/
 define([
-    'underscore',
-    'view.Panel', 'tmpl!html/panel.html'
+    'jquery',
+    'view.Panel'
 ], function(
-    _,
-    PanelView, panelTmpl
+    $,
+    PanelView
 ){
     var ScenePanelView;
 
@@ -21,26 +21,52 @@ define([
         /**
          * Start: backbone内置属性/方法
         **/
-        attribute: {
-            'class': 'scenePanel'
+        el: $('#js-scenePanel'),
+        events: {
+            // TODO: 支持拖拽上传纹理图
+            'click .addBtn': '_onClickAddBtn'
         },
-        initialize: function(options){
-            // 借用父类的`initialize`方法
+        initialize: function(){
+            // 复用父类的`initialize`方法
             this.constructor.__super__.initialize.apply(this, arguments);
         },
         render: function(){
             this.$el
-                .html( panelTmpl({
-                    title: '景物面板',
-                    type: 'scene'
-                }) )
-                .appendTo(this.$container);
+                .html( this.panelTmpl({
+                    type: 'scene',
+                    title: '景物'
+                }) );
 
             return this;
-        }
+        },
         /**
-         * End: backbone内置属性/方法
+        End: backbone内置属性/方法
         **/
+
+        /**
+        添加一个骨骼view到景物面板中
+        **/
+        addBone: function(){
+
+        },
+
+        /**
+        Event handler for DOM event `click .addBtn`
+        @private
+        @method _onClickAddBtn
+        @param {Object} jquery event object
+        **/
+        _onClickAddBtn: function($event){
+            var $inputBoneImg = this.$('.js-inputBoneImg'),
+                textureUrl;
+
+            $inputBoneImg.click();
+            textureUrl = $inputBoneImg.val();
+
+            if(!textureUrl) return this;
+
+            this.trigger('clickAddBtn', textureUrl);
+        }
     });
 
     return new ScenePanelView();
