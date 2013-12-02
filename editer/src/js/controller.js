@@ -6,10 +6,10 @@
 **/
 define([
     'exports',
-    'view.panel.Scene'
+    'view.panel.scene'
 ], function(
     exports,
-    ScenePanelView
+	 scenePanelView
 ){
     var scenePanelView;
 
@@ -19,7 +19,7 @@ define([
      * @method init
     **/
     exports.init = function(){
-        (scenePanelView = new ScenePanelView())
-            .render();
+        // 渲染出各个面板
+        scenePanelView.render();
     };
 });

@@ -2,9 +2,11 @@
  * 面板视图
 **/
 define([
-    'jquery', 'underscore', 'backbone'
+    'Backbone',
+    'tmpl!html/panel.html'
 ], function(
-    $, _, Backbone
+    Backbone,
+    panelTmpl
 ){
     var PanelView;
 

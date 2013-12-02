@@ -4,7 +4,7 @@ require.config({
         'tmpl': 'base/require.tmpl',
         'jquery': 'base/jquery',
         'underscore': 'base/underscore',
-        'backbone': 'base/backbone',
+        'Backbone': 'base/Backbone',
         'html': '../html'
     },
     // 对没有定义为AMD模块的第三方类库框架，在此补充定义该模块的依赖和输出
@@ -12,7 +12,7 @@ require.config({
         'underscore': {
             exports: '_'
         },
-        'backbone': {
+        'Backbone': {
             deps: ['underscore', 'jquery'],
             exports: 'Backbone'
         }

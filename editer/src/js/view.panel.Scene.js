@@ -43,5 +43,5 @@ define([
         **/
     });
 
-    return ScenePanelView;
+    return new ScenePanelView();
 });
