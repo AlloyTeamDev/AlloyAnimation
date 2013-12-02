@@ -1,0 +1,188 @@
+@charset "UTF-8";
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+/* line 18, ../sass/_reset.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+/* line 28, ../sass/_reset.scss */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+/* line 31, ../sass/_reset.scss */
+body {
+  line-height: 1;
+}
+
+/* line 34, ../sass/_reset.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 37, ../sass/_reset.scss */
+blockquote, q {
+  quotes: none;
+}
+
+/* line 41, ../sass/_reset.scss */
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+/* line 45, ../sass/_reset.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 1, ../sass/_base.scss */
+body {
+  font-family: Helvetica,Arial,sans-serif;
+  font-size: 14px;
+}
+
+/**
+util mixin and class
+
+@module
+**/
+/**
+给属性名加上浏览器厂商前缀
+@param {String} $prop 属性名
+
+**/
+/* line 26, ../sass/_util.scss */
+.clearfix:after, #js-panelWrap:after {
+  content: '';
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  height: 0;
+  line-height: 0;
+  font-size: 0;
+}
+
+/* line 6, ../sass/_panel.scss */
+#js-actionPanel, #js-boneTreePanel {
+  width: 30%;
+}
+
+/* line 9, ../sass/_panel.scss */
+#js-scenePanel, #js-timelinePanel {
+  width: 70%;
+}
+
+/* line 12, ../sass/_panel.scss */
+#js-actionPanel, #js-scenePanel {
+  height: 70%;
+  min-height: 210px;
+}
+
+/* line 16, ../sass/_panel.scss */
+#js-boneTreePanel, #js-timelinePanel {
+  height: 30%;
+}
+
+/* line 22, ../sass/_panel.scss */
+html, body,
+#js-panelWrap {
+  width: 100%;
+  height: 100%;
+}
+
+/* line 31, ../sass/_panel.scss */
+.js-panel {
+  float: left;
+  overflow: hidden;
+}
+/* line 35, ../sass/_panel.scss */
+.js-panel .hd {
+  height: 30px;
+  line-height: 30px;
+}
+/* line 39, ../sass/_panel.scss */
+.js-panel .panelTitle {
+  display: inline-block;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* line 46, ../sass/_panel.scss */
+#js-actionPanel {
+  background: #FB9966;
+}
+
+/* line 52, ../sass/_panel.scss */
+#js-scenePanel {
+  background: #f2f2f2;
+}
+
+/* line 58, ../sass/_panel.scss */
+#js-boneTreePanel {
+  background: #91B493;
+}
+
+/* line 64, ../sass/_panel.scss */
+#js-timelinePanel {
+  background: #3A8FB7;
+}
+
+/* line 3, ../sass/_panel.scene.scss */
+#js-scenePanel .addBtn {
+  position: relative;
+  top: 5px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  text-indent: -99999em;
+  border: 1px solid #000;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+/* line 16, ../sass/_panel.scene.scss */
+#js-scenePanel .addBtn::before,
+#js-scenePanel .addBtn::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 9px;
+  left: 2px;
+  width: 16px;
+  height: 2px;
+  background: #000;
+}
+/* line 26, ../sass/_panel.scene.scss */
+#js-scenePanel .addBtn::after {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
