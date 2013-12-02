@@ -5,6 +5,7 @@ require.config({
         'jquery': 'base/jquery',
         'underscore': 'base/underscore',
         'Backbone': 'base/Backbone',
+        'Backbone.Relational': 'base/Backbone.Relational',
         'html': '../html'
     },
     // 对没有定义为AMD模块的第三方类库框架，在此补充定义该模块的依赖和输出
@@ -14,6 +15,10 @@ require.config({
         },
         'Backbone': {
             deps: ['underscore', 'jquery'],
+            exports: 'Backbone'
+        },
+        'Backbone.Relational': {
+            deps: ['Backbone'],
             exports: 'Backbone'
         }
     }
