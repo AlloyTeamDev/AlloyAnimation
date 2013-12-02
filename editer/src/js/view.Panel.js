@@ -1,5 +1,6 @@
 /**
- * 面板视图
+面板view
+@module
 **/
 define([
     'Backbone',

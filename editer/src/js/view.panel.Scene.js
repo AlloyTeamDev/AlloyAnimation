@@ -1,8 +1,6 @@
 /**
- * 景物面板视图
- * 景物面板相当于flash pro里的编辑栏窗口
- *
- * @module view.panel.Scene
+景物面板的view
+@module
 **/
 define([
     'jquery',
@@ -14,12 +12,12 @@ define([
     var ScenePanelView;
 
     /**
-     * @class ScenePanelView
-     * @extends PanelView
+    @class ScenePanelView
+    @extends PanelView
     **/
     ScenePanelView = PanelView.extend({
         /**
-         * Start: backbone内置属性/方法
+        Start: backbone内置属性/方法
         **/
         el: $('#js-scenePanel'),
         events: {
