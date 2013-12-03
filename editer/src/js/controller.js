@@ -19,42 +19,51 @@ define([
     @method init
     **/
     exports.init = function(){
+        var initBonesData,
+            initTimelinesData;
+
+        // 获取初始数据
+        boneCollection.fetch();
+
+        initBonesData = boneCollection.toJSON();
+        if(initBonesData.length){
+            initTimelinesData = initBonesData.map(function(initBoneData){
+                return initBoneData.keyframes;
+            });
+        }
+
         // 渲染出各个面板
         actionPanelView.render();
-        scenePanelView.render();
-        boneTreePanelView.render();
-        timelinePanelView.render();
+        scenePanelView.render(initBonesData);
+        boneTreePanelView.render(initBonesData);
+        timelinePanelView.render(initTimelinesData);
 
-        // 监听model/collection上的事件
+        /**
+        Start: backbonen内置事件
+        **/
         boneCollection.on('add', function(model, collection, options){
-            scenePanelView.addBone(model.toJSON());
+            var boneData = model.toJSON();
+
+            // 在各个面板中添加一个骨骼view
+            scenePanelView.addBone(boneData);
+            boneTreePanelView.addBone(boneData);
+            timelinePanelView.addTimeline(boneData.keyframes || []);
         });
+        /**
+        End: backbonen内置事件
+        **/
 
         /**
         Fired when click add button of scene panel
         @event clickAddBtn
         @param {String} textureUrl texture image's url
         @param {Object} [options] optional param
-            @param {Object} [options.addOptions] optional param for adding bone model
+            @param {Object} [options.addOptions] backbone's optional param for adding model to collection
         **/
         scenePanelView.on('clickAddBtn', function(textureUrl, options){
-            addBoneModel(textureUrl, options && options.addOptions);
+            boneCollection.add({
+                textureUrl: textureUrl
+            }, options && options.addOptions);
         });
-    };
-
-
-    /**
-    添加一个骨骼model到collection中
-    @private
-    @param <String> textureUrl 骨骼纹理图的url
-    @param <Object> [options] 添加model时的可选参数
-        @param <Boolean> [options.add]
-        @param <Boolean> [options.remove]
-        @param <Boolean> [options.merge]
-    **/
-    function addBoneModel(textureUrl, options){
-        boneCollection.add({
-            textureUrl: textureUrl
-        }, options && options.addOptions);
     };
 });
