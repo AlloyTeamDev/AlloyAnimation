@@ -32,10 +32,19 @@ define([
                 }) );
 
             return this;
-        }
+        },
         /**
         End: backbone内置属性/方法
         **/
+
+        /**
+        添加一个时间轴view到此面板中
+        @method addTimeline
+        @param {Array} keyframes 此时间轴上的关键帧的数据
+        **/
+        addTimeline: function(keyframes){
+            return this;
+        }
     });
 
     return new TimeLinePanelView();

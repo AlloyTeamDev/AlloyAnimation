@@ -32,10 +32,19 @@ define([
                 }) );
 
             return this;
-        }
+        },
         /**
         End: backbone内置属性/方法
         **/
+
+        /**
+        添加一个骨骼view到骨骼树中，遵循父子关系
+        @method addBone
+        @param {Object} data 骨骼的数据
+        **/
+        addBone: function(data){
+            return this;
+        }
     });
 
     return new BoneTreePanelView();

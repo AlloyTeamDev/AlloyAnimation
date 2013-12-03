@@ -29,7 +29,12 @@ define([
         Start: backbonen内置事件
         **/
         boneCollection.on('add', function(model, collection, options){
-            scenePanelView.addBone(model.toJSON());
+            var boneData = model.toJSON();
+
+            // 在各个面板中添加一个骨骼view
+            scenePanelView.addBone(boneData);
+            boneTreePanelView.addBone(boneData);
+            timelinePanelView.addTimeline(boneData.keyframes || []);
         });
         /**
         End: backbonen内置事件
@@ -43,23 +48,9 @@ define([
             @param {Object} [options.addOptions] backbone's optional param for adding model to collection
         **/
         scenePanelView.on('clickAddBtn', function(textureUrl, options){
-            addBoneModel(textureUrl, options && options.addOptions);
+            boneCollection.add({
+                textureUrl: textureUrl
+            }, options && options.addOptions);
         });
-    };
-
-
-    /**
-    添加一个骨骼model到collection中
-    @private
-    @param <String> textureUrl 骨骼纹理图的url
-    @param <Object> [options] 添加model时的可选参数
-        @param <Boolean> [options.add]
-        @param <Boolean> [options.remove]
-        @param <Boolean> [options.merge]
-    **/
-    function addBoneModel(textureUrl, options){
-        boneCollection.add({
-            textureUrl: textureUrl
-        }, options && options.addOptions);
     };
 });
