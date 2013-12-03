@@ -46,6 +46,13 @@ define([
             // 缓存DOM元素
             this.$viewport = this.$('.viewport');
 
+            // 如果有传入骨骼数据，渲染出骨骼view
+            if(bonesData){
+                bonesData.forEach(function(boneData){
+                    this.addBone(boneData);
+                }, this);
+            }
+
             return this;
         },
         /**

@@ -24,12 +24,24 @@ define([
             // 复用父类的`initialize`方法
             this.constructor.__super__.initialize.apply(this, arguments);
         },
-        render: function(){
+        /**
+        渲染此面板
+        @method render
+        @param {Array} [bonesData] 多个骨骼的当前数据
+        **/
+        render: function(bonesData){
             this.$el
                 .html( this.panelTmpl({
                     type: 'boneTree',
                     title: '骨骼树'
                 }) );
+
+            // 如果有传入骨骼数据，渲染出骨骼view
+            if(bonesData){
+                bonesData.forEach(function(boneData){
+                    this.addBone(boneData);
+                }, this);
+            }
 
             return this;
         },

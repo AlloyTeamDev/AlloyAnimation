@@ -19,11 +19,24 @@ define([
     @method init
     **/
     exports.init = function(){
+        var initBonesData,
+            initTimelinesData;
+
+        // 获取初始数据
+        boneCollection.fetch();
+
+        initBonesData = boneCollection.toJSON();
+        if(initBonesData.length){
+            initTimelinesData = initBonesData.map(function(initBoneData){
+                return initBoneData.keyframes;
+            });
+        }
+
         // 渲染出各个面板
         actionPanelView.render();
-        scenePanelView.render();
-        boneTreePanelView.render();
-        timelinePanelView.render();
+        scenePanelView.render(initBonesData);
+        boneTreePanelView.render(initBonesData);
+        timelinePanelView.render(initTimelinesData);
 
         /**
         Start: backbonen内置事件

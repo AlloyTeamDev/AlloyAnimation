@@ -19,7 +19,10 @@ define([
         /**
         Start: backbone内置属性/方法
         **/
-        model: BoneModel
+        model: BoneModel,
+        fetch: function(){
+
+        }
         /**
         End: backbone内置属性/方法
         **/
