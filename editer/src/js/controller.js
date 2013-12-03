@@ -25,17 +25,22 @@ define([
         boneTreePanelView.render();
         timelinePanelView.render();
 
-        // 监听model/collection上的事件
+        /**
+        Start: backbonen内置事件
+        **/
         boneCollection.on('add', function(model, collection, options){
             scenePanelView.addBone(model.toJSON());
         });
+        /**
+        End: backbonen内置事件
+        **/
 
         /**
         Fired when click add button of scene panel
         @event clickAddBtn
         @param {String} textureUrl texture image's url
         @param {Object} [options] optional param
-            @param {Object} [options.addOptions] optional param for adding bone model
+            @param {Object} [options.addOptions] backbone's optional param for adding model to collection
         **/
         scenePanelView.on('clickAddBtn', function(textureUrl, options){
             addBoneModel(textureUrl, options && options.addOptions);

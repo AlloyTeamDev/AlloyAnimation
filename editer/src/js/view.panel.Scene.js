@@ -21,14 +21,20 @@ define([
         **/
         el: $('#js-scenePanel'),
         events: {
-            // TODO: 支持拖拽上传纹理图
             'click .addBtn': '_onClickAddBtn'
         },
         initialize: function(){
+            // TODO: 支持通过拖拽上传纹理图来创建骨骼
+
             // 复用父类的`initialize`方法
             this.constructor.__super__.initialize.apply(this, arguments);
         },
-        render: function(){
+        /**
+        渲染此面板
+        @method render
+        @param {Array} [bonesData] 多个骨骼的当前数据
+        **/
+        render: function(bonesData){
             this.$el
                 .html( this.panelTmpl({
                     type: 'scene',
@@ -58,6 +64,7 @@ define([
             var $inputBoneImg = this.$('.js-inputBoneImg'),
                 textureUrl;
 
+            // TODO: 这里并不能获取到textureUrl，这么写只是说明一下这个方法做了什么，获取textureUrl有待进一步实现
             $inputBoneImg.click();
             textureUrl = $inputBoneImg.val();
 
