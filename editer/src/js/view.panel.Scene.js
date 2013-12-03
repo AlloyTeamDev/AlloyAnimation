@@ -9,7 +9,7 @@ define([
     $,
     PanelView
 ){
-    var ScenePanelView;
+    var ScenePanelView, BoneView;
 
     /**
     @class ScenePanelView
