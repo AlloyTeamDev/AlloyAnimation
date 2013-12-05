@@ -17,7 +17,6 @@ define([
         /**
         Start: backbone内置属性/方法
         **/
-        id: 'name',
         defaults: {
             name: 'unknown'
         },
