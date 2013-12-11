@@ -42,6 +42,27 @@ define([
         /**
         End: backbone内置属性/方法
         **/
+
+        /**
+        判断是否含有子骨骼，或是否含有某个指定的子骨骼
+        @method hasChild
+        @param {String} [id] 子骨骼id
+        @return {Boolean}
+        @example
+            bodyBoneModel.hasChild() 是否有子骨骼
+            bodyBoneModel.hasChild(headBoneModel.get('id')) 是否有某个子骨骼
+        **/
+        hasChild: function(id){
+            var childBoneColl;
+
+            if( (childBoneColl = this.get('children')).length ){
+                if(id) return !!childBoneColl.get(id);
+                else return true;
+            }
+            else{
+                return false;
+            }
+        }
     });
 
     relationalScope.BoneModel = BoneModel;
