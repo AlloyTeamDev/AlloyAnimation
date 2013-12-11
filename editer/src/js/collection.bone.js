@@ -3,10 +3,10 @@
 @module
 **/
 define([
-    'Backbone',
+    'Backbone', 'relationalScope',
     'model.Bone'
 ], function(
-    Backbone,
+    Backbone, relationalScope,
     BoneModel
 ){
     var BoneCollection;

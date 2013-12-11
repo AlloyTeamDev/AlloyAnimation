@@ -3,9 +3,11 @@
 @module
 **/
 define([
-    'Backbone.Relational', 'relationalScope'
+    'Backbone.Relational', 'relationalScope',
+    'modelUtil', 'model.Keyframe', 'collection.Keyframe', 'collection.Bone'
 ], function(
-    Backbone, relationalScope
+    Backbone, relationalScope,
+    util
 ){
     var BoneModel;
 
@@ -20,20 +22,25 @@ define([
         defaults: {
             name: 'unknown'
         },
-        relation: [{
-            // 有多个关键帧
-            type: Backbone.HasMany,
+        relations: [{
+            // 有多个关键帧，组成一个关键帧集合
+            type: 'HasMany',
             key: 'keyframes',
             relatedModel: 'KeyframeModel',
-            relatedCollection: 'KeyframeCollection'
+            collectionType: 'KeyframeCollection',
+            reverseRelation: {
+                // 一个关键帧集合对应一个骨骼
+                key: 'bone'
+            }
         }, {
-            // 有一个父骨骼
-            type: Backbone.HasOne,
-            key: 'parent',
-            relatedModel: 'BoneModel'
-        }]
+            // 有多个子骨骼
+            type: 'HasMany',
+            key: 'children',
+            relatedModel: 'BoneModel',
+            collectionType: 'BoneCollection'
+        }],
         /**
-        Start: backbone内置属性/方法
+        End: backbone内置属性/方法
         **/
     });
 
