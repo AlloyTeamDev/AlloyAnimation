@@ -1,29 +1,90 @@
-// 景物面板
 #js-scenePanel {
-    .addBtn {
-        $size: 20px;
-        position: relative;
-        top: 5px;
-        display: inline-block;
-        width: $size;
-        height: $size;
-        text-indent: -99999em;
-        border: 1px solid #000;
-        @include prefix('border-radius', $size / 2);
-        cursor: pointer;
-    }
-    .addBtn::before,
-    .addBtn::after {
-        content: "";
-        display: block;
-        position: absolute;
-        top: 9px;
-        left: 2px;
-        width: 16px;
-        height: 2px;
-        background: #000;
-    }
-    .addBtn::after {
-        @include prefix('transform', rotate(90deg));
-    }
+
+$light_blue : #B0DFFF;
+$dark_blue : #6CAAD5;
+$blue : #26A9E0;
+
+#workspace{
+    width: 100%;
+    height: 100%;
+    border: 2px dashed $dark_blue;
+    position: relative;
+    overflow: hidden;
+    @include prefixVal(display,box);
+    @include prefixVal(box-sizing,border-box);
+    @include prefix('user-select', none);
 }
+
+#empty_wording{
+    color: $light_blue;
+    font-size: 22px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -132px;
+    margin-top: -15px;
+}
+
+.bone{
+    position: absolute;
+}
+
+.transform_utils{
+    position: absolute;
+    display: none;
+
+}
+.resize_point{
+    width: 6px;
+    height: 6px;
+    border: 1px solid $blue;
+    background-color: #fff;
+    position: absolute;
+    z-index: 2;
+}
+.resize_point.leftTop, .resize_point.rightBottom{
+    cursor: nw-resize;
+}
+.resize_point.rightTop, .resize_point.leftBottom{
+    cursor: ne-resize;
+}
+
+.util_line{
+    position: absolute;
+    background-color: $blue;
+    overflow: visible;
+}
+
+.util_line.hori{
+    height: 1px;
+}
+.util_line.vert{
+    width: 1px;
+}
+
+.resize_point.top, .resize_point.bottom{
+    left: 50%;
+    margin-left: -3px;
+    margin-top: -3px;
+    cursor: n-resize;
+}
+.resize_point.right,.resize_point.left{
+    top: 50%;
+    margin-top: -3px;
+    margin-left: -3px;
+    cursor: e-resize;
+}
+
+.rotate_point{
+    width: 15px;
+    height: 15px;
+    cursor: url(../img/refresh.png),auto;
+    position: absolute;
+    background: #ddd;
+}
+
+.active{
+    cursor: move;
+}
+
+} /*  end of scene panel */

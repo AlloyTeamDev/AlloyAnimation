@@ -1,7 +1,4 @@
-/**
-骨骼model
-@module
-**/
+//骨骼model
 define([
     'Backbone.Relational', 'relationalScope'
 ], function(
@@ -9,19 +6,28 @@ define([
 ){
     var BoneModel;
 
+    var PI = Math.PI,
+        deg = PI/180, //角度换弧度
+        rad = 180/PI;  //弧度换角度
+
     /**
     @class BoneModel
     @extends Backbone.RelationalModel
     **/
     BoneModel = Backbone.RelationalModel.extend({
-        /**
-        Start: backbone内置属性/方法
-        **/
-        id: 'name',
-        defaults: {
-            name: 'unknown'
+
+        defaults : {
+            name : 'unknown',
+            x : 0,
+            y : 0,
+            w : 'auto',
+            h : 'auto',
+            rotation : 0,
+            textureUrl : null,
+            joint : [],  //统一处理采用单位px
         },
-        relation: [{
+       
+        relation : [{
             // 有多个关键帧
             type: Backbone.HasMany,
             key: 'keyframes',
@@ -32,10 +38,15 @@ define([
             type: Backbone.HasOne,
             key: 'parent',
             relatedModel: 'BoneModel'
-        }]
-        /**
-        Start: backbone内置属性/方法
-        **/
+        }],
+
+        initialize : function(){
+            console.log('bone initial');
+            console.log(this.textureUrl)
+        }
+
+
+        
     });
 
     relationalScope.BoneModel = BoneModel;

@@ -5,8 +5,8 @@ util mixin and class
 **/
 
 /**
-给属性名加上浏览器厂商前缀
-@param {String} $prop 属性名
+
+@param {String} $prop 
 
 **/
 @mixin prefix ($prop, $val...) {

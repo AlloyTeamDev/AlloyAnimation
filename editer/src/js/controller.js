@@ -5,65 +5,21 @@
 **/
 define([
     'exports',
-    'view.panel.action', 'view.panel.scene', 'view.panel.boneTree', 'view.panel.timeline',
-    'collection.bone'
+    'view.panel.action', 'view.panel.Scene', 'view.panel.boneTree', 'view.panel.timeline','view.Bone',
+    'collection.bone','model.Bone'
 ], function(
     exports,
-    actionPanelView ,scenePanelView, boneTreePanelView, timelinePanelView,
-    boneCollection
+    actionPanelView, scenePanelView, boneTreePanelView, timelinePanelView,BoneView,
+    boneCollection, BoneModel
 ){
-    var scenePanelView;
 
-    /**
-    整个WebApp的初始化
-    @method init
-    **/
+    /** 整个WebApp的初始化 **/
     exports.init = function(){
-        var initBonesData,
-            initTimelinesData;
-
-        // 获取初始数据
-        boneCollection.fetch();
-
-        initBonesData = boneCollection.toJSON();
-        if(initBonesData.length){
-            initTimelinesData = initBonesData.map(function(initBoneData){
-                return initBoneData.keyframes;
-            });
-        }
-
         // 渲染出各个面板
         actionPanelView.render();
-        scenePanelView.render(initBonesData);
-        boneTreePanelView.render(initBonesData);
-        timelinePanelView.render(initTimelinesData);
+        scenePanelView.render();
+        boneTreePanelView.render();
+        timelinePanelView.render();
+    };  
 
-        /**
-        Start: backbonen内置事件
-        **/
-        boneCollection.on('add', function(model, collection, options){
-            var boneData = model.toJSON();
-
-            // 在各个面板中添加一个骨骼view
-            scenePanelView.addBone(boneData);
-            boneTreePanelView.addBone(boneData);
-            timelinePanelView.addTimeline(boneData.keyframes || []);
-        });
-        /**
-        End: backbonen内置事件
-        **/
-
-        /**
-        Fired when click add button of scene panel
-        @event clickAddBtn
-        @param {String} textureUrl texture image's url
-        @param {Object} [options] optional param
-            @param {Object} [options.addOptions] backbone's optional param for adding model to collection
-        **/
-        scenePanelView.on('clickAddBtn', function(textureUrl, options){
-            boneCollection.add({
-                textureUrl: textureUrl
-            }, options && options.addOptions);
-        });
-    };
 });

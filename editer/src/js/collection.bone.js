@@ -19,14 +19,11 @@ define([
         /**
         Start: backbone内置属性/方法
         **/
-        model: BoneModel,
-        fetch: function(){
-
-        }
+        model: BoneModel
         /**
         End: backbone内置属性/方法
         **/
     });
 
-    return new BoneCollection();
+    return BoneCollection;
 });
