@@ -3,9 +3,11 @@
 @module
 **/
 define([
-    'Backbone.Relational', 'relationalScope'
+    'Backbone.Relational', 'relationalScope',
+    'modelUtil'
 ], function(
-    Backbone, relationalScope
+    Backbone, relationalScope,
+    util
 ){
     var KeyframeModel;
 
@@ -36,6 +38,13 @@ define([
             scaleY: 0,
             rotate: 0,
             alpha: 1
+        },
+        initialize: function(){
+            var id;
+
+            id = util.createId();
+            console.log('Create a new keyframe model with id %s', id);
+            this.set('id', id);
         }
         /**
         End: backbone内置属性/方法

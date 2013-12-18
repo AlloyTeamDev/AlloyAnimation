@@ -1,14 +1,12 @@
-/**
-util mixin and class
+// util mixin and class
+// @module
 
-@module
-**/
-
-/**
-给属性名加上浏览器厂商前缀
-@param {String} $prop 属性名
-
-**/
+// 给属性名加上浏览器厂商前缀
+// @param {String} $prop 属性名
+// @param {String} $val 一个或多个属性值
+// @example
+//     @include prefix(box-sizing, border-box);
+//     @include prefix(flex, 3, 3, 3);
 @mixin prefix ($prop, $val...) {
     -webkit-#{$prop}: $val;
     -moz-#{$prop}: $val;
@@ -16,6 +14,11 @@ util mixin and class
     #{$prop}: $val;
 }
 
+// 给属性值加上浏览器厂商前缀
+// @param {String} $prop 属性名
+// @param {String} $val 一个属性值
+// @example
+//     @include prefix(display, flex);
 @mixin prefixVal ($prop, $val) {
     #{$prop}: -webkit-#{$val};
     #{$prop}: -moz-#{$val};

@@ -1,12 +1,12 @@
 /**
-骨骼collection
+骨骼collection的类
 @module
 **/
 define([
-    'Backbone',
+    'Backbone', 'relationalScope',
     'model.Bone'
 ], function(
-    Backbone,
+    Backbone, relationalScope,
     BoneModel
 ){
     var BoneCollection;
@@ -28,5 +28,7 @@ define([
         **/
     });
 
-    return new BoneCollection();
+    relationalScope.BoneCollection = BoneCollection;
+
+    return BoneCollection;
 });

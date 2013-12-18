@@ -9,7 +9,7 @@
         height: $size;
         text-indent: -99999em;
         border: 1px solid #000;
-        @include prefix('border-radius', $size / 2);
+        @include prefix(border-radius, $size / 2);
         cursor: pointer;
     }
     .addBtn::before,
@@ -24,6 +24,6 @@
         background: #000;
     }
     .addBtn::after {
-        @include prefix('transform', rotate(90deg));
+        @include prefix(transform, rotate(90deg));
     }
 }

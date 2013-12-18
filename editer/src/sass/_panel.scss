@@ -31,6 +31,8 @@ html, body,
 .js-panel {
     float: left;
     overflow: hidden;
+    padding: 5px 10px;
+    @include prefix(box-sizing, border-box);
 
     .hd {
         height: 30px;
@@ -38,7 +40,6 @@ html, body,
     }
     .panelTitle {
         display: inline-block;
-        padding-left: 10px;
         padding-right: 10px;
     }
 }

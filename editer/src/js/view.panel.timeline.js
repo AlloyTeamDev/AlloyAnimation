@@ -21,6 +21,9 @@ define([
         **/
         el: $('#js-timelinePanel'),
         initialize: function(){
+            // 当前时刻
+            this.now = 0;
+
             // 复用父类的`initialize`方法
             this.constructor.__super__.initialize.apply(this, arguments);
         },

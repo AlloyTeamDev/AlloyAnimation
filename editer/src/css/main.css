@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
@@ -66,17 +65,7 @@ body {
   font-size: 14px;
 }
 
-/**
-util mixin and class
-
-@module
-**/
-/**
-给属性名加上浏览器厂商前缀
-@param {String} $prop 属性名
-
-**/
-/* line 26, ../sass/_util.scss */
+/* line 29, ../sass/_util.scss */
 .clearfix:after, #js-panelWrap:after {
   content: '';
   display: block;
@@ -119,35 +108,39 @@ html, body,
 .js-panel {
   float: left;
   overflow: hidden;
+  padding: 5px 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
 }
-/* line 35, ../sass/_panel.scss */
+/* line 37, ../sass/_panel.scss */
 .js-panel .hd {
   height: 30px;
   line-height: 30px;
 }
-/* line 39, ../sass/_panel.scss */
+/* line 41, ../sass/_panel.scss */
 .js-panel .panelTitle {
   display: inline-block;
-  padding-left: 10px;
   padding-right: 10px;
 }
 
-/* line 46, ../sass/_panel.scss */
+/* line 47, ../sass/_panel.scss */
 #js-actionPanel {
   background: #FB9966;
 }
 
-/* line 52, ../sass/_panel.scss */
+/* line 53, ../sass/_panel.scss */
 #js-scenePanel {
   background: #f2f2f2;
 }
 
-/* line 58, ../sass/_panel.scss */
+/* line 59, ../sass/_panel.scss */
 #js-boneTreePanel {
   background: #91B493;
 }
 
-/* line 64, ../sass/_panel.scss */
+/* line 65, ../sass/_panel.scss */
 #js-timelinePanel {
   background: #3A8FB7;
 }

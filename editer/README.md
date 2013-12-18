@@ -13,3 +13,11 @@
 - `[view|model|collection].*.js` 文件
 
 实现业务逻辑的 view|model|collection。** `*` 号中的单词，如果首字母大写，则表示类；如果首字母小写，则表示单例；如果以下划线开头并且首字母大写，则表示只用于被继承、不应该被实例化的抽象类**
+
+## js代码注释规范
+
+遵循(YUIDoc规范)[http://yui.github.io/yuidoc/syntax/]
+
+### 除了YUIDoc规范定义的tag，增加如下tag
+
+- triggerObj 表示事件是在哪个对象上触发
