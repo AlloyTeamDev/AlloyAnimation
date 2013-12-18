@@ -20,7 +20,10 @@ define([
         Start: backbone内置属性/方法
         **/
         defaults: {
-            name: 'unknown'
+            // 骨骼的名字
+            name: 'unknown',
+            // 骨骼的纹理
+            texture: 'img/defaultTexture.gif'
         },
         relations: [{
             // 有多个关键帧，组成一个关键帧集合
@@ -39,6 +42,15 @@ define([
             relatedModel: 'BoneModel',
             collectionType: 'BoneCollection'
         }],
+        initialize: function(){
+            var id;
+
+            id = util.createId();
+            console.log('Create a new bone model with id %s', id);
+            this.set('id', id);
+        },
+        fetch: function(){},
+        save: function(){},
         /**
         End: backbone内置属性/方法
         **/
