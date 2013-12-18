@@ -158,6 +158,85 @@ define([
                 .addBone(boneModel.toJSON(), options);
             // TODO: 给其他面板也添加骨骼view
         },
+        /**
+        @triggerObj {SkeletonModel}
+        @event removeBone 当骨架中移除某个骨骼时触发
+        @param {BoneModel} boneModel 所移除的骨骼
+        @param {SkeletonModel} skeletonModel 骨骼被添加到的骨架
+        @param {Object} [options]
+        **/
+        onRemoveBoneModel: function(boneModel, SkeletonModel, options){
+
+        },
+
+        /**
+        @triggerObj {BoneModel}
+        @event change backbone内置事件，当model中的数据被修改时触发
+        @param {BoneModel} 被修改的model
+        @param {Object} [options]
+            以下参数表示修改的来源，来源处的view中已是新数据，无需更新
+            @param {Boolean} [options.fromScenePanel=false]
+            @param {Boolean} [options.fromBoneTreePanel=false]
+            @param {Boolean} [options.fromTimelinePanel=false]
+        **/
+        onChangeBoneModel: function(boneModel, options){
+            var changedData;
+
+            options = options || {};
+
+            // 获取此骨骼中改变了的数据
+            changedData = boneModel.changedAttributes();
+
+            // TODO: 更新各个面板的视图
+            if(!options.fromScenePanel){}
+            if(!options.fromBoneTreePanel){}
+            if(!options.fromTimelinePanel){}
+        },
+
+        /**
+        @triggerObj {KeyframeCollection}
+        @event add 当有关键帧model被添加进某个关键帧collection时触发
+        **/
+        onAddKeyFrameModel: function(keyframeModel, keyframeColl, options){
+            monitorKeyframeModel(keyframeModel);
+        },
+        /**
+        @triggerObj {KeyframeCollection}
+        @event remove 当有关键帧model被从某个关键帧collection中移除时触发
+        **/
+        onRemoveKeyFrameModel: function(keyframeModel, keyframeColl, options){
+
+        },
+
+        /**
+        @triggerObj {KeyframeModel}
+        @event change backbone内置事件，当model中的数据被修改时触发
+        @param {BoneModel} 被修改的model
+        @param {Object} [options]
+            以下参数表示修改的来源，来源处的view中已是新数据，无需更新
+            @param {Boolean} [options.fromScenePanel=false]
+        **/
+        onChangeKeyframeModel: function(keyframeModel, options){
+            var changedData;
+
+            options = options || {};
+
+            // 获取此关键帧中改变了的数据
+            changedData = keyframeModel.changedAttributes();
+
+            // 更新各个面板的视图。对于修改的来源，其中的数据已是新的
+            if(!options.fromScenePanel){
+                scenePanelView
+                    .getBone(keyframeModel.get('bone').get('id'))
+                    .update(changedData, options);
+            }
+            if(!options.fromBoneTreePanel){
+                // TODO: 更新骨骼树面板中此骨骼的显示数据
+            }
+            if(!options.fromTimelinePanel){
+                // TODO: 更新时间轴面板中此关键帧的显示数据
+            }
+        },
 
 
         /****** view event handler ******/
