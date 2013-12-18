@@ -1,5 +1,5 @@
 /**
-骨骼collection
+骨骼collection的类
 @module
 **/
 define([
@@ -28,5 +28,7 @@ define([
         **/
     });
 
-    return new BoneCollection();
+    relationalScope.BoneCollection = BoneCollection;
+
+    return BoneCollection;
 });
