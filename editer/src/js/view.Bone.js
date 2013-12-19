@@ -4,11 +4,11 @@ define(['Backbone','jquery'], function(Backbone,$){
 
     BoneView = Backbone.View.extend({
 
-    	tagName: 'img',
+        tagName: 'img',
 
-    	className: 'bone',
+        className: 'bone',
 
-    	model: null,
+        model: null,
 
         isActive: false,
 
@@ -34,7 +34,7 @@ define(['Backbone','jquery'], function(Backbone,$){
         render: function(){
             console.log('bone view is render.... ');
 
-            var data = this.model.toJSON();  
+            var data = this.model.toJSON();
             var joint = data.joint;
             if(joint.length != 2){
                 originText = '50% 50%';
