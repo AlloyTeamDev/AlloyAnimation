@@ -9,50 +9,34 @@ define([
     'collection.Skeleton'
 ], function(
     exports,
-    actionPanelView ,scenePanelView, boneTreePanelView, timelinePanelView,
+    actionPanelView, scenePanelView, boneTreePanelView, timelinePanelView,
     SkeletonCollection
 ){
     var allSkeletonColl,
         handler;
 
-    // 所有骨架的collection
+    // 整个WebApp中所有骨架的collection
     allSkeletonColl = new SkeletonCollection();
 
-    /**
-    整个WebApp的初始化
-    @method init
-    **/
     exports.init = function(){
         var initSkeletonsData;
 
         // 获取初始数据
-        allSkeletonColl.fetch();
+        // TODO: 先注释掉这句，等实现本地服务器后再调用fetch获取初始数据
+        // allSkeletonColl.fetch();
         initSkeletonsData = allSkeletonColl.toJSON();
 
         // 渲染出各个面板
-        actionPanelView.render();
+        actionPanelView.render(initSkeletonsData);
         scenePanelView.render(initSkeletonsData);
         boneTreePanelView.render(initSkeletonsData);
         timelinePanelView.render(initSkeletonsData);
+        // 销毁引用，避免因为被事件回调函数的作用域链引用而没有释放内存
         initSkeletonsData = null;
 
-        /**
-        Start: backbone内置事件
-        **/
+        // 监听各种事件
         allSkeletonColl.on('add', handler.onAddSkeletonModel);
         allSkeletonColl.on('remove', handler.onRemoveSkeletonModel);
-        /**
-        End: backbone内置事件
-        **/
-
-        /**
-        Fired when click add button of scene panel
-        @event clickAddBtn
-        @param {String} textureUrl texture image's url
-        @param {Object} [options] optional param
-            @param {Object} [options.addOptions] backbone's optional param for adding model to collection
-        **/
-        scenePanelView.on('clickAddBtn', handler.onClickScenePanelAddBtn);
     };
 
     /**
@@ -236,14 +220,6 @@ define([
             if(!options.fromTimelinePanel){
                 // TODO: 更新时间轴面板中此关键帧的显示数据
             }
-        },
-
-
-        /****** view event handler ******/
-        onClickScenePanelAddBtn: function(textureUrl, options){
-            allSkeletonColl.add({
-                textureUrl: textureUrl
-            }, options && options.addOptions);
         }
     };
 });

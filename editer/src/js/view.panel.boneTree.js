@@ -30,11 +30,6 @@ define([
             // 复用父类的`initialize`方法
             this.constructor.__super__.initialize.apply(this, arguments);
         },
-        /**
-        渲染此面板
-        @method render
-        @param {Array} [bonesData] 多个骨骼的当前数据
-        **/
         render: function(bonesData){
             this.$el
                 .html( this.panelTmpl({

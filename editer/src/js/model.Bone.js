@@ -1,5 +1,5 @@
 /**
-骨骼model
+骨骼model的类
 @module
 **/
 define([
@@ -10,6 +10,10 @@ define([
     util
 ){
     var BoneModel;
+
+    var PI = Math.PI,
+        deg = PI/180, //角度换弧度
+        rad = 180/PI;  //弧度换角度
 
     /**
     @class BoneModel

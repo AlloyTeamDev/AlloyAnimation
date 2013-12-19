@@ -27,13 +27,6 @@ define([
             // 复用父类的`initialize`方法
             this.constructor.__super__.initialize.apply(this, arguments);
         },
-        /**
-        渲染此面板
-        @method render
-        @param {Array} [timelinesData] n个时间轴的当前数据
-            @param {Array} [timelinesData[i]] 一个时间轴的当前数据，即n个关键帧
-                @param {Object} [timelinesData[i][j]] 一个关键帧的当前数据
-        **/
         render: function(timelinesData){
             this.$el
                 .html( this.panelTmpl({
