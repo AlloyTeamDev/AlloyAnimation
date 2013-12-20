@@ -24,11 +24,6 @@ define([
             // 处于此关键帧时，骨骼及其纹理的各种数据：
             width: 100,
             height: 100,
-            textureUrl: '',
-            textureX: 0, // 相当于background-position
-            textureY: 0, // 相当于background-position
-            textureSizeX: 'auto', // 相当于水平方向上的background-size
-            textureSizeY: 'auto', // 相当于竖直方向上的background-size
             x: 0,
             y: 0,
             z: 0,
