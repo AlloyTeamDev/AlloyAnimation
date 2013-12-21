@@ -2,7 +2,6 @@
    v2.0 | 20110126
    License: none (public domain)
 */
-/* line 18, ../sass/_reset.scss */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -25,111 +24,92 @@ time, mark, audio, video {
 }
 
 /* HTML5 display-role reset for older browsers */
-/* line 28, ../sass/_reset.scss */
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
   display: block;
 }
 
-/* line 31, ../sass/_reset.scss */
 body {
   line-height: 1;
 }
 
-/* line 34, ../sass/_reset.scss */
 ol, ul {
   list-style: none;
 }
 
-/* line 37, ../sass/_reset.scss */
 blockquote, q {
   quotes: none;
 }
 
-/* line 41, ../sass/_reset.scss */
 blockquote:before, blockquote:after,
 q:before, q:after {
   content: '';
   content: none;
 }
 
-/* line 45, ../sass/_reset.scss */
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
 
 /****************************       common css          **************************/
-/* line 53, ../sass/_reset.scss */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 
 /*::-webkit-scrollbar-button:start:decrement { width:10px; height:11px;}*/
-/* line 56, ../sass/_reset.scss */
 ::-webkit-scrollbar-button:end:increment {
   width: 10px;
   height: 0px;
 }
 
-/* line 57, ../sass/_reset.scss */
 ::-webkit-scrollbar-track {
   border: 0;
   background-color: #f6f7f8;
 }
 
-/* line 58, ../sass/_reset.scss */
 ::-webkit-scrollbar-track-piece {
   background-color: #f6f7f8;
 }
 
-/* line 61, ../sass/_reset.scss */
 ::-webkit-scrollbar-thumb {
   width: 8px;
   background-color: #DDDADB;
   border-radius: 5px;
 }
 
-/* line 62, ../sass/_reset.scss */
 ::-webkit-scrollbar-thumb:vertical {
   border-width: 1px 1px 1px 1px;
   min-height: 24px;
 }
 
-/* line 63, ../sass/_reset.scss */
 ::-webkit-scrollbar-thumb:horizontal {
   border-width: 1px 1px 1px 1px;
   min-width: 24px;
 }
 
-/* line 64, ../sass/_reset.scss */
 ::-webkit-scrollbar-thumb:vertical:hover {
   background-color: #C2C2C2;
 }
 
-/* line 65, ../sass/_reset.scss */
 ::-webkit-scrollbar-thumb:horizontal:hover {
   background-color: #C2C2C2;
 }
 
-/* line 66, ../sass/_reset.scss */
 ::-webkit-scrollbar-thumb:vertical:active {
   background-color: #D6D6D6;
 }
 
-/* line 67, ../sass/_reset.scss */
 ::-webkit-scrollbar-thumb:horizontal:active {
   background-color: #D6D6D6;
 }
 
-/* line 1, ../sass/_base.scss */
 body {
   font-family: Helvetica,Arial,sans-serif;
   font-size: 14px;
 }
 
-/* line 29, ../sass/_util.scss */
 .clearfix:after, #js-panelWrap:after {
   content: '';
   display: block;
@@ -140,35 +120,29 @@ body {
   font-size: 0;
 }
 
-/* line 4, ../sass/_panel.scss */
 #js-actionPanel, #js-boneTreePanel {
   width: 30%;
 }
 
-/* line 7, ../sass/_panel.scss */
 #js-scenePanel, #js-timelinePanel {
   width: 70%;
 }
 
-/* line 10, ../sass/_panel.scss */
 #js-actionPanel, #js-scenePanel {
   height: 70%;
   min-height: 210px;
 }
 
-/* line 14, ../sass/_panel.scss */
 #js-boneTreePanel, #js-timelinePanel {
   height: 30%;
 }
 
-/* line 20, ../sass/_panel.scss */
 html, body,
 #js-panelWrap {
   width: 100%;
   height: 100%;
 }
 
-/* line 29, ../sass/_panel.scss */
 .js-panel {
   float: left;
   overflow: hidden;
@@ -178,38 +152,31 @@ html, body,
   -ms-box-sizing: border-box;
   box-sizing: border-box;
 }
-/* line 35, ../sass/_panel.scss */
 .js-panel .hd {
   height: 30px;
   line-height: 30px;
 }
-/* line 39, ../sass/_panel.scss */
 .js-panel .panelTitle {
   display: inline-block;
   padding-right: 10px;
 }
 
-/* line 45, ../sass/_panel.scss */
 #js-actionPanel {
   background: #FB9966;
 }
 
-/* line 51, ../sass/_panel.scss */
 #js-scenePanel {
   background: #f2f2f2;
 }
 
-/* line 57, ../sass/_panel.scss */
 #js-boneTreePanel {
   background: #91B493;
 }
 
-/* line 63, ../sass/_panel.scss */
 #js-timelinePanel {
   background: #3A8FB7;
 }
 
-/* line 7, ../sass/_panel.scene.scss */
 #js-scenePanel #workspace {
   width: 100%;
   height: 100%;
@@ -229,7 +196,6 @@ html, body,
   -ms-user-select: none;
   user-select: none;
 }
-/* line 18, ../sass/_panel.scene.scss */
 #js-scenePanel #empty_wording {
   color: #b0dfff;
   font-size: 22px;
@@ -239,16 +205,13 @@ html, body,
   margin-left: -132px;
   margin-top: -15px;
 }
-/* line 28, ../sass/_panel.scene.scss */
 #js-scenePanel .bone {
   position: absolute;
 }
-/* line 32, ../sass/_panel.scene.scss */
 #js-scenePanel .transform_utils {
   position: absolute;
   display: none;
 }
-/* line 37, ../sass/_panel.scene.scss */
 #js-scenePanel .resize_point {
   width: 6px;
   height: 6px;
@@ -257,43 +220,35 @@ html, body,
   position: absolute;
   z-index: 2;
 }
-/* line 45, ../sass/_panel.scene.scss */
 #js-scenePanel .resize_point.leftTop, #js-scenePanel .resize_point.rightBottom {
   cursor: nw-resize;
 }
-/* line 48, ../sass/_panel.scene.scss */
 #js-scenePanel .resize_point.rightTop, #js-scenePanel .resize_point.leftBottom {
   cursor: ne-resize;
 }
-/* line 52, ../sass/_panel.scene.scss */
 #js-scenePanel .util_line {
   position: absolute;
   background-color: #26a9e0;
   overflow: visible;
 }
-/* line 58, ../sass/_panel.scene.scss */
 #js-scenePanel .util_line.hori {
   height: 1px;
 }
-/* line 61, ../sass/_panel.scene.scss */
 #js-scenePanel .util_line.vert {
   width: 1px;
 }
-/* line 65, ../sass/_panel.scene.scss */
 #js-scenePanel .resize_point.top, #js-scenePanel .resize_point.bottom {
   left: 50%;
   margin-left: -3px;
   margin-top: -3px;
   cursor: n-resize;
 }
-/* line 71, ../sass/_panel.scene.scss */
 #js-scenePanel .resize_point.right, #js-scenePanel .resize_point.left {
   top: 50%;
   margin-top: -3px;
   margin-left: -3px;
   cursor: e-resize;
 }
-/* line 78, ../sass/_panel.scene.scss */
 #js-scenePanel .rotate_point {
   width: 15px;
   height: 15px;
@@ -301,7 +256,6 @@ html, body,
   position: absolute;
   background: #ddd;
 }
-/* line 86, ../sass/_panel.scene.scss */
 #js-scenePanel .active {
   cursor: move;
 }
