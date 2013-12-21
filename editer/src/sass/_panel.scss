@@ -51,7 +51,7 @@ html, body,
     background: #FB9966;
 }
 
-#js-scenePanel {
+#js-workspacePanel {
     @extend %rightPanel;
     @extend %topPanel;
     background: darken(#fff, 5%);

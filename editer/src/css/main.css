@@ -124,11 +124,11 @@ body {
   width: 30%;
 }
 
-#js-scenePanel, #js-timelinePanel {
+#js-workspacePanel, #js-timelinePanel {
   width: 70%;
 }
 
-#js-actionPanel, #js-scenePanel {
+#js-actionPanel, #js-workspacePanel {
   height: 70%;
   min-height: 210px;
 }
@@ -165,7 +165,7 @@ html, body,
   background: #FB9966;
 }
 
-#js-scenePanel {
+#js-workspacePanel {
   background: #f2f2f2;
 }
 
@@ -177,7 +177,7 @@ html, body,
   background: #3A8FB7;
 }
 
-#js-scenePanel #workspace {
+#js-workspacePanel #workspace {
   width: 100%;
   height: 100%;
   border: 2px dashed #6caad5;
@@ -196,7 +196,7 @@ html, body,
   -ms-user-select: none;
   user-select: none;
 }
-#js-scenePanel #empty_wording {
+#js-workspacePanel #empty_wording {
   color: #b0dfff;
   font-size: 22px;
   position: absolute;
@@ -205,14 +205,14 @@ html, body,
   margin-left: -132px;
   margin-top: -15px;
 }
-#js-scenePanel .bone {
+#js-workspacePanel .bone {
   position: absolute;
 }
-#js-scenePanel .transform_utils {
+#js-workspacePanel .transform_utils {
   position: absolute;
   display: none;
 }
-#js-scenePanel .resize_point {
+#js-workspacePanel .resize_point {
   width: 6px;
   height: 6px;
   border: 1px solid #26a9e0;
@@ -220,44 +220,44 @@ html, body,
   position: absolute;
   z-index: 2;
 }
-#js-scenePanel .resize_point.leftTop, #js-scenePanel .resize_point.rightBottom {
+#js-workspacePanel .resize_point.leftTop, #js-workspacePanel .resize_point.rightBottom {
   cursor: nw-resize;
 }
-#js-scenePanel .resize_point.rightTop, #js-scenePanel .resize_point.leftBottom {
+#js-workspacePanel .resize_point.rightTop, #js-workspacePanel .resize_point.leftBottom {
   cursor: ne-resize;
 }
-#js-scenePanel .util_line {
+#js-workspacePanel .util_line {
   position: absolute;
   background-color: #26a9e0;
   overflow: visible;
 }
-#js-scenePanel .util_line.hori {
+#js-workspacePanel .util_line.hori {
   height: 1px;
 }
-#js-scenePanel .util_line.vert {
+#js-workspacePanel .util_line.vert {
   width: 1px;
 }
-#js-scenePanel .resize_point.top, #js-scenePanel .resize_point.bottom {
+#js-workspacePanel .resize_point.top, #js-workspacePanel .resize_point.bottom {
   left: 50%;
   margin-left: -3px;
   margin-top: -3px;
   cursor: n-resize;
 }
-#js-scenePanel .resize_point.right, #js-scenePanel .resize_point.left {
+#js-workspacePanel .resize_point.right, #js-workspacePanel .resize_point.left {
   top: 50%;
   margin-top: -3px;
   margin-left: -3px;
   cursor: e-resize;
 }
-#js-scenePanel .rotate_point {
+#js-workspacePanel .rotate_point {
   width: 15px;
   height: 15px;
   cursor: url(../img/refresh.png), auto;
   position: absolute;
   background: #ddd;
 }
-#js-scenePanel .active {
+#js-workspacePanel .active {
   cursor: move;
 }
 
-/*  end of scene panel */
+/*  end of workspace panel */

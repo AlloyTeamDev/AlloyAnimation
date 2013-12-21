@@ -1,18 +1,20 @@
 /**
-工作面板的view
+工作区面板的view
+@module
+@exports 工作区面板的view实例
 **/
 define([
     'jquery', 'underscore',
     'model.Bone', 'collection.bone',
     'view.Panel', 'view.Bone', 'view.workspace.transformUtils',
-    'tmpl!html/panel.scene.bone.html', 'tmpl!html/workspace.html'
+    'tmpl!html/panel.workspace.bone.html', 'tmpl!html/workspace.html'
 ], function(
     $, _,
     BoneModel, BoneCollection,
     PanelView, BoneView, TransformUtilsView,
     boneTmpl, workspaceTmpl
 ){
-    var ScenePanelView, SkeletonView, BoneView, helper;
+    var WorkspacePanelView, SkeletonView, BoneView, helper;
 
     //单位变量
     var PI = Math.PI,
@@ -30,18 +32,18 @@ define([
 
     var offsetAngle = 0;
 
-    var $workspace = null;  // = ScenePanelView.$workspace
+    var $workspace = null;  // = WorkspacePanelView.$workspace
     var transformUtils = null;
 
     /**
-    @class ScenePanelView
+    @class WorkspacePanelView
     @extends PanelView
     **/
-    var ScenePanelView = PanelView.extend({
+    var WorkspacePanelView = PanelView.extend({
 
-        el: '#js-scenePanel',
+        el: '#js-workspacePanel',
 
-        $workspace: null,  //TODO workspace replace js-scenePanel or rename workspace
+        $workspace: null,  //TODO workspace replace js-workspacePanel or rename workspace
 
         activeBoneView: null,
 
@@ -86,8 +88,8 @@ define([
         render: function(skeletonsData){
             this.$el
                 .html( this.panelTmpl({
-                    type: 'scene',
-                    title: '景物'
+                    type: 'workspace',
+                    title: '工作区'
                 }) );
 
             // 缓存DOM元素
@@ -619,12 +621,12 @@ define([
         }
     }, {
         /**
-        获取骨骼的html id，其前缀表示这是景物面板中的骨骼
+        获取骨骼的html id，其前缀表示这是工作区面板中的骨骼
         @param {String} id 骨骼的id
         @return {String} 骨骼的html id
         **/
         boneHtmlId: function(id){
-            return 'js-scene-bone-' + id;
+            return 'js-workspace-bone-' + id;
         },
         /**
         从骨骼的html id中获取骨骼id
@@ -636,5 +638,5 @@ define([
         }
     });
 
-    return new ScenePanelView();
+    return new WorkspacePanelView();
 });

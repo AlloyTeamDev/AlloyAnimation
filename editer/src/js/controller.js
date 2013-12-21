@@ -5,11 +5,11 @@
 **/
 define([
     'exports',
-    'view.panel.action', 'view.panel.scene', 'view.panel.boneTree', 'view.panel.timeline',
+    'view.panel.action', 'view.panel.workspace', 'view.panel.boneTree', 'view.panel.timeline',
     'collection.Skeleton'
 ], function(
     exports,
-    actionPanelView, scenePanelView, boneTreePanelView, timelinePanelView,
+    actionPanelView, workspacePanelView, boneTreePanelView, timelinePanelView,
     SkeletonCollection
 ){
     var allSkeletonColl,
@@ -28,7 +28,7 @@ define([
 
         // 渲染出各个面板
         actionPanelView.render(initSkeletonsData);
-        scenePanelView.render(initSkeletonsData);
+        workspacePanelView.render(initSkeletonsData);
         boneTreePanelView.render(initSkeletonsData);
         timelinePanelView.render(initSkeletonsData);
         // 销毁引用，避免因为被事件回调函数的作用域链引用而没有释放内存
@@ -113,7 +113,7 @@ define([
 
             skeletonData = skeletonModel.toJSON();
             // 在各个面板中添加此骨架对应的view
-            scenePanelView.addSkeleton(skeletonData);
+            workspacePanelView.addSkeleton(skeletonData);
             // TODO: 给其它面板也添加骨架
             // boneTreePanelView.addSkeleton(skeletonData);
             // timelinePanelView.addTimeline(skeletonData);
@@ -137,7 +137,7 @@ define([
             monitorBoneModel(boneModel);
 
             // 在各个面板中添加此骨骼对应的view
-            scenePanelView
+            workspacePanelView
                 .getSkeleton(skeletonModel.get('id'))
                 .addBone(boneModel.toJSON(), options);
             // TODO: 给其他面板也添加骨骼view
@@ -159,7 +159,7 @@ define([
         @param {BoneModel} 被修改的model
         @param {Object} [options]
             以下参数表示修改的来源，来源处的view中已是新数据，无需更新
-            @param {Boolean} [options.fromScenePanel=false]
+            @param {Boolean} [options.fromWorkspacePanel=false]
             @param {Boolean} [options.fromBoneTreePanel=false]
             @param {Boolean} [options.fromTimelinePanel=false]
         **/
@@ -172,7 +172,7 @@ define([
             changedData = boneModel.changedAttributes();
 
             // TODO: 更新各个面板的视图
-            if(!options.fromScenePanel){}
+            if(!options.fromWorkspacePanel){}
             if(!options.fromBoneTreePanel){}
             if(!options.fromTimelinePanel){}
         },
@@ -198,7 +198,7 @@ define([
         @param {BoneModel} 被修改的model
         @param {Object} [options]
             以下参数表示修改的来源，来源处的view中已是新数据，无需更新
-            @param {Boolean} [options.fromScenePanel=false]
+            @param {Boolean} [options.fromWorkspacePanel=false]
         **/
         onChangeKeyframeModel: function(keyframeModel, options){
             var changedData;
@@ -209,8 +209,8 @@ define([
             changedData = keyframeModel.changedAttributes();
 
             // 更新各个面板的视图。对于修改的来源，其中的数据已是新的
-            if(!options.fromScenePanel){
-                scenePanelView
+            if(!options.fromWorkspacePanel){
+                workspacePanelView
                     .getBone(keyframeModel.get('bone').get('id'))
                     .update(changedData, options);
             }
