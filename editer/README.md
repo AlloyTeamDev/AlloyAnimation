@@ -20,4 +20,5 @@
 
 ### 除了YUIDoc规范定义的tag，增加如下tag
 
+- exports 表示模块暴露的对象
 - triggerObj 表示事件是在哪个对象上触发
