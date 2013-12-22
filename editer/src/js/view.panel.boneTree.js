@@ -4,7 +4,7 @@
 **/
 define([
     'jquery', 'underscore',
-    'view.Panel',
+    'view.panel',
     'tmpl!html/panel.boneTree.bone.html'
 ], function(
     $, _,

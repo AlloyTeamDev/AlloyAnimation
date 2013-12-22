@@ -4,7 +4,7 @@
 **/
 define([
     'Backbone', 'relationalScope',
-    'model.Skeleton'
+    'model.skeleton'
 ], function(
     Backbone, relationalScope,
     SkeletonModel

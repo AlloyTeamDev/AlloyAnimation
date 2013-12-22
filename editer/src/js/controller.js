@@ -6,7 +6,7 @@
 define([
     'exports',
     'view.panel.action', 'view.panel.workspace', 'view.panel.boneTree', 'view.panel.timeline',
-    'collection.Skeleton'
+    'collection.skeleton'
 ], function(
     exports,
     actionPanelView, workspacePanelView, boneTreePanelView, timelinePanelView,

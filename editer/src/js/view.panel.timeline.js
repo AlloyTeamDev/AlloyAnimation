@@ -4,7 +4,7 @@
 **/
 define([
     'jquery',
-    'view.Panel'
+    'view.panel'
 ], function(
     $,
     PanelView

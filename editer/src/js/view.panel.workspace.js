@@ -5,8 +5,8 @@
 **/
 define([
     'jquery', 'underscore',
-    'model.Bone', 'collection.bone',
-    'view.Panel', 'view.Bone', 'view.workspace.transformUtils',
+    'model.bone', 'collection.bone',
+    'view.panel', 'view.bone', 'view.workspace.transformUtils',
     'tmpl!html/panel.workspace.bone.html', 'tmpl!html/workspace.html'
 ], function(
     $, _,

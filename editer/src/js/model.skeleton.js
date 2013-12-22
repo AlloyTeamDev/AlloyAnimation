@@ -4,7 +4,7 @@
 **/
 define([
     'Backbone.Relational', 'relationalScope', 'underscore',
-    'model.Bone', 'modelUtil'
+    'model.bone', 'modelUtil'
 ], function(
     Backbone, relationalScope, _,
     BoneModel, util

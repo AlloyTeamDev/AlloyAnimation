@@ -4,7 +4,7 @@
 **/
 define([
     'Backbone', 'relationalScope',
-    'model.Keyframe'
+    'model.keyframe'
 ], function(
     Backbone, relationalScope,
     KeyframeModel
