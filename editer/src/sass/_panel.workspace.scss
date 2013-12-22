@@ -4,25 +4,21 @@ $light_blue: #B0DFFF;
 $dark_blue: #6CAAD5;
 $blue: #26A9E0;
 
-#workspace{
+#empty_wording{
+    display: table;
     width: 100%;
     height: 100%;
     border: 2px dashed $dark_blue;
-    position: relative;
     overflow: hidden;
-    @include prefixVal(display,box);
-    @include prefixVal(box-sizing,border-box);
+    @include prefixVal(box-sizing, border-box);
     @include prefix(user-select, none);
-}
-
-#empty_wording{
     color: $light_blue;
     font-size: 22px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin-left: -132px;
-    margin-top: -15px;
+}
+#empty_wording_inner{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
 }
 
 .bone{

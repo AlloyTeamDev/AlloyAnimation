@@ -177,16 +177,12 @@ html, body,
   background: #3A8FB7;
 }
 
-#js-workspacePanel #workspace {
+#js-workspacePanel #empty_wording {
+  display: table;
   width: 100%;
   height: 100%;
   border: 2px dashed #6caad5;
-  position: relative;
   overflow: hidden;
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-box;
-  display: box;
   box-sizing: -webkit-border-box;
   box-sizing: -moz-border-box;
   box-sizing: -ms-border-box;
@@ -195,15 +191,13 @@ html, body,
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-#js-workspacePanel #empty_wording {
   color: #b0dfff;
   font-size: 22px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -132px;
-  margin-top: -15px;
+}
+#js-workspacePanel #empty_wording_inner {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 }
 #js-workspacePanel .bone {
   position: absolute;
