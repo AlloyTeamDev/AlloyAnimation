@@ -32,3 +32,8 @@
 
 - exports 表示模块暴露的对象
 - triggerObj 表示事件是在哪个对象上触发
+
+## js console
+
+请预埋 `console.debug()` 输出程序执行的主要步骤，表示程序的执行流程，以便于调试和上报错误。
+请不要删除这些表示程序执行流程的 `console.debug()` 语句，发布时可以覆盖 `console.debug` 接口，保存传入的信息，用于上报错误。
