@@ -125,29 +125,20 @@ define([
         @return 所添加的骨架的view实例
         **/
         addSkeleton: function(data){
-            var skeletonView;
+            var skeleton, boneId;
 
             // 创建骨架view，并插入DOM中
-            (skeletonView = this._skeletonHash[data.id] = new SkeletonView())
-                .render(data)
-                .$el
-                .appendTo(this.$viewport);
+            (skeleton = this._skeletonHash[data.id] = new SkeletonView())
+                .render(data, this.el);
 
-            // 监听这个骨架的事件，如果有添加骨骼，保存骨骼的引用
-            skeletonView.on('addBone', this._onSkeleonAddBone, this);
+            // 将骨架中已有的骨骼保存起来
+            skeleton.getBone().forEach(function(bone){
+                this._boneHash[bone.id] = bone;
+            }, this);
+            // 监听这个骨架的事件，如果有添加骨骼，保存新添加的骨骼
+            skeleton.on('addBone', this._onSkeleonAddBone, this);
 
-            return skeletonView;
-        },
-
-        /**
-        一个事件回调函数，专用于此面板中的骨架的 `addBone` 事件
-        @triggerObj {SkeletonView}
-        @event addBone 当骨架view中添加骨骼时触发
-        @param {BoneView} boneView
-        @param {SkeletonView}
-        **/
-        _onSkeleonAddBone: function(boneView, skeletonView, options){
-            this._boneHash[boneView.id] = boneView;
+            return skeleton;
         },
 
         /**
@@ -462,9 +453,6 @@ define([
     @extends Backbone.View
     **/
     SkeletonView = Backbone.View.extend({
-        /**
-        Start: backbone内置属性/方法
-        **/
         attributes: {
             'class': 'js-skeleton'
         },
@@ -484,85 +472,34 @@ define([
         @method render
         @param {Object} skeletonData 骨架的数据
             @param {Object} skeletonData.root
+        @param {DOMElement} [container] 要插入的DOM容器
+        @return this
         **/
-        render: function(skeletonData){
-            this.addBone(skeletonData.root);
+        render: function(skeletonData, container){
+            // 创建根骨骼
+            (this.root = this._boneHash[skeletonData.root.id] = new BoneView())
+                .on('addChild', this._onAddChild, this)
+                .render(skeletonData.root, this.el);
+
+            // TODO: 如果有子骨骼的数据，创建之
+
+            container && this.$el.appendTo(container);
 
             return this;
         },
-        /**
-        End: backbone内置属性/方法
-        **/
-
-        /**
-        创建一个骨骼view，并添加到此面板中。
-        如果所提供的骨骼数据中有子骨骼，则创建并添加子骨骼view
-        @method addBone
-        @param {Object} data 骨骼的当前数据
-        @param {Object} {options}
-            @param {String} {options.parent} 父骨骼的id
-        @return 所添加的骨骼的view实例
-        **/
-        addBone: function(data, options){
-            var boneView, $container;
-
-            options = options || {};
-
-            // 设置DOM容器
-            if(options.parent){
-                // 这里要用子选择器将范围限定在当前骨骼
-                $container = this._boneHash[options.parent].$el.children('.js-children');
-            }
-            // 如果没有提供父骨骼id，且骨架中还没有根骨骼，则添加为根骨骼
-            else if(!this.root){
-                $container = this.$el;
-            }
-
-            // 创建骨骼view，并插入DOM容器中
-            (boneView = this._boneHash[data.id] = new BoneView())
-                .render(data)
-                .$el
-                .appendTo($container);
-
-            // 如果有子骨骼的数据，添加子骨骼view
-            if(data.children && data.children.length){
-                data.children.forEach(function(childData){
-                    this.addBone(childData, {parent: data.id});
-                }, this);
-            }
-
-            // 触发事件
-            this.trigger('addBone', boneView, this, options);
-
-            return boneView;
+        _onAddChild: function(child, parent, options){
+            this._boneHash[child.id] = child;
+            this.trigger('addBone', child, this, options);
         },
+
         /**
-        删除一个骨骼，及其子元素，
-        包括解除对DOM事件的监听，删除DOM元素，解除绑定在此骨骼的view实例上的事件，删除view实例
-        @param {String} id 要删除的元素的id
+        获取某个骨骼，或所有骨骼
+        @param {String} [boneId] 骨骼的id
+        @return {BoneView}
         **/
-        removeBone: function(id){
-            var boneView, $children, i, id;
-
-            boneView = this._boneHash[id];
-            $children = boneView.$el.children('.children').children('.js-bone');
-
-            // 先递归删除子骨骼
-            if($children.length){
-                for(i = 0; i < $children.length; ++i){
-                    id = BoneView.boneId( $children.eq(i).attr('id') );
-                    this.removeBone(id);
-                }
-            }
-
-            // 再删除自己：
-            // 解除对DOM事件的监听，删除DOM元素，解除绑定在此骨骼的view实例上的事件
-            boneView.remove();
-            // 删除view实例
-            boneView = null;
-            delete this._boneHash[id];
-
-            return this;
+        getBone: function(boneId){
+            if(boneId) return this._boneHash[boneId];
+            else return _.values(this._boneHash);
         }
     });
 
@@ -594,20 +531,18 @@ define([
             @param {String} boneData.name
             @param {String} boneData.texture
             @param {Array} boneData.children
+        @param {DOMElement} [container] 要插入的DOM容器
+        @return this
         **/
-        render: function(boneData){
+        render: function(boneData, container){
             this.id = boneData.id;
             this.$el
                 .attr({
-                    'id': BoneView.boneHtmlId(boneData.id),
-                    'title': boneData.name
-                })
-                .html(boneTmpl(boneData));
+                    'id': boneId2boneHtmlId(boneData.id)
+                });
+            this.update(boneData);
 
-            // TODO:
-            // 添加对DOM事件的监听，支持拖拽调整位置、角度等，
-            // 这些DOM事件的handler可以定义为此类的私有方法或本模块内的函数，
-            // 当完成一次调整后，触发`drop`事件，带上调整后的位置、角度等数据
+            container && this.$el.appendTo(container);
 
             return this;
         },
