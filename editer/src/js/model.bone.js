@@ -24,15 +24,9 @@ define([
         **/
         defaults: {
             // 骨骼的名字
-            name: 'unknown',
+            name: 'unknown bone',
             // 纹理图的url
-            texture: 'img/defaultTexture.gif',
-            // 纹理图相对于骨骼容器的位置
-            textureX: 0,
-            textureY: 0,
-            // 纹理图的宽高
-            textureWidth: 'auto',
-            textureHeight: 'auto'
+            texture: 'img/defaultTexture.gif'
         },
         relations: [{
             // 有多个关键帧，组成一个关键帧集合
