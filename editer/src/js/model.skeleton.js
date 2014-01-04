@@ -16,12 +16,10 @@ define([
     @extends Backbone.RelationalModel
     **/
     SkeletonModel = Backbone.RelationalModel.extend({
-        /**
-        Start: backbone内置属性/方法
-        **/
         defaults: {
             name: 'Unknown Skeleton'
         },
+
         initialize: function(){
             var id = util.createId();
             console.debug('Create a skeleton model with id %s', id);
@@ -38,30 +36,14 @@ define([
                 }, this);
             }).call(this, this.get('root'));
         },
+
         relations: [{
             // 有且只有一个骨骼作为根骨骼
             type: 'HasOne',
             key: 'root',
             relatedModel: 'BoneModel'
         }],
-        /**
-        End: backbone内置属性/方法
-        **/
 
-        /**
-        获取一个子骨骼的父骨骼model
-        @parem {String} childId 子骨骼id
-        @return {BoneModel|undefined} 父骨骼的model实例或`undefined`
-        **/
-        getParent: function(childId){
-            var id, parent;
-
-            for(id in this._boneHash){
-                if(!this._boneHash.hasOwnProperty(id) || id === childId) continue;
-                parent = this._boneHash[id];
-                if(parent.hasChild(childId)) return parent;
-            }
-        },
         /**
         获取此骨架中的某个骨骼model，或所有骨骼model
         @param {String} [id] 指定骨骼的id
@@ -71,6 +53,7 @@ define([
             if(id) return this._boneHash[id];
             else return _.values(this._boneHash);
         },
+
         /**
         给这个骨架添加一个或多个骨骼，并触发 `addBone` 事件。
         如果所提供的数据中包含有子骨骼的数据，则添加之。
@@ -119,6 +102,7 @@ define([
 
             return boneModel;
         },
+
         /**
         移除一个骨骼，及其子骨骼，并触发 `removeBone` 事件。
         如果移除的是根骨骼，还要触发 `removeRoot` 事件。
@@ -152,7 +136,7 @@ define([
             }
 
             // 再移除要移除的骨骼
-            parentBone = this.getParent(id);
+            parentBone = this._getParent(id);
             if(parentBone){
                 parentBone.get('children').remove(removedBone);
             }
@@ -179,7 +163,27 @@ define([
             }
 
             return removedBone;
+        },
+
+
+        /***** Start: 私有成员 *****/
+
+        /**
+        获取一个子骨骼的父骨骼model
+        @parem {String} childId 子骨骼id
+        @return {BoneModel|undefined} 父骨骼的model实例或`undefined`
+        **/
+        _getParent: function(childId){
+            var id, parent;
+
+            for(id in this._boneHash){
+                if(!this._boneHash.hasOwnProperty(id) || id === childId) continue;
+                parent = this._boneHash[id];
+                if(parent.hasChild(childId)) return parent;
+            }
         }
+
+        /***** End: 私有成员 *****/
     });
 
     relationalScope.SkeletonModel = SkeletonModel;    
