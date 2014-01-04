@@ -1,18 +1,20 @@
+// 工作区面板的样式
+
+@import "_util";
+
 #js-workspacePanel {
 
-$light_blue: #B0DFFF;
-$dark_blue: #6CAAD5;
-$blue: #26A9E0;
+$active-color: darken(#26A9E0, 5%);
 
 #empty_wording{
     display: table;
     width: 100%;
     height: 100%;
-    border: 2px dashed $dark_blue;
+    border: 2px dashed #6CAAD5;
     overflow: hidden;
     @include prefixVal(box-sizing, border-box);
     @include prefix(user-select, none);
-    color: $light_blue;
+    color: #6CAAD5;
     font-size: 22px;
 }
 #empty_wording_inner{
@@ -21,66 +23,92 @@ $blue: #26A9E0;
     text-align: center;
 }
 
-.bone{
+.js-bone{
     position: absolute;
+    // 新建骨骼的默认位置
+    left: 0;
+    top: 0;
+    background-repeat: no-repeat;
+    // 固定纹理图的位置
+    background-position: 0 0;
+    // 因为要用背景图来显示纹理，所以设置背景图的大小为容器div的大小，
+    // 这样就能方便的通过容器的大小来控制纹理图的大小。
+    background-size: 100% 100%;
 }
 
-.transform_utils{
-    position: absolute;
-    display: none;
-
-}
-.resize_point{
-    width: 6px;
-    height: 6px;
-    border: 1px solid $blue;
-    background-color: #fff;
-    position: absolute;
-    z-index: 2;
-}
-.resize_point.leftTop, .resize_point.rightBottom{
-    cursor: nw-resize;
-}
-.resize_point.rightTop, .resize_point.leftBottom{
-    cursor: ne-resize;
-}
-
-.util_line{
-    position: absolute;
-    background-color: $blue;
-    overflow: visible;
-}
-
-.util_line.hori{
-    height: 1px;
-}
-.util_line.vert{
-    width: 1px;
-}
-
-.resize_point.top, .resize_point.bottom{
-    left: 50%;
-    margin-left: -3px;
-    margin-top: -3px;
-    cursor: n-resize;
-}
-.resize_point.right,.resize_point.left{
-    top: 50%;
-    margin-top: -3px;
-    margin-left: -3px;
-    cursor: e-resize;
-}
-
-.rotate_point{
-    width: 15px;
-    height: 15px;
-    cursor: url(../img/refresh.png),auto;
-    position: absolute;
-    background: #ddd;
-}
-
-.active{
+.js-activeBone{
     cursor: move;
+
+    &::before{
+        $border-width: 3px;
+        content: '';
+        display: block;
+        position: absolute;
+        left: -1 * $border-width;
+        top: -1 * $border-width;
+        width: 100%;
+        height: 100%;
+        border: $border-width solid rgba($active-color, 0.5);
+    }
 }
 
-} /*  end of workspace panel */
+.js-joint{
+    $size: 8px;
+    position: absolute;
+    width: $size;
+    height: $size;
+    margin-left: $size / -2;
+    margin-top: $size / -2;
+    background-color: rgba(darken($active-color, 5%), 0.5);
+    @include prefix(border-radius, $size / 2);
+}
+
+.js-rotate{
+    $size: 8px;
+    position: absolute;
+    left: $size / -2;
+    top: $size / -2;
+    width: $size;
+    height: $size;
+    cursor: url(../img/refresh.png), auto;
+    background-color: rgba(darken($active-color, 5%), 0.5);
+    @include prefix(border-radius, $size / 2);
+}
+
+.js-resize{
+    $size: 14px;
+    position: absolute;
+    right: -1px;
+    bottom: -1px;
+    width: $size;
+    height: $size;
+    cursor: nw-resize;
+    overflow: hidden;
+
+    &::before{
+        content: '';
+        display: block;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        @include prefix(transform, rotate(-45deg));
+        @include prefix(transform-origin, 0 0);
+        width: $size * 2;
+        height: 2px;
+        background-color: rgba($active-color, 0.5);
+    }
+    &::after{
+        content: '';
+        display: block;
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        @include prefix(transform, rotate(-45deg));
+        @include prefix(transform-origin, 0 0);
+        width: $size * 2;
+        height: 2px;
+        background-color: rgba($active-color, 0.5);
+    }
+}
+
+} // end of workspace panel
