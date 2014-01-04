@@ -52,7 +52,7 @@ define([
             var id;
 
             id = util.createId();
-            console.log('Create a new bone model with id %s', id);
+            console.debug('Create a bone model with id %s', id);
             this.set('id', id);
         },
         fetch: function(){},

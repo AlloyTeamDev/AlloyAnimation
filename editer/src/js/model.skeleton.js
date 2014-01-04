@@ -24,7 +24,7 @@ define([
         },
         initialize: function(){
             var id = util.createId();
-            console.log('Create a new skeleton model with id %s', id);
+            console.debug('Create a skeleton model with id %s', id);
             this.set('id', id);
 
             // 初始化 `this._boneHash`

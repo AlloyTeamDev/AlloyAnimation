@@ -38,8 +38,8 @@ define([
             var id;
 
             id = util.createId();
-            console.log('Create a new keyframe model with id %s', id);
             this.set('id', id);
+            console.debug('Create a keyframe model with time %s', this.get('time'));
         }
         /**
         End: backbone内置属性/方法
