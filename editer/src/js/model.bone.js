@@ -11,6 +11,7 @@ define([
 ){
     var findWhere = _.findWhere,
         extend = _.extend,
+        createId = util.createId,
         BoneModel;
 
     /**
@@ -53,7 +54,7 @@ define([
         initialize: function(){
             var id;
 
-            id = util.createId();
+            id = createId();
             console.debug('Create a bone model with id %s', id);
             this.set('id', id);
         },

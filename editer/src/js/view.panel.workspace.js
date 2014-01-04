@@ -34,6 +34,9 @@ define([
 
     var $workspace = null;  // = WorkspacePanelView.$workspace
     var transformUtils = null;
+    // 减少搜索作用域链的局部变量
+    var win = window,
+        Math = win.Math;
 
     /**
     @class WorkspacePanelView
