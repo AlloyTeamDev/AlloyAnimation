@@ -177,16 +177,22 @@ html, body,
   background: #3A8FB7;
 }
 
-#js-workspacePanel #workspace {
+.clearfix:after, #js-panelWrap:after {
+  content: '';
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  height: 0;
+  line-height: 0;
+  font-size: 0;
+}
+
+#js-workspacePanel #empty_wording {
+  display: table;
   width: 100%;
   height: 100%;
-  border: 2px dashed #6caad5;
-  position: relative;
+  border: 2px dashed #6CAAD5;
   overflow: hidden;
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-box;
-  display: box;
   box-sizing: -webkit-border-box;
   box-sizing: -moz-border-box;
   box-sizing: -ms-border-box;
@@ -195,69 +201,102 @@ html, body,
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-#js-workspacePanel #empty_wording {
-  color: #b0dfff;
+  color: #6CAAD5;
   font-size: 22px;
+}
+#js-workspacePanel #empty_wording_inner {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+#js-workspacePanel .js-bone {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -132px;
-  margin-top: -15px;
+  left: 0;
+  top: 0;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 100% 100%;
 }
-#js-workspacePanel .bone {
-  position: absolute;
-}
-#js-workspacePanel .transform_utils {
-  position: absolute;
-  display: none;
-}
-#js-workspacePanel .resize_point {
-  width: 6px;
-  height: 6px;
-  border: 1px solid #26a9e0;
-  background-color: #fff;
-  position: absolute;
-  z-index: 2;
-}
-#js-workspacePanel .resize_point.leftTop, #js-workspacePanel .resize_point.rightBottom {
-  cursor: nw-resize;
-}
-#js-workspacePanel .resize_point.rightTop, #js-workspacePanel .resize_point.leftBottom {
-  cursor: ne-resize;
-}
-#js-workspacePanel .util_line {
-  position: absolute;
-  background-color: #26a9e0;
-  overflow: visible;
-}
-#js-workspacePanel .util_line.hori {
-  height: 1px;
-}
-#js-workspacePanel .util_line.vert {
-  width: 1px;
-}
-#js-workspacePanel .resize_point.top, #js-workspacePanel .resize_point.bottom {
-  left: 50%;
-  margin-left: -3px;
-  margin-top: -3px;
-  cursor: n-resize;
-}
-#js-workspacePanel .resize_point.right, #js-workspacePanel .resize_point.left {
-  top: 50%;
-  margin-top: -3px;
-  margin-left: -3px;
-  cursor: e-resize;
-}
-#js-workspacePanel .rotate_point {
-  width: 15px;
-  height: 15px;
-  cursor: url(../img/refresh.png), auto;
-  position: absolute;
-  background: #ddd;
-}
-#js-workspacePanel .active {
+#js-workspacePanel .js-activeBone {
   cursor: move;
 }
-
-/*  end of workspace panel */
+#js-workspacePanel .js-activeBone::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 100%;
+  height: 100%;
+  border: 3px solid rgba(30, 154, 207, 0.5);
+}
+#js-workspacePanel .js-joint {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  margin-top: -4px;
+  background-color: rgba(26, 138, 185, 0.5);
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  border-radius: 4px;
+}
+#js-workspacePanel .js-rotate {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  cursor: url(../img/refresh.png), auto;
+  background-color: rgba(26, 138, 185, 0.5);
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  border-radius: 4px;
+}
+#js-workspacePanel .js-resize {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 14px;
+  height: 14px;
+  cursor: nw-resize;
+  overflow: hidden;
+}
+#js-workspacePanel .js-resize::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  transform-origin: 0 0;
+  width: 28px;
+  height: 2px;
+  background-color: rgba(30, 154, 207, 0.5);
+}
+#js-workspacePanel .js-resize::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  transform-origin: 0 0;
+  width: 28px;
+  height: 2px;
+  background-color: rgba(30, 154, 207, 0.5);
+}

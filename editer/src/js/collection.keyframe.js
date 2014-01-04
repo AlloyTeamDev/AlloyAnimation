@@ -20,7 +20,18 @@ define([
         Start: backbone内置属性/方法
         **/
         model: KeyframeModel,
-        comparator: 'time'
+        comparator: 'time',
+        toJSON: function(options){
+            var json;
+            if('time' in options){
+                json = this.where({time: options.time})[0].toJSON();
+                json = [json];
+            }
+            else{
+                json = this.constructor.__super__.toJSON.call(this, options);
+            }
+            return json;
+        }
         /**
         End: backbone内置属性/方法
         **/
