@@ -1,8 +1,9 @@
-// 各个面板的布局
+// 各个面板的布局样式，
+// 不包括面板内部的样式
 
 @import "_util";
 
-// @extend-Only Selectors
+// extend only selectors
 %leftPanel {
     width: 30%;
 }
@@ -31,6 +32,8 @@ html, body,
 .js-panel {
     float: left;
     overflow: hidden;
+    padding: 5px 10px;
+    @include prefix(box-sizing, border-box);
 
     .hd {
         height: 30px;
@@ -38,7 +41,6 @@ html, body,
     }
     .panelTitle {
         display: inline-block;
-        padding-left: 10px;
         padding-right: 10px;
     }
 }
@@ -49,7 +51,7 @@ html, body,
     background: #FB9966;
 }
 
-#js-scenePanel {
+#js-workspacePanel {
     @extend %rightPanel;
     @extend %topPanel;
     background: darken(#fff, 5%);

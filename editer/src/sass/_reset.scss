@@ -46,3 +46,22 @@ table {
     border-collapse: collapse;
     border-spacing: 0;
 }
+
+
+/****************************       common css          **************************/
+
+::-webkit-scrollbar { width:10px; height:10px;}
+::-webkit-scrollbar-button { }
+/*::-webkit-scrollbar-button:start:decrement { width:10px; height:11px;}*/
+::-webkit-scrollbar-button:end:increment{ width:10px; height:0px;}
+::-webkit-scrollbar-track { border:0; background-color:#f6f7f8;}
+::-webkit-scrollbar-track-piece{ background-color:#f6f7f8;}
+::-webkit-scrollbar-track-piece:vertical{}
+::-webkit-scrollbar-track-piece:horizontal{}
+::-webkit-scrollbar-thumb{ width:8px; background-color:#DDDADB;  border-radius:5px;}
+::-webkit-scrollbar-thumb:vertical{ border-width:1px 1px 1px 1px; min-height:24px;}
+::-webkit-scrollbar-thumb:horizontal{ border-width:1px 1px 1px 1px; min-width:24px;}
+::-webkit-scrollbar-thumb:vertical:hover{ background-color:#C2C2C2; }
+::-webkit-scrollbar-thumb:horizontal:hover{ background-color:#C2C2C2; }
+::-webkit-scrollbar-thumb:vertical:active{ background-color:#D6D6D6; }
+::-webkit-scrollbar-thumb:horizontal:active{ background-color:#D6D6D6;}
