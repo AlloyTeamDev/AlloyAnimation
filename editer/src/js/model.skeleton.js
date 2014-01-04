@@ -162,7 +162,7 @@ define([
                     return;
                 }
                 else{
-                    this.set('root', void 0);
+                    this.set('root', null);
                     isRoot = true;
                 }
             }
