@@ -51,6 +51,7 @@ define([
             relatedModel: 'BoneModel',
             includeInJSON: 'id'
         }],
+
         initialize: function(){
             var id;
 
@@ -58,6 +59,7 @@ define([
             console.debug('Create a bone model with id %s', id);
             this.set('id', id);
         },
+
         /**
         @param {Object} [options]
             @param {Number} [options.time] 只获取指定时间点的数据
@@ -86,7 +88,9 @@ define([
 
             return json;
         },
+
         fetch: function(){},
+
         save: function(){},
         /**
         End: backbone内置属性/方法
