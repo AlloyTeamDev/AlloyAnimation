@@ -44,6 +44,12 @@ define([
             key: 'children',
             relatedModel: 'BoneModel',
             collectionType: 'BoneCollection'
+        }, {
+            // 有一个父骨骼
+            type: 'HasOne',
+            key: 'parent',
+            relatedModel: 'BoneModel',
+            includeInJSON: 'id'
         }],
         initialize: function(){
             var id;
