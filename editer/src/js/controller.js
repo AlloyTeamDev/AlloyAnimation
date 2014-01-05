@@ -109,56 +109,6 @@ define([
     }
 
 
-    /**
-    将混入骨骼数据中的关键帧数据抽离出来，放到骨骼数据的关键帧属性中，
-    让得到的骨骼数据满足骨骼model的数据结构。
-    如果骨骼数据中没混入有关键帧数据，则不会给骨骼数据创建关键帧属性。
-
-    所谓混入骨骼数据中的关键帧数据，就是指 `KeyframeModel` 中的字段，
-    从骨骼model的角度来看的，这些字段应该定义在骨骼数据的关键帧属性中，所以称之为“混入”；
-    而从骨骼view的角度来看，这些字段（宽高、坐标、旋转角度等）都是骨骼的数据，骨骼view的视角中没有关键帧的概念（时间轴面板中的骨骼view除外），所以“混入”是自然而然的。
-
-    @param {Object} boneData 骨骼数据
-    @param {Number} time 创建的关键帧所在的时间点
-    @return {Object} 处理后的骨骼数据
-    **/
-    function unmixKeyframeData(boneData, time){
-        var und = _;
-        var keyframe, i, prop,
-            propList = keyframeModelProperties,
-            hasKeyframeData = false;
-
-        // 拷贝一遍，因为后面要修改 `boneData` ，避免副作用
-        boneData = und.clone(boneData);
-
-        if( !und.isArray(boneData.keyframes) ||
-            !und.isObject(boneData.keyframes[0])
-        ){
-            keyframe = {};
-            boneData.keyframes = [keyframe];
-        }
-
-        for(i = 0; prop = propList[i]; ++i){
-            if(prop in boneData){
-                hasKeyframeData = true;
-                keyframe[prop] = boneData[prop];
-                delete boneData[prop];
-            }
-        }
-
-        // 如果骨骼数据中没有混入任何关键帧数据，要删除关键帧属性，避免副作用，
-        // 比如用关键帧属性为 `[{}]` 的骨骼数据设置到骨骼model中时，会将已有的关键帧数据置空
-        if(!hasKeyframeData){
-            delete boneData.keyframes;
-        }
-        else{
-            keyframe.time = time;
-        }
-
-        return boneData;
-    }
-
-
     // 各种事件的回调函数
     handler = {
         /****** start: model/collection event handler ******/
@@ -337,4 +287,54 @@ define([
         }
         /****** End: view event handler ******/
     };
+
+
+    /**
+    将混入骨骼数据中的关键帧数据抽离出来，放到骨骼数据的关键帧属性中，
+    让得到的骨骼数据满足骨骼model的数据结构。
+    如果骨骼数据中没混入有关键帧数据，则不会给骨骼数据创建关键帧属性。
+
+    所谓混入骨骼数据中的关键帧数据，就是指 `KeyframeModel` 中的字段，
+    从骨骼model的角度来看的，这些字段应该定义在骨骼数据的关键帧属性中，所以称之为“混入”；
+    而从骨骼view的角度来看，这些字段（宽高、坐标、旋转角度等）都是骨骼的数据，骨骼view的视角中没有关键帧的概念（时间轴面板中的骨骼view除外），所以“混入”是自然而然的。
+
+    @param {Object} boneData 骨骼数据
+    @param {Number} time 创建的关键帧所在的时间点
+    @return {Object} 处理后的骨骼数据
+    **/
+    function unmixKeyframeData(boneData, time){
+        var und = _;
+        var keyframe, i, prop,
+            propList = keyframeModelProperties,
+            hasKeyframeData = false;
+
+        // 拷贝一遍，因为后面要修改 `boneData` ，避免副作用
+        boneData = und.clone(boneData);
+
+        if( !und.isArray(boneData.keyframes) ||
+            !und.isObject(boneData.keyframes[0])
+        ){
+            keyframe = {};
+            boneData.keyframes = [keyframe];
+        }
+
+        for(i = 0; prop = propList[i]; ++i){
+            if(prop in boneData){
+                hasKeyframeData = true;
+                keyframe[prop] = boneData[prop];
+                delete boneData[prop];
+            }
+        }
+
+        // 如果骨骼数据中没有混入任何关键帧数据，要删除关键帧属性，避免副作用，
+        // 比如用关键帧属性为 `[{}]` 的骨骼数据设置到骨骼model中时，会将已有的关键帧数据置空
+        if(!hasKeyframeData){
+            delete boneData.keyframes;
+        }
+        else{
+            keyframe.time = time;
+        }
+
+        return boneData;
+    }
 });
