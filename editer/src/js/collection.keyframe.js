@@ -3,7 +3,7 @@
 @module
 **/
 define([
-    'Backbone', 'relationalScope',
+    'backbone', 'relationalScope',
     'model.keyframe'
 ], function(
     Backbone, relationalScope,

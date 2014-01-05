@@ -3,7 +3,7 @@
 @module
 **/
 define([
-    'Backbone',
+    'backbone',
     'tmpl!html/panel.html'
 ], function(
     Backbone,

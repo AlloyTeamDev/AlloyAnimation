@@ -4,7 +4,7 @@
 @exports 工作区面板的view实例
 **/
 define([
-    'jquery', 'underscore', 'Backbone',
+    'jquery', 'underscore', 'backbone',
     'tmpl!html/panel.workspace.bone.html', 'tmpl!html/workspace.html', 'tmpl!html/panel.workspace.transformUtil.html',
     'view.panel',
     'base/math'
