@@ -76,37 +76,56 @@ define([
             return this;
         },
 
+
         /* Start: 对本面板中的骨骼的增删查改 */
 
         /**
         @param {Object} boneData 用来渲染
+        @param {Object} [options]
         @return {BoneView} 新创建的实例
         **/
-        addBone: function(boneData){
+        addBone: function(boneData, options){
             return (this._boneHash[boneData.id] = new BoneView())
                 .render(boneData, this._$coordSys.get(0));
         },
 
-        removeBone: function(){
-
+        /**
+        @param {String} id 骨骼的id
+        @param {Object} [options]
+        @return this
+        **/
+        removeBone: function(id, options){
+            this.getBone(id, options)
+                .remove();
+            delete this._boneHash[id];
+            return this;
         },
 
         /**
         获取此面板中的某个骨骼view，或所有骨骼view
         @param {String} [id] 指定骨骼的id
+        @param {Object} [options]
         @return {BoneView|BoneView[]}
         **/
-        getBone: function(id){
+        getBone: function(id, options){
             if(id) return this._boneHash[id];
             else return _.values(this._boneHash);
         },
 
-        /* End: 对本面板中的骨骼的增删查改 */
-
-
-        updateBone: function(){
-
+        /**
+        更新此面板中的某个骨骼
+        @param {String} id 骨骼的id
+        @param {Object} data 要更新的数据
+        @param {Object} options
+        @return this
+        **/
+        updateBone: function(id, data, options){
+            this.getBone(id, options)
+                .update(data);
+            return this;
         },
+
+        /* End: 对本面板中的骨骼的增删查改 */
 
         // 配置要委派的DOM事件
         events: {

@@ -202,8 +202,11 @@ define([
             // 更新各个面板的视图
             if(!options.hasUpdatedWorkspace){
                 workspacePanelView
-                    .getBone(keyframeModel.get('bone').get('id'))
-                    .update(changedData, options);
+                    .updateBone(
+                        keyframeModel.get('bone').get('id'),
+                        changedData,
+                        options
+                    );
                 options.hasUpdatedWorkspace = true;
             }
             if(!options.hasUpdatedBoneTree){
