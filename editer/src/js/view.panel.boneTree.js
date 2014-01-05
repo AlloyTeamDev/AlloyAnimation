@@ -57,6 +57,7 @@ define([
         attributes: {
             'class': 'js-bone'
         },
+
         /**
         @param {Object} [options]
         **/
@@ -65,6 +66,7 @@ define([
             // 拖拽调整骨骼位置，
             // 抛出事件move，带上自身id，目标父骨骼的id
         },
+
         /**
         @param {Object} boneData 骨骼的数据
         @param {DOMElement} container 要插入的容器
