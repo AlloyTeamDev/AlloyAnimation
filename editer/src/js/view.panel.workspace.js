@@ -77,7 +77,7 @@ define([
         },
 
 
-        /* Start: 对本面板中的骨骼的增删查改 */
+        /* Start: 对本面板中的骨骼的增删改 */
 
         /**
         @param {Object} boneData 用来渲染
@@ -101,15 +101,6 @@ define([
             return this;
         },
 
-        /**
-        获取此面板中的某个骨骼view，或所有骨骼view
-        @param {String} [id] 指定骨骼的id
-        @param {Object} [options]
-        @return {BoneView|BoneView[]}
-        **/
-        getBone: function(id, options){
-            if(id) return this._boneHash[id];
-            else return _.values(this._boneHash);
         },
 
         /**
@@ -120,12 +111,12 @@ define([
         @return this
         **/
         updateBone: function(id, data, options){
-            this.getBone(id, options)
+            this._getBone(id, options)
                 .update(data);
             return this;
         },
 
-        /* End: 对本面板中的骨骼的增删查改 */
+        /* End: 对本面板中的骨骼的增删改 */
 
         // 配置要委派的DOM事件
         events: {
@@ -550,6 +541,17 @@ define([
             this._boneChangedData = null;
 
             return this;
+        },
+
+        /**
+        获取此面板中的某个骨骼view，或所有骨骼view
+        @param {String} [id] 指定骨骼的id
+        @param {Object} [options]
+        @return {BoneView|BoneView[]}
+        **/
+        _getBone: function(id, options){
+            if(id) return this._boneHash[id];
+            else return _.values(this._boneHash);
         }
         /***** End: 私有属性/方法 *****/
     });
