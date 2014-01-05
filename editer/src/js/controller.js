@@ -161,7 +161,7 @@ define([
 
     // 各种事件的回调函数
     handler = {
-        /****** model/collection event handler ******/
+        /****** start: model/collection event handler ******/
         /**
         @triggerObj {SkeletonCollection} 此事件回调仅用于 `allSkeletonColl` 这个实例上
         @event add 当骨架collection中添加新骨架时触发
@@ -304,9 +304,9 @@ define([
                 options.hasUpdatedTimeline = true;
             }
         },
+        /****** End: model/collection event handler ******/
 
-
-        /****** view event handler ******/
+        /****** Start: view event handler ******/
         /**
         @triggerObj {WorkspacePanelView} workspacePanelView
         @event addBone 当有新骨骼从工作区面板中添加时触发
@@ -335,5 +335,6 @@ define([
                 }
             });
         }
+        /****** End: view event handler ******/
     };
 });
