@@ -23,6 +23,12 @@ $active-color: darken(#26A9E0, 5%);
     text-align: center;
 }
 
+&>.js-coordinate-system{
+    position: relative;
+    left: 50%;
+    top: 50%;
+}
+
 .js-bone{
     position: absolute;
     // 新建骨骼的默认位置

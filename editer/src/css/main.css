@@ -209,6 +209,11 @@ html, body,
   vertical-align: middle;
   text-align: center;
 }
+#js-workspacePanel > .js-coordinate-system {
+  position: relative;
+  left: 50%;
+  top: 50%;
+}
 #js-workspacePanel .js-bone {
   position: absolute;
   left: 0;
