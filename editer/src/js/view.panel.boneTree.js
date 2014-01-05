@@ -17,8 +17,8 @@ define([
     @class BoneTreePanel
     @extends AbstractSkeleton
     **/
-    BoneTreePanel = AbstractSkeleton.extend({
-        el: $('#js-boneTreePanel'),
+    BoneTreePanelView = PanelView.extend({
+        el: '#js-boneTreePanel',
 
         initialize: function(){
             // 骨骼view的哈希，键为骨骼的id，值为骨骼view的实例
