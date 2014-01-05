@@ -225,11 +225,10 @@ define([
         @event change backbone内置事件，当model中的数据被修改时触发
         @param {BoneModel} 被修改的model
         @param {Object} [options]
-            以下参数表示修改的来源，来源处的view中已是新数据，无需更新。
-            这些来源字段，由controller设置和使用，也只有controller知道它们的存在
-            @param {Boolean} [options.fromWorkspacePanel=false]
-            @param {Boolean} [options.fromBoneTreePanel=false]
-            @param {Boolean} [options.fromTimelinePanel=false]
+            以下参数表示各个面板的视图是否已更新，已更新的不必再次更新
+            @param {Boolean} [options.hasUpdatedWorkspace=false]
+            @param {Boolean} [options.hasUpdatedBoneTree=false]
+            @param {Boolean} [options.hasUpdatedTimeline=false]
         **/
         onBoneModelChange: function(boneModel, options){
             var changedData;
@@ -239,10 +238,19 @@ define([
             // 获取此骨骼中改变了的数据
             changedData = boneModel.changedAttributes();
 
-            // TODO: 更新各个面板的视图
-            if(!options.fromWorkspacePanel){}
-            if(!options.fromBoneTreePanel){}
-            if(!options.fromTimelinePanel){}
+            // TODO: 更新各个面板视图
+            if(!options.hasUpdatedWorkspace){
+
+                options.hasUpdatedWorkspace = true;
+            }
+            if(!options.hasUpdatedBoneTree){
+
+                options.hasUpdatedBoneTree = true;
+            }
+            if(!options.hasUpdatedTimeline){
+
+                options.hasUpdatedTimeline = true;
+            }
         },
 
         /**
@@ -265,8 +273,10 @@ define([
         @event change backbone内置事件，当model中的数据被修改时触发
         @param {BoneModel} 被修改的model
         @param {Object} [options]
-            以下参数表示修改的来源，来源处的view中已是新数据，无需更新
-            @param {Boolean} [options.fromWorkspacePanel=false]
+            以下参数表示各个面板的视图是否已更新，已更新的不必再次更新
+            @param {Boolean} [options.hasUpdatedWorkspace=false]
+            @param {Boolean} [options.hasUpdatedBoneTree=false]
+            @param {Boolean} [options.hasUpdatedTimeline=false]
         **/
         onChangeKeyframeModel: function(keyframeModel, options){
             var changedData;
@@ -276,17 +286,22 @@ define([
             // 获取此关键帧中改变了的数据
             changedData = keyframeModel.changedAttributes();
 
-            // 更新各个面板的视图。对于修改的来源，其中的数据已是新的
-            if(!options.fromWorkspacePanel){
+            // 更新各个面板的视图
+            if(!options.hasUpdatedWorkspace){
                 workspacePanelView
                     .getBone(keyframeModel.get('bone').get('id'))
                     .update(changedData, options);
+                options.hasUpdatedWorkspace = true;
             }
-            if(!options.fromBoneTreePanel){
+            if(!options.hasUpdatedBoneTree){
                 // TODO: 更新骨骼树面板中此骨骼的显示数据
+
+                options.hasUpdatedBoneTree = true;
             }
-            if(!options.fromTimelinePanel){
+            if(!options.hasUpdatedTimeline){
                 // TODO: 更新时间轴面板中此关键帧的显示数据
+
+                options.hasUpdatedTimeline = true;
             }
         },
 
@@ -300,10 +315,9 @@ define([
         **/
         onWorkspacePanelAddBone: function(boneData, options){
             boneData = unmixKeyframeData(boneData, timelinePanelView.now);
-            allSkeletonColl.add(
-                {root: boneData},
-                {fromWorkspacePanel: true}
-            );
+            allSkeletonColl.add({
+                root: boneData
+            });
         },
 
         /**
@@ -317,7 +331,7 @@ define([
             allSkeletonColl.forEach(function(skeletonModel){
                 var boneModel;
                 if(boneModel = skeletonModel.getBone(boneId)){
-                    boneModel.set(boneData, {fromWorkspacePanel: true});
+                    boneModel.set(boneData, {hasUpdatedWorkspace: true});
                 }
             });
         }
