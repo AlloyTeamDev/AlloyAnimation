@@ -26,7 +26,7 @@ define([
     **/
     var WorkspacePanelView = PanelView.extend({
 
-        // 使用DOM中已有的元素作为此view的跟元素
+        // 使用DOM中已有的元素作为此view的根元素
         el: '#js-workspacePanel',
 
         initialize: function(){
