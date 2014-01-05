@@ -596,7 +596,7 @@ define([
             @param {String} boneData.name
             @param {String} boneData.texture
             @param {Array} boneData.children
-        @param {DOMElement} [container] 要插入的DOM容器
+        @param {DOMElement} container 要插入的DOM容器
         @return this
         **/
         render: function(boneData, container){
@@ -607,7 +607,7 @@ define([
                 });
             this.update(boneData);
 
-            container && this.$el.appendTo(container);
+            this.$el.appendTo(container);
 
             return this;
         },
@@ -659,9 +659,7 @@ define([
 
             // 创建子骨骼view，并插入DOM容器中
             (child = this._childrenHash[data.id] = new this.constructor)
-                .render(data)
-                .$el
-                .appendTo(this.$el);
+                .render(data, this.el);
 
             // 保存引用
             child.parent = this;
