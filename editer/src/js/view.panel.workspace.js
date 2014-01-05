@@ -14,7 +14,7 @@ define([
     PanelView,
     math
 ){
-    var WorkspacePanelView, SkeletonView, BoneView;
+    var WorkspacePanelView, BoneView;
 
     // 减少搜索作用域链的局部变量
     var win = window,
@@ -33,9 +33,7 @@ define([
             // 复用父类的initialize方法
             this.constructor.__super__.initialize.apply(this, arguments);
 
-            // 此面板中所有 **骨架** 的view构成的hash，用骨骼的id索引
-            this._skeletonHash = {};
-            // 此面板中所有 **骨骼** 的view构成的hash，用骨骼的id索引
+            // 此面板中所有骨骼view构成的hash，用骨骼的id索引
             this._boneHash = {};
 
             // 当前被激活的骨骼
@@ -57,53 +55,40 @@ define([
         /**
         渲染此面板
         @method render
-        @param {Array} [skeletonsData] 多个骨架的的当前数据
+        @param {Array} [bonesData] 多个骨骼的的当前数据
         **/
-        render: function(skeletonsData){
+        render: function(bonesData){
             // 渲染空面板
             this.$el.html( workspaceTmpl());
 
             // 如果有传入骨架数据，渲染出骨架view
-            if(skeletonsData){
-                skeletonsData.forEach(function(skeletonData){
-                    this.addSkeleton(skeletonData);
+            if(bonesData && bonesData.length){
+                bonesData.forEach(function(boneData){
+                    this.addBone(boneData);
                 }, this);
             }
+            // 缓存DOM元素：
+            // 工作区面板的坐标系元素，其位置表示坐标系原点，
+            // x轴水平向右，y轴竖直向下，
+            // 骨骼的坐标就是相对于这个坐标系而言的
+            this._$coordSys = this.$el.children('.js-coordinate-system');
 
             return this;
         },
 
+        /* Start: 对本面板中的骨骼的增删查改 */
+
         /**
-        获取此面板中的某个骨架view，或所有骨架view
-        @param {String} [id] 指定骨架的id
-        @return {SkeletonView|SkeletonView[]}
+        @param {Object} boneData 用来渲染
+        @return {BoneView} 新创建的实例
         **/
-        getSkeleton: function(id){
-            if(id) return this._skeletonHash[id];
-            else return _.values(this._skeletonHash);
+        addBone: function(boneData){
+            return (this._boneHash[boneData.id] = new BoneView())
+                .render(boneData, this._$coordSys.get(0));
         },
 
-        /**
-        创建一个骨架view，并添加到此面板中
-        @method addSkeleton
-        @param {Object} data 骨架的当前数据
-        @return 所添加的骨架的view实例
-        **/
-        addSkeleton: function(data){
-            var skeleton, boneId;
+        removeBone: function(){
 
-            // 创建骨架view，并插入DOM中
-            (skeleton = this._skeletonHash[data.id] = new SkeletonView())
-                .render(data, this.el);
-
-            // 将骨架中已有的骨骼保存起来
-            skeleton.getBone().forEach(function(bone){
-                this._boneHash[bone.id] = bone;
-            }, this);
-            // 监听这个骨架的事件，如果有添加骨骼，保存新添加的骨骼
-            skeleton.on('addBone', this._onSkeleonAddBone, this);
-
-            return skeleton;
         },
 
         /**
@@ -114,6 +99,13 @@ define([
         getBone: function(id){
             if(id) return this._boneHash[id];
             else return _.values(this._boneHash);
+        },
+
+        /* End: 对本面板中的骨骼的增删查改 */
+
+
+        updateBone: function(){
+
         },
 
         // 配置要委派的DOM事件
@@ -539,74 +531,10 @@ define([
             this._boneChangedData = null;
 
             return this;
-        },
-
-        /**
-        一个事件回调函数，专用于此面板中的骨架的 `addBone` 事件
-        @triggerObj {SkeletonView}
-        @event addBone 当骨架view中添加骨骼时触发
-        @param {BoneView} bone
-        @param {SkeletonView} skeleton
-        **/
-        _onSkeleonAddBone: function(bone, skeleton, options){
-            this._boneHash[bone.id] = bone;
         }
         /***** End: 私有属性/方法 *****/
     });
 
-    /**
-    专用于此面板的骨架view
-    @class SkeletonView
-    @extends Backbone.View
-    **/
-    SkeletonView = Backbone.View.extend({
-        attributes: {
-            'class': 'js-skeleton'
-        },
-        initialize: function(){
-            this.$el.css({
-                'position': 'relative'
-            });
-
-            // 所有骨骼的view组成的hash，用id索引
-            this._boneHash = {};
-            // 根骨骼的view
-            this.root = null;
-        },
-        /**
-        @method render
-        @param {Object} skeletonData 骨架的数据
-            @param {Object} skeletonData.root
-        @param {DOMElement} [container] 要插入的DOM容器
-        @return this
-        **/
-        render: function(skeletonData, container){
-            // 创建根骨骼
-            (this.root = this._boneHash[skeletonData.root.id] = new BoneView())
-                .on('addChild', this._onAddChild, this)
-                .render(skeletonData.root, this.el);
-
-            // TODO: 如果有子骨骼的数据，创建之
-
-            container && this.$el.appendTo(container);
-
-            return this;
-        },
-        _onAddChild: function(child, parent, options){
-            this._boneHash[child.id] = child;
-            this.trigger('addBone', child, this, options);
-        },
-
-        /**
-        获取某个骨骼，或所有骨骼
-        @param {String} [boneId] 骨骼的id
-        @return {BoneView}
-        **/
-        getBone: function(boneId){
-            if(boneId) return this._boneHash[boneId];
-            else return _.values(this._boneHash);
-        }
-    });
 
     /**
     专用于此面板的骨骼view
