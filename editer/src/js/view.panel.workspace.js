@@ -80,27 +80,49 @@ define([
         /* Start: 对本面板中的骨骼的增删改 */
 
         /**
-        @param {Object} boneData 用来渲染
+        如果有激活骨骼，用所给的数据创建骨骼并添加为激活骨骼的子骨骼。
+        如果没有激活骨骼（即还没有任何骨骼），添加此骨骼并激活之。
+        如果所添加骨骼的数据中带有子骨骼的数据，递归添加子骨骼。
+        @param {Object} boneData 所添加的骨骼的数据
         @param {Object} [options]
         @return {BoneView} 新创建的实例
         **/
         addBone: function(boneData, options){
-            return (this._boneHash[boneData.id] = new BoneView())
-                .render(boneData, this._$coordSys.get(0));
+            var bone, childrenData;
+
+            if(this._activeBone){
+                bone = this._addBone(boneData, this._activeBone, options);
+            }
+            else{
+                bone = this._addBone(boneData, options);
+                this.changeActiveBone(bone.id);
+            }
+            return bone;
         },
 
         /**
+        彻底移除指定的骨骼。
+        如果指定的骨骼有子骨骼，先递归移除子骨骼。
         @param {String} id 骨骼的id
         @param {Object} [options]
-        @return this
+        @return {BoneView[]} 所移除的骨骼组成的数组。移除的过程中会断开它们的父子关系
         **/
         removeBone: function(id, options){
-            this.getBone(id, options)
-                .remove();
-            delete this._boneHash[id];
-            return this;
-        },
+            var bone, children, removedBones;
 
+            bone = this._getBone(id, options);
+            removedBones = [];
+            if( (children = bone.children) && children.length ){
+                children.forEach(function(child){
+                    removedBones.concat( this.removeBone(child.id, options) );
+                }, this);
+            }
+
+            bone.remove();
+            removedBones.push(bone);
+
+            delete this._boneHash[id];
+            return removedBones;
         },
 
         /**
@@ -181,19 +203,14 @@ define([
 
         onClick: function($event){
             var $target = $($event.target),
-                $bone, boneId;
+                $bone;
 
-            // 当点击此面板时，如果点击了某个骨骼，激活之，
-            // 否则将已激活的骨骼取消激活
-            if( ($target.hasClass('js-bone') && ($bone = $target)) ||
-                ($bone = $target.parentsUntil(this.$el, '.js-bone')).length
+            // 当点击此面板时，如果点击了某个骨骼，改变激活元素为所点击的元素。
+            // **只要有骨骼，总有一个骨骼处于激活状态**
+            if( ( $target.hasClass('js-bone') && ($bone = $target) ) ||
+                ( $bone = $target.parentsUntil(this.$el, '.js-bone') ).length
             ){
-                boneId = boneHtmlId2boneId($bone.attr('id'));
-                this.activateBone(boneId);
-            }
-            else if(this._activeBone){
-                this.deactivateBone();
-                this._activeBone = null;
+                this.changeActiveBone( boneHtmlId2boneId($bone.attr('id')) );
             }
         },
 
@@ -467,29 +484,19 @@ define([
         },
 
         /**
-        激活此面板中的一个骨骼。
-        同一时刻，只有一个骨骼被激活
+        改变此面板中的激活骨骼。
+        只要有骨骼，就有骨骼处于激活状态，并且只有一个激活骨骼。
         @param {String} boneId 要激活的骨骼的id
         @return this
         **/
-        activateBone: function(boneId){
+        changeActiveBone: function(boneId){
             var oldActiveBone = this._activeBone;
             if(oldActiveBone){
                 if(oldActiveBone.id === boneId) return this;
                 oldActiveBone.deactivate();
             }
-            this._activeBone = this._boneHash[boneId];
-            this._activeBone.activate();
+            (this._activeBone = this._boneHash[boneId]).activate();
 
-            return this;
-        },
-
-        /**
-        将此面板中被激活的骨骼取消激活
-        @return this
-        **/
-        deactivateBone: function(){
-            this._activeBone && this._activeBone.deactivate();
             return this;
         },
 
@@ -541,6 +548,38 @@ define([
             this._boneChangedData = null;
 
             return this;
+        },
+
+        /**
+        使用提供的骨骼数据创建骨骼，并添加为指定父骨骼的子骨骼。
+        如果有子骨骼的数据，递归添加子骨骼
+        @param {Object} boneData 要添加的骨骼的数据
+        @param {BoneView} [parentBone] 要添加为哪个骨骼的子骨骼
+        @param {Object} [options]
+        @return {BoneView} 所创建的骨骼
+        **/
+        _addBone: function(boneData, parentBone, options){
+            var bone, childrenData;
+
+            if(!parentBone){
+                options = parentBone;
+                parentBone = undefined;
+
+                (bone = this._boneHash[boneData.id] = new BoneView())
+                    .render(boneData, this._$coordSys.get(0), options);
+            }
+            else{
+                bone
+                    = this._boneHash[boneData.id]
+                    = parentBone.addChild(boneData, options);
+            }
+
+            if( (childrenData = boneData.children) && childrenData.length ){
+                childrenData.forEach(function(childData){
+                    this._addBone(childData, bone);
+                }, this);
+            }
+            return bone;
         },
 
         /**
@@ -599,9 +638,10 @@ define([
             @param {String} boneData.texture
             @param {Array} boneData.children
         @param {DOMElement} container 要插入的DOM容器
+        @praram {Object} [options]
         @return this
         **/
-        render: function(boneData, container){
+        render: function(boneData, container, options){
             this.id = boneData.id;
             this.$el
                 .attr({
@@ -621,6 +661,7 @@ define([
         activate: function(){
             console.debug('Activate bone ' + this.id);
 
+            // TODO: 缓存 `.js-transform-util` 元素
             this.$el
                 .addClass('js-activeBone')
                 .append(this.transformUtilTmpl())
@@ -650,7 +691,6 @@ define([
 
         /**
         给此骨骼添加一个子骨骼。
-        如果所提供的子骨骼数据中有子孙骨骼的数据，则添加子孙骨骼
         @method addChild
         @param {Object} data 子骨骼的数据
         @param {Object} [options]
@@ -660,21 +700,13 @@ define([
             var child, grandChildrenData;
 
             // 创建子骨骼view，并插入DOM容器中
-            (child = this._childrenHash[data.id] = new this.constructor)
-                .render(data, this.el);
+            (child = new this.constructor).render(data, this.el, options);
 
-            // 保存引用
+            // 保存父子骨骼之间的相互引用
             child.parent = this;
             this.children.push(child);
 
-            // 如果有子孙骨骼的数据，递归添加之
-            if((grandChildrenData = data.children) && grandChildrenData.length){
-                grandChildrenData.forEach(function(grandChild){
-                    this.addChild(grandChild);
-                }, child);
-            }
-
-            // 通知此骨骼添加了一个子骨骼
+            // 通知：此骨骼添加了一个子骨骼
             this.trigger('addChild', child, this, options);
 
             return child;
@@ -682,24 +714,22 @@ define([
 
         /**
         彻底删除此骨骼view。
-        如果有子孙骨骼，一并删除。
         @return this
         **/
         remove: function(){
-            var brothers;
+            var parent, brothers;
 
-            // 先递归删除子骨骼
-            this.children.forEach(function(child){
-                child.remove();
-            });
+            if( ( parent = this.parent ) &&
+                ( brothers = parent.children )
+            ){
+                // 删除在父骨骼中的引用
+                brothers.splice(brothers.indexOf(this), 1);
+                // 删除对父骨骼的引用
+                delete this.parent;
+            }
 
-            // 删除在父骨骼中的引用
-            brothers = this.parent.children;
-            brothers.splice(brothers.indexOf(this), 1);
-
-            delete this.parent;
             // 解除监听DOM事件，删除DOM元素，解除绑定在view实例上的事件
-            this.constructor.__super__.remove();
+            this.constructor.__super__.remove.call(this);
 
             return this;
         },
