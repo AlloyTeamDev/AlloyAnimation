@@ -21,11 +21,11 @@ define([
         el: '#js-boneTreePanel',
 
         initialize: function(){
-            // 骨骼view的哈希，键为骨骼的id，值为骨骼view的实例
-            this._boneHash = {};
-
             // 复用父类的`initialize`方法
             BoneTreePanel.__super__.initialize.apply(this, arguments);
+
+            // 此面板中所有骨骼view构成的hash，用骨骼的id索引
+            this._boneHash = {};
         },
 
         render: function(bonesData){
