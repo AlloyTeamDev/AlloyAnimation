@@ -24,7 +24,7 @@ define([
     @class WorkspacePanelView
     @extends PanelView
     **/
-    var WorkspacePanelView = PanelView.extend({
+    WorkspacePanelView = PanelView.extend({
 
         // 使用DOM中已有的元素作为此view的根元素
         el: '#js-workspacePanel',
