@@ -78,6 +78,26 @@ define([
                 .appendTo(container);
 
             return this;
+        },
+
+        activate: function(){
+
+        },
+
+        deactivate: function(){
+
+        },
+
+        addChild: function(data, options){
+
+        },
+
+        remove: function(){
+
+        },
+
+        update: function(){
+
         }
     }, {
         // 用于构成骨骼的html id
