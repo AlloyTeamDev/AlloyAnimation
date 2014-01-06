@@ -124,7 +124,7 @@ body {
   width: 30%;
 }
 
-#js-workspacePanel, #js-timelinePanel {
+#js-workspacePanel, #js-timeLinePanel {
   width: 70%;
 }
 
@@ -133,7 +133,7 @@ body {
   min-height: 210px;
 }
 
-#js-boneTreePanel, #js-timelinePanel {
+#js-boneTreePanel, #js-timeLinePanel {
   height: 30%;
 }
 
@@ -173,7 +173,7 @@ html, body,
   background: #91B493;
 }
 
-#js-timelinePanel {
+#js-timeLinePanel {
   background: #3A8FB7;
 }
 

@@ -19,7 +19,7 @@ define([
         /**
         Start: backbone内置属性/方法
         **/
-        el: $('#js-timelinePanel'),
+        el: $('#js-timeLinePanel'),
         initialize: function(){
             // 当前时刻
             this.now = 0;
@@ -27,16 +27,16 @@ define([
             // 复用父类的`initialize`方法
             TimeLinePanel.__super__.initialize.apply(this, arguments);
         },
-        render: function(timelinesData){
+        render: function(timeLinesData){
             this.$el
                 .html( this.panelTmpl({
-                    type: 'timeline',
+                    type: 'timeLine',
                     title: '时间轴'
                 }) );
 
-            if(timelinesData){
-                timelinesData.forEach(function(timelineData){
-                    this.addTimeline(timelineData);
+            if(timeLinesData){
+                timeLinesData.forEach(function(timeLineData){
+                    this.addTimeline(timeLineData);
                 }, this);
             }
 

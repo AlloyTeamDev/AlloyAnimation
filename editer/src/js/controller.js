@@ -6,12 +6,12 @@
 define([
     'exports',
     'underscore',
-    'view.panel.action', 'view.panel.workspace', 'view.panel.boneTree', 'view.panel.timeline',
+    'view.panel.action', 'view.panel.workspace', 'view.panel.boneTree', 'view.panel.timeLine',
     'collection.bone', 'model.keyframe'
 ], function(
     exports,
     _,
-    actionPanelView, workspacePanelView, boneTreePanelView, timelinePanelView,
+    actionPanelView, workspacePanelView, boneTreePanelView, timeLinePanelView,
     BoneCollection, KeyframeModel
 ){
     var handler,
@@ -35,7 +35,7 @@ define([
         actionPanelView.render(initBonesData);
         workspacePanelView.render(initBonesData);
         boneTreePanelView.render(initBonesData);
-        timelinePanelView.render(initBonesData);
+        timeLinePanelView.render(initBonesData);
         // 销毁引用，避免因为被事件回调函数的作用域链引用而没有释放内存
         initBonesData = null;
 
@@ -117,12 +117,12 @@ define([
             // 监听骨骼的事件
             monitorBoneModel(boneModel);
 
-            boneData = boneModel.toJSON({time: timelinePanelView.now});
+            boneData = boneModel.toJSON({time: timeLinePanelView.now});
             // 在各个面板中添加此骨骼对应的view
             workspacePanelView.addBone(boneData);
             // TODO: 给其它面板也添加对应的view
             // boneTreePanelView.addBone(boneData);
-            // timelinePanelView.addTimeline(boneData);
+            // timeLinePanelView.addTimeline(boneData);
         },
         /**
         @triggerObj {BoneCollection} 此事件回调仅用于 `allBoneColl` 这个实例上
@@ -230,7 +230,7 @@ define([
         @param {Object} [options]
         **/
         onWorkspacePanelAddBone: function(boneData, options){
-            boneData = unmixKeyframeData(boneData, timelinePanelView.now);
+            boneData = unmixKeyframeData(boneData, timeLinePanelView.now);
             allBoneColl.add(boneData);
         },
 
@@ -241,7 +241,7 @@ define([
         @param {Object} boneData 新的骨骼数据
         **/
         onWorkspacePanelUpdateBone: function(boneId, boneData){
-            boneData = unmixKeyframeData(boneData, timelinePanelView.now);
+            boneData = unmixKeyframeData(boneData, timeLinePanelView.now);
             allBoneColl
                 .get(boneId)
                 .set(boneData, {
