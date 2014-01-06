@@ -5,11 +5,11 @@
 define([
     'underscore',
     'view.panel.abstractSkeleton', 'view.abstractBone',
-    'tmpl!html/panel.boneTree.bone.html'
+    'tmpl!html/panel.boneTree.html', 'tmpl!html/panel.boneTree.bone.html'
 ], function(
     _,
     AbstractSkeleton, AbstractBone,
-    boneTmpl
+    boneTreeTmpl, boneTmpl
 ){
     var BoneTreePanel, Bone;
 
@@ -29,21 +29,18 @@ define([
         },
 
         render: function(bonesData){
-            this.$el
-                .html( this.panelTmpl({
-                    type: 'boneTree',
-                    title: '骨骼树'
-                }) );
+            // 渲染空面板
+            this.$el.html( boneTreeTmpl() );
 
             // 如果有传入骨骼数据，渲染出骨骼view
-            if(bonesData){
+            if(bonesData && bonesData.length){
                 bonesData.forEach(function(boneData){
                     this.addBone(boneData);
                 }, this);
             }
 
             // 缓存DOM元素
-            this.$bd = this.$('>.bd');
+            this._$bd = this.$el.children('.bd');
 
             return this;
         }
