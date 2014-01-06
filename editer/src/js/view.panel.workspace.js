@@ -155,6 +155,16 @@ define([
             'mouseup': 'onMouseUp'
         },
 
+        /**
+        当把图片拖拽放到工作区面板中时，读取图片的data url、宽高作为纹理图的url、骨骼的宽高，
+        如果当前有激活元素，使用激活元素作为父骨骼。
+        最后抛出 `addBone` 事件给controller以创建骨骼，带上骨骼的数据。
+        TODO: 考虑把事件名改为 `dropTexture` ，因为 `addBone` 有“骨骼视图已添加”的含义
+        TODO: 检验拖拽进来的文件是否图片文件
+        TODO: 考虑优化，data url数据量太大了，直接设置到DOM属性中对性能不友好
+        @triggerObj `workspacePanelView.$el` 工作区面板的根DOM元素
+        @event drop DOM事件drop
+        **/
         onDrop: function(e){
             var panel = this,
                 files, reader, i;
@@ -183,7 +193,9 @@ define([
                 // 使用 `this` 即可访问到触发 `onload` 事件的 `reader`
                 var texture = this.result,
                     img = new Image(),
-                    boneData;
+                    boneData,
+                    activeBone;
+
                 img.src = texture;
                 boneData = {
                     texture: texture
@@ -195,6 +207,9 @@ define([
                 if(img.height){
                     boneData.h = img.height;
                     boneData.jointY = img.height / 2;
+                }
+                if(activeBone = panel._activeBone){
+                    boneData.parent = activeBone.id;
                 }
 
                 // 通知外界
