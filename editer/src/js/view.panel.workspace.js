@@ -37,6 +37,7 @@ define([
             this._boneHash = {};
 
             // 当前被激活的骨骼
+            // **只要有骨骼，总有一个骨骼处于激活状态**
             this._activeBone = null;
             // 重置调节骨骼时的状态表示
             this._resetState();
