@@ -81,17 +81,26 @@ define([
         /* Start: 对本面板中的骨骼的增删改 */
 
         /**
-        如果有激活骨骼，用所给的数据创建骨骼并添加为激活骨骼的子骨骼。
-        如果没有激活骨骼（即还没有任何骨骼），添加此骨骼并激活之。
-        如果所添加骨骼的数据中带有子骨骼的数据，递归添加子骨骼。
-        @param {Object} boneData 所添加的骨骼的数据
+        使用所提供的骨骼数据，给此面板创建并添加一个骨骼。
+        如果所提供的骨骼数据中有指定父骨骼，使用指定的父骨骼；
+        如果所提供的骨骼数据中没有指定父骨骼，使用激活骨骼作为父骨骼；
+        如果没有激活骨骼（即还没有任何骨骼），添加此骨骼为根骨骼并激活之；
+        如果所提供的骨骼数据中带有子骨骼的数据，递归添加子骨骼。
+        @param {Object} boneData 要添加的骨骼的数据
         @param {Object} [options]
-        @return {BoneView} 新创建的实例
+        @return {BoneView} 新创建的骨骼实例
         **/
         addBone: function(boneData, options){
-            var bone, childrenData;
+            var parent, bone, childrenData;
 
-            if(this._activeBone){
+            if(parent = boneData.parent){
+                bone = this._addBone(
+                    boneData,
+                    this._getBone(parent, options),
+                    options
+                );
+            }
+            else if(this._activeBone){
                 bone = this._addBone(boneData, this._activeBone, options);
             }
             else{
