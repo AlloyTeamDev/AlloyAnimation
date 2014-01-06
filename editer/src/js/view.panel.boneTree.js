@@ -28,7 +28,7 @@ define([
             this._boneHash = {};
 
             // 复用父类的`initialize`方法
-            this.constructor.__super__.initialize.apply(this, arguments);
+            BoneTreePanelView.__super__.initialize.apply(this, arguments);
         },
         render: function(bonesData){
             this.$el

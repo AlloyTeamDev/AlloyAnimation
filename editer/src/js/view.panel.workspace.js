@@ -31,7 +31,7 @@ define([
 
         initialize: function(){
             // 复用父类的initialize方法
-            this.constructor.__super__.initialize.apply(this, arguments);
+            WorkspacePanelView.__super__.initialize.apply(this, arguments);
 
             // 此面板中所有骨骼view构成的hash，用骨骼的id索引
             this._boneHash = {};

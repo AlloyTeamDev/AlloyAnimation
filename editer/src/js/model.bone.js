@@ -71,7 +71,7 @@ define([
 
             options = options || {};
 
-            json = this.constructor.__super__.toJSON.call(this, options);
+            json = BoneModel.__super__.toJSON.call(this, options);
             if('time' in options){
                 keyframeData = findWhere(json.keyframes, {time: options.time});
                 if(keyframeData){

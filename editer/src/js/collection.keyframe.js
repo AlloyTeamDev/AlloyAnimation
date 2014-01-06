@@ -28,7 +28,7 @@ define([
                 json = [json];
             }
             else{
-                json = this.constructor.__super__.toJSON.call(this, options);
+                json = KeyframeCollection.__super__.toJSON.call(this, options);
             }
             return json;
         }

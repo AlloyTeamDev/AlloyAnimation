@@ -22,7 +22,7 @@ define([
         el: $('#js-actionPanel'),
         initialize: function(){
             // 复用父类的`initialize`方法
-            this.constructor.__super__.initialize.apply(this, arguments);
+            ActionPanelView.__super__.initialize.apply(this, arguments);
         },
         render: function(){
             this.$el
