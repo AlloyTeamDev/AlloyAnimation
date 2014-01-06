@@ -7,7 +7,7 @@ define([
     'model.bone'
 ], function(
     Backbone, relationalScope,
-    BoneModel
+    Bone
 ){
     var BoneCollection;
 
@@ -19,7 +19,7 @@ define([
         /**
         Start: backbone内置属性/方法
         **/
-        model: BoneModel
+        model: Bone
         /**
         End: backbone内置属性/方法
         **/

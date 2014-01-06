@@ -12,24 +12,24 @@ define([
     AbstractSkeleton, AbstractBone,
     workspaceTmpl, boneTmpl, transformUtilTmpl
 ){
-    var WorkspacePanelView, Bone;
+    var WorkspacePanel, Bone;
 
     // 减少搜索作用域链的局部变量
     var win = window,
         Math = win.Math;
 
     /**
-    @class WorkspacePanelView
+    @class WorkspacePanel
     @extends AbstractSkeleton
     **/
-    WorkspacePanelView = AbstractSkeleton.extend({
+    WorkspacePanel = AbstractSkeleton.extend({
 
         // 使用DOM中已有的元素作为此view的根元素
         el: '#js-workspacePanel',
 
         initialize: function(){
             // 复用父类的initialize方法
-            WorkspacePanelView.__super__.initialize.apply(this, arguments);
+            WorkspacePanel.__super__.initialize.apply(this, arguments);
 
             // 此面板中所有骨骼view构成的hash，用骨骼的id索引
             this._boneHash = {};
@@ -822,5 +822,5 @@ define([
         _panelName: 'workspace'
     });
 
-    return new WorkspacePanelView();
+    return new WorkspacePanel();
 });

@@ -7,22 +7,22 @@ define([
     'view.panel'
 ], function(
     $,
-    PanelView
+    Panel
 ){
-    var ActionPanelView;
+    var ActionPanel;
 
     /**
-    @class ActionPanelView
-    @extends PanelView
+    @class ActionPanel
+    @extends Panel
     **/
-    ActionPanelView = PanelView.extend({
+    ActionPanel = Panel.extend({
         /**
         Start: backbone内置属性/方法
         **/
         el: $('#js-actionPanel'),
         initialize: function(){
             // 复用父类的`initialize`方法
-            ActionPanelView.__super__.initialize.apply(this, arguments);
+            ActionPanel.__super__.initialize.apply(this, arguments);
         },
         render: function(){
             this.$el
@@ -36,5 +36,5 @@ define([
         **/
     });
 
-    return new ActionPanelView();
+    return new ActionPanel();
 });

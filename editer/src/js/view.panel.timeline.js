@@ -7,15 +7,15 @@ define([
     'view.panel'
 ], function(
     $,
-    PanelView
+    Panel
 ){
-    var TimeLinePanelView;
+    var TimeLinePanel;
 
     /**
-    @class TimeLinePanelView
-    @extends PanelView
+    @class TimeLinePanel
+    @extends Panel
     **/
-    TimeLinePanelView = PanelView.extend({
+    TimeLinePanel = Panel.extend({
         /**
         Start: backbone内置属性/方法
         **/
@@ -25,7 +25,7 @@ define([
             this.now = 0;
 
             // 复用父类的`initialize`方法
-            TimeLinePanelView.__super__.initialize.apply(this, arguments);
+            TimeLinePanel.__super__.initialize.apply(this, arguments);
         },
         render: function(timelinesData){
             this.$el
@@ -56,5 +56,5 @@ define([
         }
     });
 
-    return new TimeLinePanelView();
+    return new TimeLinePanel();
 });

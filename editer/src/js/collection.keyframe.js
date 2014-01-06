@@ -7,7 +7,7 @@ define([
     'model.keyframe'
 ], function(
     Backbone, relationalScope,
-    KeyframeModel
+    Keyframe
 ){
     var KeyframeCollection;
 
@@ -19,7 +19,7 @@ define([
         /**
         Start: backbone内置属性/方法
         **/
-        model: KeyframeModel,
+        model: Keyframe,
         comparator: 'time',
         toJSON: function(options){
             var json;

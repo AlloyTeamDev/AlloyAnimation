@@ -9,13 +9,13 @@ define([
     Backbone, relationalScope,
     util
 ){
-    var KeyframeModel;
+    var Keyframe;
 
     /**
-    @class KeyframeModel
+    @class Keyframe
     @extends Backbone.RelationalModel
     **/
-    KeyframeModel = Backbone.RelationalModel.extend({
+    Keyframe = Backbone.RelationalModel.extend({
         /**
         Start: backbone内置属性/方法
         **/
@@ -44,7 +44,7 @@ define([
         **/
     });
 
-    relationalScope.KeyframeModel = KeyframeModel;
+    relationalScope.Keyframe = Keyframe;
 
-    return KeyframeModel;
+    return Keyframe;
 })

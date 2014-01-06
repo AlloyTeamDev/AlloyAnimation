@@ -12,13 +12,13 @@ define([
     var findWhere = _.findWhere,
         extend = _.extend,
         createId = util.createId,
-        BoneModel;
+        Bone;
 
     /**
-    @class BoneModel
+    @class Bone
     @extends Backbone.RelationalModel
     **/
-    BoneModel = Backbone.RelationalModel.extend({
+    Bone = Backbone.RelationalModel.extend({
         /**
         Start: backbone内置属性/方法
         **/
@@ -32,7 +32,7 @@ define([
             // 有多个关键帧，组成一个关键帧集合
             type: 'HasMany',
             key: 'keyframes',
-            relatedModel: 'KeyframeModel',
+            relatedModel: 'Keyframe',
             collectionType: 'KeyframeCollection',
             reverseRelation: {
                 // 一个关键帧集合对应一个骨骼
@@ -42,13 +42,13 @@ define([
             // 有多个子骨骼
             type: 'HasMany',
             key: 'children',
-            relatedModel: 'BoneModel',
+            relatedModel: 'Bone',
             collectionType: 'BoneCollection'
         }, {
             // 有一个父骨骼
             type: 'HasOne',
             key: 'parent',
-            relatedModel: 'BoneModel',
+            relatedModel: 'Bone',
             includeInJSON: 'id'
         }],
 
@@ -71,7 +71,7 @@ define([
 
             options = options || {};
 
-            json = BoneModel.__super__.toJSON.call(this, options);
+            json = Bone.__super__.toJSON.call(this, options);
             if('time' in options){
                 keyframeData = findWhere(json.keyframes, {time: options.time});
                 if(keyframeData){
@@ -102,8 +102,8 @@ define([
         @param {String} [id] 子骨骼id
         @return {Boolean}
         @example
-            bodyBoneModel.hasChild() 是否有子骨骼
-            bodyBoneModel.hasChild(headBoneModel.get('id')) 是否有某个子骨骼
+            bodyBone.hasChild() 是否有子骨骼
+            bodyBone.hasChild(headBone.get('id')) 是否有某个子骨骼
         **/
         hasChild: function(id){
             var childBoneColl;
@@ -118,7 +118,7 @@ define([
         }
     });
 
-    relationalScope.BoneModel = BoneModel;
+    relationalScope.Bone = Bone;
 
-    return BoneModel;
+    return Bone;
 });

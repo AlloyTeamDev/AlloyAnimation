@@ -11,13 +11,13 @@ define([
     AbstractSkeleton, AbstractBone,
     boneTmpl
 ){
-    var BoneTreePanelView, Bone;
+    var BoneTreePanel, Bone;
 
     /**
-    @class BoneTreePanelView
+    @class BoneTreePanel
     @extends AbstractSkeleton
     **/
-    BoneTreePanelView = AbstractSkeleton.extend({
+    BoneTreePanel = AbstractSkeleton.extend({
         el: $('#js-boneTreePanel'),
 
         initialize: function(){
@@ -25,7 +25,7 @@ define([
             this._boneHash = {};
 
             // 复用父类的`initialize`方法
-            BoneTreePanelView.__super__.initialize.apply(this, arguments);
+            BoneTreePanel.__super__.initialize.apply(this, arguments);
         },
 
         render: function(bonesData){
@@ -82,5 +82,5 @@ define([
         _panelName: 'boneTree'
     });
 
-    return new BoneTreePanelView();
+    return new BoneTreePanel();
 });
