@@ -62,7 +62,7 @@ define([
             // 渲染空面板
             this.$el.html( workspaceTmpl());
 
-            // 如果有传入骨架数据，渲染出骨架view
+            // 如果有传入骨骼数据，渲染出骨骼视图
             if(bonesData && bonesData.length){
                 bonesData.forEach(function(boneData){
                     this.addBone(boneData);
