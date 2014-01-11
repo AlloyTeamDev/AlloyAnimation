@@ -61,7 +61,7 @@ define([
             if( ( $target.hasClass('js-bone') && ($bone = $target) ) ||
                 ( $bone = $target.parentsUntil(this.$el, '.js-bone') ).length
             ){
-                this._dragingBone = Bone.htmlId2Id( $bone.attr('id') );
+                this._dragingBone = $bone.data('bone-id');
                 console.debug('Start draging bone ' + this._dragingBone);
             }
         },
@@ -78,8 +78,8 @@ define([
             ){
                 $dragingBone = this._boneHash[this._dragingBone].$el
 
-                targetBoneId = Bone.htmlId2Id( $targetBone.attr('id') );
-                dragingBoneId = Bone.htmlId2Id( $dragingBone.attr('id') );
+                targetBoneId = $targetBone.data('bone-id');
+                dragingBoneId = $dragingBone.data('bone-id');
 
                 if(targetBoneId === dragingBoneId) return;
 
@@ -143,11 +143,14 @@ define([
             options = options || {};
 
             options.updated = true;
-            $el = this.$el.html( boneTmpl(boneData) );
-            $el.children('.js-name').attr('contenteditable', 'true');
+            ($el = this.$el)
+                .html( boneTmpl(boneData) )
+                // 保存骨骼id在DOM中。DOM操作时方便得知操作的是哪个骨骼
+                .data('bone-id', boneData.id);
 
             // 缓存DOM元素：
-            this._$name = $el.children('.js-name');
+            ( this._$name = $el.children('.js-name') )
+                .attr('contenteditable', 'true');
 
             // 复用父类上的方法
             Bone.__super__.render.apply(this, arguments);
