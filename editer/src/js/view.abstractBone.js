@@ -26,7 +26,7 @@ define([
         @return this
         **/
         activate: function(){
-            console.debug('Activate bone ' + this.id);
+            console.debug('Activate bone %s in panel %s', this.id, this.constructor._panelName);
 
             this.$el.addClass('js-activeBone');
 
@@ -218,7 +218,7 @@ define([
     }, {
         // 所在的面板名，用于构成骨骼的html id
         // **子类要覆盖这个属性**
-        _panelName: '',
+        _panelName: 'unknown',
 
         /**
         获取骨骼的html id，其前缀表示这是工作区面板中的骨骼
