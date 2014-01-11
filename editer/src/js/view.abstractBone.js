@@ -22,7 +22,7 @@ define([
         },
 
         /**
-        使用提供的骨骼数据渲染骨骼视图，并插入DOM中。
+        将骨骼的根DOM元素插入DOM容器中，并为其添加html id
         如果提供的骨骼数据中有子骨骼的数据，不创建、不渲染子骨骼。
         @method render
         @param {Object} boneData 骨骼的数据
