@@ -140,6 +140,7 @@ define([
 
             // 缓存骨骼的数据
             // 避免每次获取数据时，都要访问dom
+            this._name = null;
             this._texture = null;
             this._jointX = null;
             this._jointY = null;
