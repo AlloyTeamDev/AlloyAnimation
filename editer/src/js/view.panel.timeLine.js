@@ -4,10 +4,12 @@
 **/
 define([
     'jquery',
-    'view.panel'
+    'view.panel',
+    'tmpl!html/panel.timeLine.timeLine.html'
 ], function(
     $,
-    Panel
+    Panel,
+    timeLineTmpl
 ){
     var TimeLinePanel;
 
@@ -40,6 +42,9 @@ define([
                 }, this);
             }
 
+            this._$bd = this.$el.children('.bd');
+            
+
             return this;
         },
         /**
@@ -51,7 +56,8 @@ define([
         @method addTimeline
         @param {Array} keyframes 此时间轴上的关键帧的数据
         **/
-        addTimeline: function(keyframes){
+        addTimeline: function(boneData){
+            this._$bd.append( timeLineTmpl() );
             return this;
         }
     });

@@ -516,3 +516,12 @@ html, body,
   border-left-color: #fb9966;
   color: #fb9966;
 }
+
+#js-timeLinePanel .bd {
+  margin-top: 5px;
+}
+#js-timeLinePanel .js-timeLine {
+  margin-bottom: 13px;
+  height: 2px;
+  background-color: rgba(187, 187, 187, 0.7);
+}
