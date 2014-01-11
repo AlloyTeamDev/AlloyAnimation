@@ -2,20 +2,11 @@
 针对骨骼树面板的样式，通过骨骼树面板的选择器限定样式的作用范围
 **/
 #js-boneTreePanel {
-    .bone {
-        padding-left: 10px;
+    .js-bone{
+        position: relative;
 
-        &::before {
-            $c: #000;
-            content: '';
-            display: absolute;
-            width: 0;
-            height: 0;
-            border: 0 none $c;
-            border-left: 2px solid $c;
+        & > .js-bone{
+            padding-left: 10px;
         }
-    }
-    .fold {
-
     }
 }

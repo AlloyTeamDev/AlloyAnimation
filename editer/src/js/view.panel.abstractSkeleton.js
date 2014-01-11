@@ -15,11 +15,21 @@ define([
             // 复用父类的initialize方法
             AbstractSkeleton.__super__.initialize.apply(this, arguments);
 
+            // 此面板中所有骨骼view构成的hash，用骨骼的id索引
+            this._boneHash = {};
+
             // 当前被激活的骨骼
             // **只要有骨骼，总有一个骨骼处于激活状态**
             this._activeBone = null;
 
+            // 这个骨骼框架中的骨骼的构造函数
+            // **子类要使用继承自 `AbstractBone` 的类覆盖此属性**
             this._Bone = AbstractBone;
+
+            // 骨骼的默认DOM容器，
+            // 如果没有指定父骨骼，也没有激活骨骼，这添加到此容器中
+            // **子类要覆盖此属性**
+            this._boneDefaultContainer = this.el;
         },
 
         /* Start: 对本面板中的骨骼的增删改 */
@@ -129,7 +139,7 @@ define([
                 parentBone = undefined;
 
                 (bone = this._boneHash[boneData.id] = new this._Bone())
-                    .render(boneData, this._$coordSys.get(0), options);
+                    .render(boneData, this._boneDefaultContainer, options);
             }
             else{
                 bone

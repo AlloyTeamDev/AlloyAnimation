@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
@@ -305,3 +306,14 @@ html, body,
   height: 2px;
   background-color: rgba(30, 154, 207, 0.5);
 }
+
+/**
+针对骨骼树面板的样式，通过骨骼树面板的选择器限定样式的作用范围
+**/
+#js-boneTreePanel .js-bone {
+  position: relative;
+}
+#js-boneTreePanel .js-bone > .js-bone {
+  padding-left: 10px;
+}
+

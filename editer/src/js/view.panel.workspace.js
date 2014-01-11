@@ -31,8 +31,8 @@ define([
             // 复用父类的initialize方法
             WorkspacePanel.__super__.initialize.apply(this, arguments);
 
-            // 此面板中所有骨骼view构成的hash，用骨骼的id索引
-            this._boneHash = {};
+            // 保存具体的骨骼构造函数，覆盖从父类继承过来的抽象的骨骼构造函数
+            this._Bone = Bone;
 
             // 重置调节骨骼时的状态表示
             this._resetState();
@@ -46,9 +46,6 @@ define([
             this._PI_DIV_180 = Math.PI / 180;
             this._stringify = win.JSON.stringify;
             this._rotationAngle = math.rotationAngle;
-
-            // 保存骨骼的构造函数
-            this._Bone = Bone;
         },
 
         /**
@@ -72,6 +69,8 @@ define([
             // x轴水平向右，y轴竖直向下，
             // 骨骼的坐标就是相对于这个坐标系而言的
             this._$coordSys = this.$el.children('.js-coordinate-system');
+            // 覆盖从父类继承的、骨骼的默认DOM容器
+            this._boneDefaultContainer = this._$coordSys.get(0);
 
             return this;
         },
@@ -154,14 +153,16 @@ define([
 
         onClick: function($event){
             var $target = $($event.target),
-                $bone;
+                $bone, boneId;
 
             // 当点击此面板时，如果点击了某个骨骼，改变激活元素为所点击的元素。
             // **只要有骨骼，总有一个骨骼处于激活状态**
             if( ( $target.hasClass('js-bone') && ($bone = $target) ) ||
                 ( $bone = $target.parentsUntil(this.$el, '.js-bone') ).length
             ){
-                this.changeActiveBone( Bone.htmlId2Id($bone.attr('id')) );
+                boneId = Bone.htmlId2Id($bone.attr('id'));
+                this.changeActiveBone(boneId);
+                this.trigger('clickBone', boneId);
             }
         },
 
@@ -181,6 +182,9 @@ define([
             bone = this._activeBone;
             this._boneOldX = bone.positionX();
             this._boneOldY = bone.positionY();
+
+            // 避免冒泡到父骨骼
+            $event.stopPropagation();
         },
             
         onMouseDownResizePoint: function($event){
@@ -494,12 +498,12 @@ define([
         transformUtilTmpl: transformUtilTmpl,
 
         initialize: function(){
-            // 复用父类的initialize方法
+            // 复用父类上的方法
             Bone.__super__.initialize.apply(this, arguments);
 
             this.$el.attr('draggable', false);
 
-            // 几何数据的单位
+            // 几何数据的尺寸单位
             this.SIZE_UNIT = 'px';
 
             // 缓存骨骼的数据
@@ -514,30 +518,6 @@ define([
             this._y = null;
             this._z = null;
             this._opacity = null;
-        },
-
-        /**
-        将骨骼数据填入html模板，并将得到的html片段填入此视图的根元素当中。
-        如果提供的骨骼数据中有子骨骼的数据，不创建子骨骼。
-        @method render
-        @param {Object} boneData 骨骼的数据
-            @param {String} boneData.name
-            @param {String} boneData.texture
-            @param {Array} boneData.children
-        @param {DOMElement} container 要插入的DOM容器
-        @praram {Object} [options]
-        @return this
-        **/
-        render: function(boneData, container, options){
-            this.id = boneData.id;
-            this.$el.attr({
-                    'id': Bone.id2HtmlId(boneData.id)
-                });
-            this.update(boneData);
-
-            this.$el.appendTo(container);
-
-            return this;
         },
 
         /**
@@ -818,7 +798,7 @@ define([
             return offset;
         }
     }, {
-        // 用于构成骨骼的html id
+        // 覆盖继承自父类的同名属性，用于构成骨骼的html id
         _panelName: 'workspace'
     });
 

@@ -22,6 +22,46 @@ define([
         },
 
         /**
+        将骨骼的根DOM元素插入DOM容器中，并为其添加html id
+        如果提供的骨骼数据中有子骨骼的数据，不创建、不渲染子骨骼。
+        @method render
+        @param {Object} boneData 骨骼的数据
+            @param {String} boneData.id
+            @param {String} boneData.name
+            @param {Number} boneData.texture
+            @param {Number} boneData.jointX
+            @param {Number} boneData.jointY
+            @param {Number} boneData.rotate
+            @param {Number} boneData.w
+            @param {Number} boneData.h
+            @param {Number} boneData.x
+            @param {Number} boneData.y
+            @param {Number} boneData.z
+            @param {Number} boneData.opacity
+            @param {Object[]} boneData.children
+            @param {String} boneData.parent
+        @param {DOMElement} container 要插入的DOM容器
+        @praram {Object} [options]
+            @param {Boolean} [options.updated=false] 是否已更新
+            TODO: 实现下面这个可选参数的逻辑
+            @param {Number} [options.index=this.children.length] 指定插入为第几个子骨骼，序号从0开始
+        @return this
+        **/
+        render: function(boneData, container, options){
+            options = options || {};
+
+            this.id = boneData.id;
+
+            !options.updated && this.update(boneData);
+
+            this.$el
+                .attr( 'id', this.constructor.id2HtmlId(boneData.id) )
+                .appendTo(container);
+
+            return this;
+        },
+
+        /**
         激活此骨骼，表示开始操作此骨骼
         @return this
         **/
@@ -128,6 +168,13 @@ define([
         // **指向空函数的方法，表示子类必须要实现的方法**
 
         /**
+        设置或获取骨骼名
+        @param {String} [name] 要设置成的名字
+        @return {this|String} this，或骨骼名
+        **/
+        name: EMPTY_FUNC,
+
+        /**
         设置或获取骨骼的纹理图
         @param {String} [url] 要设置成的纹理图的url
         @return {this|String} this, 或纹理图的url
@@ -202,6 +249,7 @@ define([
 
         // 将数据字段名映射到设置相应字段的方法名
         _FIELD_2_METHOD: {
+            name: 'name',
             texture: 'texture',
             jointX: 'jointX',
             jointY: 'jointY',
