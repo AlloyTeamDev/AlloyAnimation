@@ -63,7 +63,6 @@ define([
                 ( $bone = $target.parentsUntil(this.$el, '.js-bone') ).length
             ){
                 this._dragingBone = $bone.data('bone-id');
-                console.debug('Start draging bone ' + this._dragingBone);
             }
         },
 
