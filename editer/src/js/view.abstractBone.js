@@ -18,7 +18,7 @@ define([
         initialize: function(){
             // 表示父子关系的引用
             this.children = [];
-            this.parent = null;            
+            this.parent = null;
         },
 
         /**
