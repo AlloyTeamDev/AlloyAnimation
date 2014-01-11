@@ -51,7 +51,8 @@ define([
 
         events: {
             'mousedown': 'onMouseDownBone',
-            'mouseup .js-bone': 'onMouseUpBone'
+            'mouseup .js-bone': 'onMouseUpBone',
+            'input .js-name': 'onInputName'
         },
 
         onMouseDownBone: function($event){
@@ -104,6 +105,19 @@ define([
 
                 $target = null;
                 this._dragingBone = null;
+            }
+        },
+
+        onInputName: function($event){
+            var $boneName = $($event.target),
+                $bone;
+
+            if( ($bone = $boneName.parent('.js-bone')).length ){
+                this.trigger(
+                    'changedBoneName',
+                    $bone.data('bone-id'),
+                    $bone.text()
+                );
             }
         }
     });

@@ -48,6 +48,7 @@ define([
         workspacePanelView.on('addBone', handler.onWorkspacePanelAddBone);
         workspacePanelView.on('updateBone', handler.onWorkspacePanelUpdateBone);
         workspacePanelView.on('clickBone', handler.onWorkspacePanelClickBone);
+        boneTreePanelView.on('changedBoneName', handler.onBoneTreePanelChangedBoneName);
     };
 
     /**
@@ -252,6 +253,10 @@ define([
 
         onWorkspacePanelClickBone: function(boneId){
             boneTreePanelView.changeActiveBone(boneId);
+        },
+
+        onBoneTreePanelChangedBoneName: function(boneId, newName){
+            allBoneColl.get(boneId).set(newName);
         }
         /****** End: view event handler ******/
     };
