@@ -89,7 +89,7 @@ define([
                 setTimeout(function(){
                     $dragingBone.appendTo($targetBone);
 
-                    panel.trigger('dragBone', dragingBone, targetBone);
+                    panel.trigger('dragedBoneTo', dragingBoneId, targetBoneId);
 
                     panel = null;
                     $targetBone = null;
