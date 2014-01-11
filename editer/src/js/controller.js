@@ -256,7 +256,12 @@ define([
         },
 
         onBoneTreePanelChangedBoneName: function(boneId, newName){
-            allBoneColl.get(boneId).set(newName);
+            allBoneColl.get(boneId).set(
+                newName,
+                {
+                    hasUpdatedBoneTree: true
+                }
+            );
         }
         /****** End: view event handler ******/
     };
