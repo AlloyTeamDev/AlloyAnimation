@@ -47,6 +47,7 @@ define([
         // 监听view事件
         workspacePanelView.on('addBone', handler.onWorkspacePanelAddBone);
         workspacePanelView.on('updateBone', handler.onWorkspacePanelUpdateBone);
+        workspacePanelView.on('clickBone', handler.onWorkspacePanelClickBone);
     };
 
     /**
@@ -121,8 +122,8 @@ define([
             // 在各个面板中添加此骨骼对应的view
             workspacePanelView.addBone(boneData);
             // TODO: 给其它面板也添加对应的view
-            // boneTreePanelView.addBone(boneData);
-            // timeLinePanelView.addTimeline(boneData);
+            boneTreePanelView.addBone(boneData);
+            // timelinePanelView.addTimeline(boneData);
         },
         /**
         @triggerObj {BoneCollection} 此事件回调仅用于 `allBoneColl` 这个实例上
@@ -247,6 +248,10 @@ define([
                 .set(boneData, {
                     hasUpdatedWorkspace: true
                 });
+        },
+
+        onWorkspacePanelClickBone: function(boneId){
+            boneTreePanelView.changeActiveBone(boneId);
         }
         /****** End: view event handler ******/
     };
