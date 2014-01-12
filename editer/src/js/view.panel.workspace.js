@@ -6,11 +6,11 @@
 define([
     'jquery', 'base/math',
     'view.panel.abstractSkeleton', 'view.abstractBone',
-    'tmpl!html/workspace.html', 'tmpl!html/panel.workspace.bone.html', 'tmpl!html/panel.workspace.transformUtil.html'
+    'tmpl!html/panel.workspace.html', 'tmpl!html/panel.workspace.transformUtil.html'
 ], function(
     $, math,
     AbstractSkeleton, AbstractBone,
-    workspaceTmpl, boneTmpl, transformUtilTmpl
+    workspaceTmpl, transformUtilTmpl
 ){
     var WorkspacePanel, Bone;
 
