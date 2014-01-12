@@ -5,12 +5,13 @@ define([
     exports,
     workspaceView
 ){
-
     // 模拟上传骨骼纹理图
-    function uploadTexture(texture){
+    // 暴露在全局下方便调试
+    exports.uploadTexture = window.uploadTexture = function(parent, texture){
         var img = new Image(),
             boneData = {};
 
+        parent && (boneData.parent = parent);
         img.src = boneData.texture = texture || 'img/defaultTexture.gif';
         img.onload = function(){
             if(img.width){
@@ -23,9 +24,5 @@ define([
             }
             workspaceView.trigger('addBone', boneData);
         };
-    }
-
-    exports.init = function(){
-        uploadTexture();
     };
 });

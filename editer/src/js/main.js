@@ -30,10 +30,10 @@ require.config({
 require([
     'controller',
     'jquery.defaultSetting',
-    'test/userOperate'
-], function(controller, $, userOperate){
+    'test/user'
+], function(controller, $, user){
     // TODO: 判断是否高级浏览器；登陆
 
     controller.init();
-    userOperate.init();
+    user.uploadTexture();
 });
