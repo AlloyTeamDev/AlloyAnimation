@@ -42,19 +42,23 @@
         background-size: 100% 100%;
     }
 
+    $active-border-width: 1px;
+    $active-border-offset: $active-border-width / 2;
+    @if $active-border-offset <= 1px {
+        $active-border-offset: 1px;
+    }
     .js-activeBone {
         cursor: move;
 
         &::before{
-            $border-width: 3px;
-            content: '';
+            content: "";
             display: block;
             position: absolute;
-            left: -1 * $border-width;
-            top: -1 * $border-width;
+            left: -1 * $active-border-offset;
+            top: -1 * $active-border-offset;
             width: 100%;
             height: 100%;
-            border: $border-width solid rgba($active-color, 0.5);
+            border: $active-border-width solid rgba($active-color, 0.5);
         }
     }
 
@@ -69,51 +73,85 @@
         @include prefix(border-radius, $size / 2);
     }
 
-    .js-rotate {
-        $size: 8px;
+    $rotate-size: 26px;
+    $rotate-pos: $rotate-size / -2 - 2;
+    .rotate {
         position: absolute;
-        left: $size / -2;
-        top: $size / -2;
-        width: $size;
-        height: $size;
+        //visibility: hidden;
+        width: $rotate-size;
+        height: $rotate-size;
         cursor: url(../img/refresh.png), auto;
-        background-color: rgba(darken($active-color, 5%), 0.5);
-        @include prefix(border-radius, $size / 2);
+        background-color: rgba(0, 0, 0, 0);
+    }
+    .rotate1 {
+        left: $rotate-pos;
+        top: $rotate-pos;
+    }
+    .rotate2 {
+        right: $rotate-pos;
+        top: $rotate-pos;
+    }
+    .rotate3 {
+        left: $rotate-pos;
+        bottom: $rotate-pos;
+    }
+    .rotate4 {
+        right: $rotate-pos;
+        bottom: $rotate-pos;
     }
 
-    .js-resize {
-        $size: 14px;
+    $resize-offset: 2px;
+    $resize-size: $rotate-size + $rotate-pos + $resize-offset;
+    .resize {
         position: absolute;
-        right: -1px;
-        bottom: -1px;
-        width: $size;
-        height: $size;
-        cursor: nw-resize;
-        overflow: hidden;
+        width: $resize-size;
+        height: $resize-size;
+        // @include prefix(border-radius, $resize-size / 2);
 
         &::before {
-            content: '';
+            content: "";
             display: block;
             position: absolute;
-            left: 0;
-            bottom: 0;
-            @include prefix(transform, rotate(-45deg));
-            @include prefix(transform-origin, 0 0);
-            width: $size * 2;
-            height: 2px;
-            background-color: rgba($active-color, 0.5);
+            width: 6px;
+            height: 6px;
+            border: 1px solid rgba(darken($active-color, 5%), 0.5);
+            background-color: #fff;
         }
-        &::after {
-            content: '';
-            display: block;
-            position: absolute;
-            left: 50%;
-            bottom: 0;
-            @include prefix(transform, rotate(-45deg));
-            @include prefix(transform-origin, 0 0);
-            width: $size * 2;
-            height: 2px;
-            background-color: rgba($active-color, 0.5);
+    }
+    .resize1 {
+        right: 0;
+        bottom: 0;
+        cursor: nw-resize;
+        &::before {
+            left: $resize-offset * -1;
+            top: $resize-offset * -1;
+        }
+    }
+    .resize2 {
+        left: 0;
+        bottom: 0;
+        cursor: sw-resize;
+        &::before {
+            right: $resize-offset * -1;
+            top: $resize-offset * -1;
+        }
+    }
+    .resize3 {
+        right: 0;
+        top: 0;
+        cursor: sw-resize;
+        &::before {
+            left: $resize-offset * -1;
+            bottom: $resize-offset * -1;
+        }
+    }
+    .resize4 {
+        left: 0;
+        top: 0;
+        cursor: nw-resize;
+        &::before {
+            right: $resize-offset * -1;
+            bottom: $resize-offset * -1;
         }
     }
 
