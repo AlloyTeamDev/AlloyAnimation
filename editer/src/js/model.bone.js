@@ -24,7 +24,7 @@ define([
         **/
         defaults: {
             // 骨骼的名字
-            name: 'unknown bone',
+            name: 'bone',
             // 纹理图的url
             texture: 'img/defaultTexture.gif'
         },
@@ -55,9 +55,14 @@ define([
         initialize: function(){
             var id;
 
+            // 创建骨骼id
             id = createId();
             console.debug('Create a bone model with id %s', id);
             this.set('id', id);
+
+            ++Bone._boneCount;
+            // 设置默认骨骼名
+            this.set('name', 'bone' + Bone._boneCount);
         },
 
         /**
@@ -116,6 +121,9 @@ define([
                 return false;
             }
         }
+    }, {
+        // 骨骼实例的数量
+        _boneCount: 0
     });
 
     relationalScope.Bone = Bone;
