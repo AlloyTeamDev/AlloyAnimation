@@ -65,6 +65,7 @@ define([
             }
 
             // 缓存DOM元素：
+            this._$emptyWording = this.$('#empty_wording');
             // 工作区面板的坐标系元素，其位置表示坐标系原点，
             // x轴水平向右，y轴竖直向下，
             // 骨骼的坐标就是相对于这个坐标系而言的
@@ -73,6 +74,14 @@ define([
             this._boneDefaultContainer = this._$coordSys.get(0);
 
             return this;
+        },
+
+        // 覆盖父类的同名方法
+        addBone: function(){
+            this._$emptyWording.hide();
+
+            // 复用父类的同名方法
+            WorkspacePanel.__super__.addBone.apply(this, arguments);
         },
 
         // 配置要委派的DOM事件
@@ -115,8 +124,6 @@ define([
                 reader.onload = onload;
                 reader.readAsDataURL(files[i]);
             }
-
-            this.$('#empty_wording').hide();
 
             /**
             写成函数声明而不是函数表达式，以免每循环一次重复创建一个函数对象

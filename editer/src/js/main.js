@@ -2,6 +2,7 @@ require.config({
     // 定义文件、路径的简写
     paths: {
         'base': 'base/',
+        'test': '../test/',
         'tmpl': 'base/require.tmpl',
         'jquery': 'base/jquery',
         'jquery.defaultSetting': 'base/jquery.defaultSetting',
@@ -28,9 +29,11 @@ require.config({
 
 require([
     'controller',
-    'jquery.defaultSetting'
-], function(controller, $){
+    'jquery.defaultSetting',
+    'test/userOperate'
+], function(controller, $, userOperate){
     // TODO: 判断是否高级浏览器；登陆
 
     controller.init();
+    userOperate.init();
 });
