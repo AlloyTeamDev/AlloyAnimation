@@ -52,7 +52,8 @@ define([
         events: {
             'mousedown': 'onMouseDownBone',
             'mouseup .js-bone': 'onMouseUpBone',
-            'input .js-name': 'onInputName'
+            'dblclick .js-name': 'onDblClickName',
+            'blur .js-name': 'onBlurName'
         },
 
         onMouseDownBone: function($event){
@@ -107,17 +108,37 @@ define([
             }
         },
 
-        onInputName: function($event){
-            var $boneName = $($event.target),
-                $bone;
+        // 双击骨骼名即可编辑之
+        onDblClickName: function($event){
+            var $name;
 
+            ($name = $($event.target))
+                .attr('contenteditable', 'true')
+                .focus();
+        },
+
+        onBlurName: function($event){
+            var $bone, $boneName, newName;
+
+            ($boneName = $($event.target)).removeAttr('contenteditable');
+            newName = $boneName.text();
+            // 使用html5的 `contenteditable` 属性，
+            // 可以回车输入换行，blur后通过新建div实现换行。
+            // 而 '.text()' 获得的文本没有换行和html标签，
+            // 设置回去，以去除多余的换行和html标签
+            $boneName.text(newName);
             if( ($bone = $boneName.parent('.js-bone')).length ){
                 this.trigger(
-                    'changedBoneName',
+                    'changedBone',
                     $bone.data('bone-id'),
-                    $bone.text()
+                    'name',
+                    newName
                 );
             }
+        },
+
+        onClickName: function($event){
+            
         }
     });
 
@@ -164,7 +185,7 @@ define([
 
             // 缓存DOM元素：
             ( this._$name = $el.children('.js-name') )
-                .attr('contenteditable', 'true');
+                // .attr('contenteditable', 'true');
 
             // 复用父类上的方法
             Bone.__super__.render.apply(this, arguments);

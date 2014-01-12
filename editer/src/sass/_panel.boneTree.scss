@@ -3,8 +3,6 @@
 **/
 #js-boneTreePanel {
     .js-bone {
-        position: relative;
-
         & > .js-bone {
             padding-left: 10px;
         }
