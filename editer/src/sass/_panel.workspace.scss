@@ -90,6 +90,8 @@
     .rotate2 {
         right: $rotate-pos;
         top: $rotate-pos;
+        // 如果用双向箭头，旋转的过程中双向箭头要跟着旋转才能表示正确的意思
+        // cursor: url(../img/rotate2.png), auto;
     }
     .rotate3 {
         left: $rotate-pos;
