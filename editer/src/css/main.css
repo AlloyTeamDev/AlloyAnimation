@@ -67,11 +67,11 @@ table {
 
 ::-webkit-scrollbar-track {
   border: 0;
-  background-color: #f6f7f8;
+  background-color: transparent;
 }
 
 ::-webkit-scrollbar-track-piece {
-  background-color: #f6f7f8;
+  background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
