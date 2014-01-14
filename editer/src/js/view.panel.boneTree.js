@@ -11,6 +11,7 @@ define([
     AbstractSkeleton, AbstractBone,
     boneTreeTmpl, boneTmpl
 ){
+    var bind = _.bind;
     var BoneTreePanel, Bone;
 
     /**
@@ -27,6 +28,9 @@ define([
             // 保存具体的骨骼构造函数，覆盖从父类继承过来的抽象的骨骼构造函数
             this._Bone = Bone;
 
+            this.onMouseMove = bind(this.onMouseMove, this);
+
+            this._mouseDownBone = null;
             this._dragingBone = null;
         },
 
@@ -52,6 +56,7 @@ define([
         events: {
             'mousedown': 'onMouseDownBone',
             'mouseup .js-bone': 'onMouseUpBone',
+            'click .js-name': 'onClickName',
             'dblclick .js-name': 'onDblClickName',
             'blur .js-name': 'onBlurName'
         },
@@ -63,7 +68,29 @@ define([
             if( ( $target.hasClass('js-bone') && ($bone = $target) ) ||
                 ( $bone = $target.parentsUntil(this.$el, '.js-bone') ).length
             ){
-                this._dragingBone = $bone.data('bone-id');
+                this._mouseDownBone = $bone.data('bone-id');
+                this.$el.on('mousemove', this.onMouseMove);
+
+                // 防止在drag的过程中select文本
+                $event.stopPropagation();
+                $event.preventDefault();
+            }
+        },
+
+        onMouseMove: function($event){
+            var $target = $($event.target),
+                $targetBone;
+
+            // 获取鼠标当前所在的骨骼
+            if( this._mouseDownBone &&
+                ( ( $target.hasClass('js-bone') && ($targetBone = $target) ) ||
+                ( $targetBone = $target.parentsUntil(this.$el, '.js-bone').eq(0) ).length )
+            ){
+                if($targetBone.data('bone-id') === this._mouseDownBone) return;
+                this._dragingBone = this._mouseDownBone;
+                this._mouseDownBone = null;
+                console.debug('Draging bone %s', this._dragingBone);
+
             }
         },
 
@@ -74,8 +101,9 @@ define([
                 panel;
 
             if( this._dragingBone &&
-                (( $target.hasClass('js-bone') && ($targetBone = $target) ) ||
-                ( $targetBone = $target.parentsUntil(this.$el, '.js-bone').eq(0) ).length)
+                (   ( $target.hasClass('js-bone') && ($targetBone = $target) ) ||
+                    ( $targetBone = $target.parentsUntil(this.$el, '.js-bone').eq(0) ).length
+                )
             ){
                 $dragingBone = this._boneHash[this._dragingBone].$el
 
@@ -106,6 +134,15 @@ define([
                 $target = null;
                 this._dragingBone = null;
             }
+
+            this.$el.off('mousemove', this.onMouseMove);
+        },
+
+        onClickName: function($event){
+            var $boneName = $($event.target),
+                $dataList = $boneName.siblings('.js-data-list');
+
+            $dataList.toggleClass('js-hide');
         },
 
         // 双击骨骼名即可编辑之
@@ -135,10 +172,6 @@ define([
                     newName
                 );
             }
-        },
-
-        onClickName: function($event){
-            
         }
     });
 
@@ -178,8 +211,11 @@ define([
             options = options || {};
 
             options.updated = true;
+
             ($el = this.$el)
-                .html( boneTmpl(boneData) )
+                .html( boneTmpl({
+                    data: boneData
+                }) )
                 // 保存骨骼id在DOM中。DOM操作时方便得知操作的是哪个骨骼
                 .data('bone-id', boneData.id);
 

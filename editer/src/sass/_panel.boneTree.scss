@@ -2,9 +2,17 @@
 针对骨骼树面板的样式，通过骨骼树面板的选择器限定样式的作用范围
 **/
 #js-boneTreePanel {
+    $indent: 10px;
     .js-bone {
         & > .js-bone {
-            padding-left: 10px;
+            padding-left: $indent;
         }
+    }
+
+    .js-data-list {
+        padding-left: $indent;
+    }
+    .js-data-list.js-hide {
+        display: none;
     }
 }

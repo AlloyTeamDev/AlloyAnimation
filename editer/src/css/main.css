@@ -325,9 +325,12 @@ html, body,
 /**
 针对骨骼树面板的样式，通过骨骼树面板的选择器限定样式的作用范围
 **/
-#js-boneTreePanel .js-bone {
-  position: relative;
-}
 #js-boneTreePanel .js-bone > .js-bone {
   padding-left: 10px;
+}
+#js-boneTreePanel .js-data-list {
+  padding-left: 10px;
+}
+#js-boneTreePanel .js-data-list.js-hide {
+  display: none;
 }

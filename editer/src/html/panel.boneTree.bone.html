@@ -3,17 +3,25 @@
     依赖的外部变量：
     name {String} 骨骼名
     **/
+
+    // 将数值类型的字段转化为字符串类型
+    var key;
+    for(key in data){
+        if(!data.hasOwnProperty(key)) continue;
+        if(typeof data[key] === 'number'){
+            data[key] = data[key] + '';
+        }
+    }
 %>
-<div class="js-name"><%- name %></div>
-<ul class="js-attr" style="display: none;">
-    <li class="js-texutre"></li>
-    <li class="js-jointX"></li>
-    <li class="js-jointY"></li>
-    <li class="js-rotate"></li>
-    <li class="js-width"></li>
-    <li class="js-height"></li>
-    <li class="js-x"></li>
-    <li class="js-y"></li>
-    <li class="js-z"></li>
-    <li class="js-opacity"></li>
+<div class="js-name"><%- data.name %></div>
+<ul class="js-data-list js-hide">
+    <li class="js-width">width: <%- data.w %></li>
+    <li class="js-height">height: <%- data.h %></li>
+    <li class="js-jointX">jointX: <%- data.jointX %></li>
+    <li class="js-jointY">jointY: <%- data.jointY %></li>
+    <li class="js-x">x: <%- data.x %></li>
+    <li class="js-y">y: <%- data.y %></li>
+    <li class="js-z">z: <%- data.z %></li>
+    <li class="js-rotate">rotate: <%- data.rotate %></li>
+    <li class="js-opacity">opacity: <%- data.opacity %></li>
 </ul>
