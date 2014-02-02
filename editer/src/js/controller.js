@@ -48,7 +48,7 @@ define([
         workspacePanelView.on('addBone', handler.onWorkspacePanelAddBone);
         workspacePanelView.on('updateBone', handler.onWorkspacePanelUpdateBone);
         workspacePanelView.on('clickBone', handler.onWorkspacePanelClickBone);
-        boneTreePanelView.on('changedBoneName', handler.onBoneTreePanelChangedBoneName);
+        boneTreePanelView.on('changedBone', handler.onBoneTreePanelChangedBone);
     };
 
     /**
@@ -232,8 +232,12 @@ define([
         @param {Object} [options]
         **/
         onWorkspacePanelAddBone: function(boneData, options){
-            boneData = unmixKeyframeData(boneData, timeLinePanelView.now);
-            allBoneColl.add(boneData);
+            if(options) options.hasUpdatedWorkspace = true;
+            else options = { hasUpdatedBoneTree: true };
+            allBoneColl.add(
+                unmixKeyframeData(boneData, timeLinePanelView.now),
+                options
+            );
         },
 
         /**
@@ -262,6 +266,49 @@ define([
                     hasUpdatedBoneTree: true
                 }
             );
+        },
+
+        /**
+        @example
+            onBoneTreePanelChangedBone(boneId, fieldName, newValue, options)
+        @example
+            onBoneTreePanelChangedBone(boneId, boneData, options)
+            @param {String} boneId
+            @param {Object} boneData
+            @param {Object} [options]
+        **/
+        onBoneTreePanelChangedBone: function(boneId, fieldName, newValue, options){
+            var boneData;
+
+            if( _.isString(arguments[1]) ){
+                if(options){
+                    options.hasUpdatedBoneTree = true;
+                }
+                else{
+                    options = { hasUpdatedBoneTree: true };
+                }
+
+                console.debug('Bone tree panel changed bone %s: %s = %s', boneId, fieldName, newValue);
+
+                allBoneColl.get(boneId).set(fieldName, newValue, options);
+            }
+            else{
+                boneData = arguments[1];
+                options = arguments[2];
+                if(options){
+                    options.hasUpdatedBoneTree = true;
+                }
+                else{
+                    options = { hasUpdatedBoneTree: true };
+                }
+
+                console.debug('Bone tree panel changed bone %s: %O', boneId, boneData);
+
+                allBoneColl.get(boneId).set(
+                    unmixKeyframeData(boneData, timelinePanelView.now),
+                    options
+                );
+            }
         }
         /****** End: view event handler ******/
     };

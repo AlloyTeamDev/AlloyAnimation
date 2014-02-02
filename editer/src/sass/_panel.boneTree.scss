@@ -2,11 +2,62 @@
 针对骨骼树面板的样式，通过骨骼树面板的选择器限定样式的作用范围
 **/
 #js-boneTreePanel {
+    // 缩进
+    $indent: 10px;
+    // 字段值的input框的border宽度
+    $field-val-border-width: 1px;
+    // 数据列表展开快关的颜色
+    $data-list-toggle-color: #111;
+
+    overflow: auto;
+
     .js-bone {
-        position: relative;
+        font-size: 14px;
+        // 防止在draging的过程中选中文本
+        @include prefix(user-select, none);
 
         & > .js-bone {
-            padding-left: 10px;
+            padding-left: $indent;
+        }
+    }
+
+    .name {
+        position: relative;
+        padding-left: $indent;
+    }
+    .js-data-list-toggle {
+        width: 0;
+        height: 0;
+        overflow: hidden;
+        position: absolute;
+        top: 9px;
+        left: 0;
+        border: 5px solid transparent;
+        border-top-color: $data-list-toggle-color;
+    }
+    .js-data-list-toggle-off {
+        left: 3px;
+        top: 6px;
+        border: 5px solid transparent;
+        border-left-color: $data-list-toggle-color;
+    }
+
+    .js-data-list {
+        padding-left: $indent + $field-val-border-width;
+    }
+    .js-data-list.js-hide {
+        display: none;
+    }
+    .js-field-input {
+        margin: 0;
+        background-color: transparent;
+        border: $field-val-border-width solid transparent;
+        text-decoration: none;
+
+        &:focus, &:hover {
+            outline: 0 none;
+            // TODO: 这个颜色有待确定
+            border-color: #3A8FB7;
         }
     }
 }

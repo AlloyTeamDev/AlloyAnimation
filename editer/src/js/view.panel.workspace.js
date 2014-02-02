@@ -580,7 +580,7 @@ define([
             var MAP, field;
             if(!data) return this;
 
-            MAP = this._FIELD_2_METHOD;
+            MAP = this.FIELD_2_METHOD;
             for(field in MAP){
                 if( !MAP.hasOwnProperty(field) ) continue;
                 if(field in data) this[MAP[field]](data[field]);
@@ -606,6 +606,7 @@ define([
         texture: function(url){
             if(url !== void 0){
                 this.$el.css('backgroundImage', url);
+                this._texture = url;
                 return this;
             }
             else{
