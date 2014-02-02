@@ -34,6 +34,8 @@ require([
 ], function(controller, $, user){
     // TODO: 判断是否高级浏览器；登陆
 
-    controller.init();
-    user.uploadTexture();
+    $(function($){
+        controller.init();
+        user.uploadTexture();
+    });
 });
