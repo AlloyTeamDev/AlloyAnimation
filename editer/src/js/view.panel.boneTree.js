@@ -56,9 +56,8 @@ define([
         events: {
             'mousedown': 'onMouseDownBone',
             'mouseup .js-bone': 'onMouseUpBone',
-            'click .js-name': 'onClickName',
-            'dblclick .js-name': 'onDblClickName',
-            'blur .js-name': 'onBlurName'
+            'click .js-data-list-toggle': 'onClickDataListToggle',
+            'input .js-field-input': 'onInputFieldVal'
         },
 
         onMouseDownBone: function($event){
@@ -70,10 +69,6 @@ define([
             ){
                 this._mouseDownBone = $bone.data('bone-id');
                 this.$el.on('mousemove', this.onMouseMove);
-
-                // 防止在drag的过程中select文本
-                $event.stopPropagation();
-                $event.preventDefault();
             }
         },
 
@@ -138,39 +133,46 @@ define([
             this.$el.off('mousemove', this.onMouseMove);
         },
 
-        onClickName: function($event){
-            var $boneName = $($event.target),
-                $dataList = $boneName.siblings('.js-data-list');
-
-            $dataList.toggleClass('js-hide');
+        // 单击展开/收缩骨骼的数据列表
+        onClickDataListToggle: function($event){
+            $($event.target)
+                .toggleClass('js-data-list-toggle-off')
+                .parentsUntil(this.$el, '.js-bone')
+                .eq(0)
+                .children('.js-data-list')
+                .toggleClass('js-hide');
         },
 
-        // 双击骨骼名即可编辑之
-        onDblClickName: function($event){
-            var $name;
+        // TODO: 验证输入内容的正确性
+        onInputFieldVal: function($event){
+            var $fieldInput = $($event.target),
+                $bone, boneId, fieldName, fieldVal, bone;
 
-            ($name = $($event.target))
-                .attr('contenteditable', 'true')
-                .focus();
-        },
+            if( ( $bone = $fieldInput.parentsUntil(this.$el, '.js-bone').eq(0) ).length ){
+                boneId = $bone.data('bone-id');
 
-        onBlurName: function($event){
-            var $bone, $boneName, newName;
-
-            ($boneName = $($event.target)).removeAttr('contenteditable');
-            newName = $boneName.text();
-            // 使用html5的 `contenteditable` 属性，
-            // 可以回车输入换行，blur后通过新建div实现换行。
-            // 而 '.text()' 获得的文本没有换行和html标签，
-            // 设置回去，以去除多余的换行和html标签
-            $boneName.text(newName);
-            if( ($bone = $boneName.parent('.js-bone')).length ){
-                this.trigger(
-                    'changedBone',
-                    $bone.data('bone-id'),
-                    'name',
-                    newName
-                );
+                // TODO: 抽离这部分可复用的验证
+                if( !boneId || !(boneId in this._boneHash) ){
+                    console.error('Bone id wrong when change field input, bone id is %s', boneId);
+                }
+                else if( !( fieldName = $fieldInput.data('field-name') ) ){
+                    console.error('Field name wrong when change field input. bone id: %s, field name: %s', boneId, fieldName);
+                }
+                else{
+                    bone = this._boneHash[boneId];
+                    bone[bone.FIELD_2_METHOD[fieldName]](
+                        $fieldInput.val(),
+                        {
+                            onlyCache: true
+                        }
+                    );
+                    this.trigger(
+                        'changedBone',
+                        boneId,
+                        fieldName,
+                        $fieldInput.val()
+                    );
+                }
             }
         }
     });
@@ -193,21 +195,11 @@ define([
 
             // 缓存骨骼的数据
             // 避免每次获取数据时，都要访问dom
-            this._name = null;
-            this._texture = null;
-            this._jointX = null;
-            this._jointY = null;
-            this._rotate = null;
-            this._w = null;
-            this._h = null;
-            this._x = null;
-            this._y = null;
-            this._z = null;
-            this._opacity = null;
+            this._cache = {};
         },
 
         render: function(boneData, container, options){
-            var $el;
+            var $el, fieldElHash;
             options = options || {};
 
             options.updated = true;
@@ -220,8 +212,16 @@ define([
                 .data('bone-id', boneData.id);
 
             // 缓存DOM元素：
-            ( this._$name = $el.children('.js-name') )
-                // .attr('contenteditable', 'true');
+            this._$name = $el.children('.js-name');
+            this._$width = $el.find('.js-width');
+            this._$height = $el.find('.js-height');
+            this._$jointX = $el.find('.js-jointX');
+            this._$jointY = $el.find('.js-jointY');
+            this._$x = $el.find('.js-x');
+            this._$y = $el.find('.js-y');
+            this._$z = $el.find('.js-z');
+            this._$rotate = $el.find('.js-rotate');
+            this._$opacity = $el.find('.js-opacity');
 
             // 复用父类上的方法
             Bone.__super__.render.apply(this, arguments);
@@ -238,21 +238,195 @@ define([
         },
 
         /**
-        设置或获取骨骼名
-        @param {String} [name] 要设置成的名字
-        @return {this|String} this，或骨骼名
+        设置或获取
+        @param {Number} [val] 要设置成的新值
+        @param {Object} [options]
+            @param {Boolean} [options.onlyCache=false] 是否只更新缓存
+        @return {this|Number}
         **/
-        name: function(name){
-            if(name !== void 0){
-                this._$name.text(name);
-                // 缓存数据，避免频繁访问DOM
-                this._name = name;
+        name: function(val, options){
+            if(val !== void 0){
+                this._cache.name = val;
+                if(options && options.onlyCache) return this;
+                this._$name.val(val);
                 return this;
             }
             else{
-                return this._name || '';
+                return this._cache.name;
             }
-        }
+        },
+
+        /**
+        设置或获取
+        @param {Number} [val] 要设置成的新值
+        @param {Object} [options]
+            @param {Boolean} [options.onlyCache=false] 是否只更新缓存
+        @return {this|Number}
+        **/
+        jointX: function(val, options){
+            if(val !== void 0){
+                this._cache.jointX = val;
+                if(options && options.onlyCache) return this;
+                this._$jointX.val(val);
+                return this;
+            }
+            else{
+                return this._cache.jointX;
+            }
+        },
+
+        /**
+        设置或获取
+        @param {Number} [val] 要设置成的新值
+        @param {Object} [options]
+            @param {Boolean} [options.onlyCache=false] 是否只更新缓存
+        @return {this|Number}
+        **/
+        jointY: function(val, options){
+            if(val !== void 0){
+                this._cache.jointY = val;
+                if(options && options.onlyCache) return this;
+                this._$jointY.val(val);
+                return this;
+            }
+            else{
+                return this._cache.jointY;
+            }
+        },
+
+        /**
+        设置或获取
+        @param {Number} [val] 要设置成的新值
+        @param {Object} [options]
+            @param {Boolean} [options.onlyCache=false] 是否只更新缓存
+        @return {this|Number}
+        **/
+        rotate: function(val, options){
+            if(val !== void 0){
+                this._cache.rotate = val;
+                if(options && options.onlyCache) return this;
+                this._$rotate.val(val);
+                return this;
+            }
+            else{
+                return this._cache.rotate;
+            }
+        },
+
+        /**
+        设置或获取
+        @param {Number} [val] 要设置成的新值
+        @param {Object} [options]
+            @param {Boolean} [options.onlyCache=false] 是否只更新缓存
+        @return {this|Number}
+        **/
+        width: function(val, options){
+            if(val !== void 0){
+                this._cache.width = val;
+                if(options && options.onlyCache) return this;
+                this._$width.val(val);
+                return this;
+            }
+            else{
+                return this._cache.width;
+            }
+        },
+
+        /**
+        设置或获取
+        @param {Number} [val] 要设置成的新值
+        @param {Object} [options]
+            @param {Boolean} [options.onlyCache=false] 是否只更新缓存
+        @return {this|Number}
+        **/
+        height: function(val, options){
+            if(val !== void 0){
+                this._cache.height = val;
+                if(options && options.onlyCache) return this;
+                this._$height.val(val);
+                return this;
+            }
+            else{
+                return this._cache.height;
+            }
+        },
+
+        /**
+        设置或获取
+        @param {Number} [val] 要设置成的新值
+        @param {Object} [options]
+            @param {Boolean} [options.onlyCache=false] 是否只更新缓存
+        @return {this|Number}
+        **/
+        positionX: function(val, options){
+            if(val !== void 0){
+                this._cache.positionX = val;
+                if(options && options.onlyCache) return this;
+                this._$positionX.val(val);
+                return this;
+            }
+            else{
+                return this._cache.positionX;
+            }
+        },
+
+        /**
+        设置或获取
+        @param {Number} [val] 要设置成的新值
+        @param {Object} [options]
+            @param {Boolean} [options.onlyCache=false] 是否只更新缓存
+        @return {this|Number}
+        **/
+        positionY: function(val, options){
+            if(val !== void 0){
+                this._cache.positionY = val;
+                if(options && options.onlyCache) return this;
+                this._$positionY.val(val);
+                return this;
+            }
+            else{
+                return this._cache.positionY;
+            }
+        },
+
+        /**
+        设置或获取
+        @param {Number} [val] 要设置成的新值
+        @param {Object} [options]
+            @param {Boolean} [options.onlyCache=false] 是否只更新缓存
+        @return {this|Number}
+        **/
+        positionZ: function(val, options){
+            if(val !== void 0){
+                this._cache.positionZ = val;
+                if(options && options.onlyCache) return this;
+                this._$positionZ.val(val);
+                return this;
+            }
+            else{
+                return this._cache.positionZ;
+            }
+        },
+
+        /**
+        设置或获取
+        @param {Number} [val] 要设置成的新值
+        @param {Object} [options]
+            @param {Boolean} [options.onlyCache=false] 是否只更新缓存
+        @return {this|Number}
+        **/
+        opacity: function(val, options){
+            if(val !== void 0){
+                this._cache.opacity = val;
+                if(options && options.onlyCache) return this;
+                this._$opacity.val(val);
+                return this;
+            }
+            else{
+                return this._cache.opacity;
+            }
+        },
+
     }, {
         // 覆盖继承自父类的同名属性，用于构成骨骼的html id
         _panelName: 'boneTree'

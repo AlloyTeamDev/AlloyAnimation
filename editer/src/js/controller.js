@@ -232,8 +232,12 @@ define([
         @param {Object} [options]
         **/
         onWorkspacePanelAddBone: function(boneData, options){
-            boneData = unmixKeyframeData(boneData, timeLinePanelView.now);
-            allBoneColl.add(boneData);
+            if(options) options.hasUpdatedWorkspace = true;
+            else options = { hasUpdatedBoneTree: true };
+            allBoneColl.add(
+                unmixKeyframeData(boneData, timeLinePanelView.now),
+                options
+            );
         },
 
         /**
@@ -300,7 +304,10 @@ define([
 
                 console.debug('Bone tree panel changed bone %s: %O', boneId, boneData);
 
-                allBoneColl.get(boneId).set(boneData, options);
+                allBoneColl.get(boneId).set(
+                    unmixKeyframeData(boneData, timelinePanelView.now),
+                    options
+                );
             }
         }
         /****** End: view event handler ******/

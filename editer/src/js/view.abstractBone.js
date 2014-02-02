@@ -150,7 +150,7 @@ define([
             var MAP, field;
             if(!data) return this;
 
-            MAP = this._FIELD_2_METHOD;
+            MAP = this.FIELD_2_METHOD;
             for(field in MAP){
                 if( !MAP.hasOwnProperty(field) ) continue;
                 if(field in data) this[MAP[field]](data[field]);
@@ -248,7 +248,7 @@ define([
         /* Start: 私有成员 */
 
         // 将数据字段名映射到设置相应字段的方法名
-        _FIELD_2_METHOD: {
+        FIELD_2_METHOD: {
             name: 'name',
             texture: 'texture',
             jointX: 'jointX',

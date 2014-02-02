@@ -13,15 +13,18 @@
         }
     }
 %>
-<div class="js-name"><%- data.name %></div>
+<div class="name">
+    <span class="js-data-list-toggle js-data-list-toggle-off"></span>
+    <input class="js-field-input js-name" data-field-name="name" type="text" value="<%- data.name %>">
+</div>
 <ul class="js-data-list js-hide">
-    <li class="js-width">width: <%- data.w %></li>
-    <li class="js-height">height: <%- data.h %></li>
-    <li class="js-jointX">jointX: <%- data.jointX %></li>
-    <li class="js-jointY">jointY: <%- data.jointY %></li>
-    <li class="js-x">x: <%- data.x %></li>
-    <li class="js-y">y: <%- data.y %></li>
-    <li class="js-z">z: <%- data.z %></li>
-    <li class="js-rotate">rotate: <%- data.rotate %></li>
-    <li class="js-opacity">opacity: <%- data.opacity %></li>
+    <li>width :<input class="js-field-input js-width" data-field-name="w" type="text" value="<%- data.w %>"/></li>
+    <li>height :<input class="js-field-input js-height" data-field-name="h" type="text" value="<%- data.h %>"/></li>
+    <li>jointX :<input class="js-field-input js-jointX" data-field-name="jointX" type="text" value="<%- data.jointX %>"/></li>
+    <li>jointY :<input class="js-field-input js-jointY" data-field-name="jointY" type="text" value="<%- data.jointY %>"/></li>
+    <li>x :<input class="js-field-input js-x" data-field-name="x" type="text" value="<%- data.x %>"/></li>
+    <li>y :<input class="js-field-input js-y" data-field-name="y" type="text" value="<%- data.y %>"/></li>
+    <li>z :<input class="js-field-input js-z" data-field-name="z" type="text" value="<%- data.z %>"/></li>
+    <li>rotate :<input class="js-field-input js-rotate" data-field-name="rotate" type="text" value="<%- data.rotate %>"/></li>
+    <li>opacity :<input class="js-field-input js-opacity" data-field-name="opacity" type="text" value="<%- data.opacity %>"/></li>
 </ul>

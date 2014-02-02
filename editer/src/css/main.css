@@ -325,12 +325,52 @@ html, body,
 /**
 针对骨骼树面板的样式，通过骨骼树面板的选择器限定样式的作用范围
 **/
+#js-boneTreePanel {
+  overflow: auto;
+}
+#js-boneTreePanel .js-bone {
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 #js-boneTreePanel .js-bone > .js-bone {
   padding-left: 10px;
 }
-#js-boneTreePanel .js-data-list {
+#js-boneTreePanel .name {
+  position: relative;
   padding-left: 10px;
+}
+#js-boneTreePanel .js-data-list-toggle {
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 9px;
+  left: 0;
+  border: 5px solid transparent;
+  border-top-color: #111111;
+}
+#js-boneTreePanel .js-data-list-toggle-off {
+  left: 3px;
+  top: 6px;
+  border: 5px solid transparent;
+  border-left-color: #111111;
+}
+#js-boneTreePanel .js-data-list {
+  padding-left: 11px;
 }
 #js-boneTreePanel .js-data-list.js-hide {
   display: none;
+}
+#js-boneTreePanel .js-field-input {
+  margin: 0;
+  background-color: transparent;
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+#js-boneTreePanel .js-field-input:focus, #js-boneTreePanel .js-field-input:hover {
+  outline: 0 none;
+  border-color: #3A8FB7;
 }
