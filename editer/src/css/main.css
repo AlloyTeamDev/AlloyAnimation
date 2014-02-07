@@ -187,11 +187,6 @@ html, body,
   background: transparent url(../img/workspace-bg.png);
 }
 
-#js-boneTreePanel .hd {
-  border-left-color: #91b493;
-  color: #91b493;
-}
-
 #js-timeLinePanel .hd {
   border-left-color: #3a8fb7;
   color: #3a8fb7;
@@ -347,35 +342,65 @@ html, body,
 #js-boneTreePanel {
   overflow: auto;
 }
+#js-boneTreePanel .hd {
+  border-left-color: #69b0ac;
+  color: #69b0ac;
+}
 #js-boneTreePanel .js-bone {
-  font-size: 14px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  position: relative;
 }
 #js-boneTreePanel .js-bone > .js-bone {
   padding-left: 10px;
 }
-#js-boneTreePanel .name {
-  position: relative;
-  padding-left: 10px;
-}
-#js-boneTreePanel .js-data-list-toggle {
-  width: 0;
-  height: 0;
-  overflow: hidden;
+#js-boneTreePanel .js-drag-area {
   position: absolute;
-  top: 9px;
   left: 0;
-  border: 5px solid transparent;
-  border-top-color: #111111;
+  top: 0;
+  width: 12px;
+  height: 100%;
+  background: repeat-y 50% 50% url(../img/dragable-area.png);
+  cursor: move;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  z-index: 1;
 }
-#js-boneTreePanel .js-data-list-toggle-off {
-  left: 3px;
-  top: 6px;
-  border: 5px solid transparent;
-  border-left-color: #111111;
+#js-boneTreePanel .js-drag-area:hover {
+  background-color: rgba(105, 176, 172, 0.6);
+  -webkit-transition: background-color 0.3s;
+  -moz-transition: background-color 0.3s;
+  -ms-transition: background-color 0.3s;
+  transition: background-color 0.3s;
+}
+#js-boneTreePanel .name {
+  height: 30px;
+  line-height: 30px;
+  padding-left: 22px;
+  position: relative;
+  z-index: 0;
+}
+#js-boneTreePanel .name::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  -webkit-transition: opacity 0.3s;
+  -moz-transition: opacity 0.3s;
+  -ms-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+  background-image: -webkit-linear-gradient(left, rgba(105, 176, 172, 0.6), rgba(137, 124, 191, 0.6));
+  background-image: -moz-linear-gradient(left, rgba(105, 176, 172, 0.6), rgba(137, 124, 191, 0.6));
+  background-image: -ms-linear-gradient(left, rgba(105, 176, 172, 0.6), rgba(137, 124, 191, 0.6));
+  background-image: linear-gradient(left, rgba(105, 176, 172, 0.6), rgba(137, 124, 191, 0.6));
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+}
+#js-boneTreePanel .name:hover::before {
+  opacity: 1;
 }
 #js-boneTreePanel .js-data-list {
   padding-left: 11px;
