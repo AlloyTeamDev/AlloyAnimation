@@ -3,12 +3,16 @@
 
 @import "_util";
 
+$panel-space: 1px;
+$panel-default-bg: #444953;
+
 // extend only selectors
 %leftPanel {
     width: 30%;
 }
 %rightPanel {
     width: 70%;
+    border-left: 0 none;
 }
 %topPanel {
     height: 70%;
@@ -16,6 +20,7 @@
 }
 %bottomPanel {
     height: 30%;
+    border-top: 0 none;
 }
 
 
@@ -30,41 +35,64 @@ html, body,
 }
 
 .js-panel {
+    $panel-padding-vert: 5px;
+    $panel-padding-hori: 10px;
+
     float: left;
     overflow: hidden;
-    padding: 5px 10px;
+    padding: $panel-padding-vert $panel-padding-hori;
+    background-color: $panel-default-bg;
     @include prefix(box-sizing, border-box);
 
+    // 用border色模拟页面body的背景色
+    border: $panel-space solid $app-bg;
+
     .hd {
-        height: 30px;
-        line-height: 30px;
-    }
-    .panelTitle {
-        display: inline-block;
-        padding-right: 10px;
+        $h: 30px;
+        height: $h;
+        line-height: $h;
+        margin-top: -1 * $panel-padding-vert;
+        margin-left: -1 * $panel-padding-hori;
+        border-left: 3px solid #333;
+        padding-left: 5px;
+        font-size: 15px;
     }
 }
 
 #js-actionPanel {
     @extend %leftPanel;
     @extend %topPanel;
-    background: #FB9966;
+
+    .hd {
+        $c: #fb9966;
+        border-left-color: $c;
+        color: $c;
+    }
 }
 
 #js-workspacePanel {
     @extend %rightPanel;
     @extend %topPanel;
-    background: darken(#fff, 5%);
 }
 
 #js-boneTreePanel {
     @extend %leftPanel;
     @extend %bottomPanel;
-    background: #91B493;
+
+    .hd {
+        $c: #91b493;
+        border-left-color: $c;
+        color: $c;
+    }
 }
 
 #js-timeLinePanel {
     @extend %rightPanel;
     @extend %bottomPanel;
-    background: #3A8FB7;
+
+    .hd {
+        $c: #3a8fb7;
+        border-left-color: $c;
+        color: $c;
+    }
 }

@@ -19,7 +19,8 @@ time, mark, audio, video {
   margin: 0;
   padding: 0;
   border: 0;
-  font-size: 100%;
+  font-size: inherit;
+  color: inherit;
   font: inherit;
   vertical-align: baseline;
 }
@@ -107,8 +108,14 @@ table {
 }
 
 body {
-  font-family: Helvetica,Arial,sans-serif;
+  font-family: 'hiragino sans gb', 'microsoft yahei', Helvetica, Arial, sans-serif;
   font-size: 14px;
+  color: #f2f2f2;
+  background-color: #2e3138;
+}
+
+input {
+  color: inherit;
 }
 
 .clearfix:after, #js-panelWrap:after {
@@ -127,6 +134,7 @@ body {
 
 #js-workspacePanel, #js-timeLinePanel {
   width: 70%;
+  border-left: 0 none;
 }
 
 #js-actionPanel, #js-workspacePanel {
@@ -136,6 +144,7 @@ body {
 
 #js-boneTreePanel, #js-timeLinePanel {
   height: 30%;
+  border-top: 0 none;
 }
 
 html, body,
@@ -148,34 +157,36 @@ html, body,
   float: left;
   overflow: hidden;
   padding: 5px 10px;
+  background-color: #444953;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
+  border: 1px solid #2e3138;
 }
 .js-panel .hd {
   height: 30px;
   line-height: 30px;
-}
-.js-panel .panelTitle {
-  display: inline-block;
-  padding-right: 10px;
-}
-
-#js-actionPanel {
-  background: #FB9966;
+  margin-top: -5px;
+  margin-left: -10px;
+  border-left: 3px solid #333;
+  padding-left: 5px;
+  font-size: 15px;
 }
 
-#js-workspacePanel {
-  background: #f2f2f2;
+#js-actionPanel .hd {
+  border-left-color: #fb9966;
+  color: #fb9966;
 }
 
-#js-boneTreePanel {
-  background: #91B493;
+#js-boneTreePanel .hd {
+  border-left-color: #91b493;
+  color: #91b493;
 }
 
-#js-timeLinePanel {
-  background: #3A8FB7;
+#js-timeLinePanel .hd {
+  border-left-color: #3a8fb7;
+  color: #3a8fb7;
 }
 
 .clearfix:after, #js-panelWrap:after {
