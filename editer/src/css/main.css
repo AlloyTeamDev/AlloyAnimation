@@ -129,21 +129,21 @@ input {
 }
 
 #js-actionPanel, #js-boneTreePanel {
-  width: 30%;
+  width: 38.2%;
 }
 
 #js-workspacePanel, #js-timeLinePanel {
-  width: 70%;
+  width: 61.8%;
   border-left: 0 none;
 }
 
 #js-actionPanel, #js-workspacePanel {
-  height: 70%;
+  height: 61.8%;
   min-height: 210px;
 }
 
 #js-boneTreePanel, #js-timeLinePanel {
-  height: 30%;
+  height: 38.2%;
   border-top: 0 none;
 }
 

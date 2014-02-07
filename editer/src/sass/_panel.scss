@@ -8,18 +8,18 @@ $panel-default-bg: #444953;
 
 // extend only selectors
 %leftPanel {
-    width: 30%;
+    width: 38.2%;
 }
 %rightPanel {
-    width: 70%;
+    width: 61.8%;
     border-left: 0 none;
 }
 %topPanel {
-    height: 70%;
+    height: 61.8%;
     min-height: 210px;
 }
 %bottomPanel {
-    height: 30%;
+    height: 38.2%;
     border-top: 0 none;
 }
 
