@@ -1,4 +1,11 @@
+$app-bg: #2e3138;
 body {
-    font-family: Helvetica,Arial,sans-serif;
+    font-family: 'hiragino sans gb', 'microsoft yahei', Helvetica, Arial, sans-serif;
     font-size: 14px;
+    color: darken(#fff, 5%);
+    background-color: $app-bg;
+}
+
+input {
+    color: inherit;
 }
