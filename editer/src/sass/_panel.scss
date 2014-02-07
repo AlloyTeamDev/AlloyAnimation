@@ -73,6 +73,9 @@ html, body,
 #js-workspacePanel {
     @extend %rightPanel;
     @extend %topPanel;
+
+    @include prefix(box-shadow, inset 0 0 10px #000);
+    background: transparent url(../img/workspace-bg.png);
 }
 
 #js-boneTreePanel {

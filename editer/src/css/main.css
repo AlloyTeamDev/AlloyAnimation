@@ -179,6 +179,14 @@ html, body,
   color: #fb9966;
 }
 
+#js-workspacePanel {
+  -webkit-box-shadow: inset 0 0 10px black;
+  -moz-box-shadow: inset 0 0 10px black;
+  -ms-box-shadow: inset 0 0 10px black;
+  box-shadow: inset 0 0 10px black;
+  background: transparent url(../img/workspace-bg.png);
+}
+
 #js-boneTreePanel .hd {
   border-left-color: #91b493;
   color: #91b493;
