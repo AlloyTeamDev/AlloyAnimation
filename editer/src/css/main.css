@@ -352,7 +352,7 @@ html, body,
 #js-boneTreePanel .js-bone > .js-bone {
   margin-left: 10px;
 }
-#js-boneTreePanel .js-drag-area {
+#js-boneTreePanel .drag-hint {
   position: absolute;
   left: 0;
   top: 0;
@@ -366,12 +366,8 @@ html, body,
   user-select: none;
   z-index: 1;
 }
-#js-boneTreePanel .js-drag-area:hover {
-  background-color: rgba(105, 176, 172, 0.6);
-  -webkit-transition: background-color 0.3s;
-  -moz-transition: background-color 0.3s;
-  -ms-transition: background-color 0.3s;
-  transition: background-color 0.3s;
+#js-boneTreePanel .drag-hint:hover + .name::before {
+  opacity: 1;
 }
 #js-boneTreePanel .name {
   height: 30px;
@@ -402,20 +398,4 @@ html, body,
 }
 #js-boneTreePanel .name:hover::before {
   opacity: 1;
-}
-#js-boneTreePanel .js-data-list {
-  padding-left: 11px;
-}
-#js-boneTreePanel .js-data-list.js-hide {
-  display: none;
-}
-#js-boneTreePanel .js-field-input {
-  margin: 0;
-  background-color: transparent;
-  border: 1px solid transparent;
-  text-decoration: none;
-}
-#js-boneTreePanel .js-field-input:focus, #js-boneTreePanel .js-field-input:hover {
-  outline: 0 none;
-  border-color: #3A8FB7;
 }

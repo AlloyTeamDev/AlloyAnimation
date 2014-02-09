@@ -4,18 +4,17 @@
 #js-boneTreePanel {
     // 缩进
     $indent: 10px;
-    // 字段值的input框的border宽度
-    $field-val-border-width: 1px;
-    // 数据列表展开快关的颜色
-    $data-list-toggle-color: #111;
     // 一个骨骼条目的高度
     $item-height: 30px;
-    // 此面板的主色调
+    // 此面板的主色和配色
     $main-color: #69B0AC;
+    $sub-color1: #3a8fb7;
+    $sub-color2: #897CBF;
     // hover骨骼条目时的背景色
-    $hover-bg-alpha: 0.6;
-    $hover-bg: rgba($main-color, $hover-bg-alpha);
-    $drag-area-width: 12px;
+    $hover-bg-alpha: .6;
+    $hover-bg1: rgba($main-color, $hover-bg-alpha);
+    $hover-bg2: rgba($sub-color2, $hover-bg-alpha);
+    $drag-hint-width: 12px;
 
     overflow: auto;
 
@@ -23,9 +22,8 @@
         border-left-color: $main-color;
         color: $main-color;
     }
-
     .js-bone {
-        // 用于.js-drag-area的绝对定位
+        // 用于.drag-hint的绝对定位
         position: relative;
 
         & > .js-bone {
@@ -33,21 +31,20 @@
         }
     }
 
-    .js-drag-area {
+    .drag-hint {
         position: absolute;
         left: 0;
         top: 0;
-        width: $drag-area-width;
+        width: $drag-hint-width;
         height: $item-height;
         background: repeat-y 50% 50% url(../img/dragable-area.png);
         cursor: move;
         @include prefix(user-select, none);
-        // 使.js-drag-area浮于.name的上方
+        // 使.drag-hint浮于.name的上方
         z-index: 1;
 
-        &:hover {
-            background-color: $hover-bg;
-            @include prefix(transition, background-color 0.3s);
+        &:hover + .name::before {
+            opacity: 1;
         }
     }
 
@@ -55,8 +52,8 @@
         height: $item-height;
         line-height: $item-height;
         cursor: default;
-        // 给.js-drag-area腾出空间
-        padding-left: $drag-area-width + 10px;
+        // 给.drag-hint腾出空间
+        padding-left: $drag-hint-width + 10px;
         // 将z-index显示设置为非auto的定位元素，会创建stacking context
         position: relative;
         z-index: 0;
@@ -68,36 +65,15 @@
             height: 100%;
             opacity: 0;
             @include prefix(transition, opacity 0.3s);
-            @include prefixVal(background-image, linear-gradient(left, $hover-bg, rgba(#897CBF, $hover-bg-alpha)));
+            @include prefixVal(background-image, linear-gradient(left, $hover-bg1, $hover-bg2));
             position: absolute;
             left: 0;
             top: 0;
-            // 创建了stacking context的.name，不管其z-index值显示设置为多少，
-            // 对于设置了z-index的子孙元素而言，都为0。
-            // 所以把before伪元素的z-index设置为-1，使其衬在.name的普通子孙元素的下方
+            // 使这个before伪元素衬在.name的普通子孙元素的下方
             z-index: -1;
         }
         &:hover::before {
             opacity: 1;
-        }
-    }
-
-    .js-data-list {
-        padding-left: $indent + $field-val-border-width;
-    }
-    .js-data-list.js-hide {
-        display: none;
-    }
-    .js-field-input {
-        margin: 0;
-        background-color: transparent;
-        border: $field-val-border-width solid transparent;
-        text-decoration: none;
-
-        &:focus, &:hover {
-            outline: 0 none;
-            // TODO: 这个颜色有待确定
-            border-color: #3A8FB7;
         }
     }
 }

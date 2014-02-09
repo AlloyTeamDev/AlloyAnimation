@@ -3,26 +3,6 @@
     依赖的外部变量：
     name {String} 骨骼名
     **/
-
-    // 将数值类型的字段转化为字符串类型
-    var key;
-    for(key in data){
-        if(!data.hasOwnProperty(key)) continue;
-        if(typeof data[key] === 'number'){
-            data[key] = data[key] + '';
-        }
-    }
 %>
-<span class="js-drag-area"></span>
+<div class="drag-hint"></div>
 <div class="name"><%- data.name %></div>
-<ul class="js-data-list js-hide">
-    <li>width :<input class="js-field-input js-width" data-field-name="w" type="text" value="<%- data.w %>"/></li>
-    <li>height :<input class="js-field-input js-height" data-field-name="h" type="text" value="<%- data.h %>"/></li>
-    <li>jointX :<input class="js-field-input js-jointX" data-field-name="jointX" type="text" value="<%- data.jointX %>"/></li>
-    <li>jointY :<input class="js-field-input js-jointY" data-field-name="jointY" type="text" value="<%- data.jointY %>"/></li>
-    <li>x :<input class="js-field-input js-x" data-field-name="x" type="text" value="<%- data.x %>"/></li>
-    <li>y :<input class="js-field-input js-y" data-field-name="y" type="text" value="<%- data.y %>"/></li>
-    <li>z :<input class="js-field-input js-z" data-field-name="z" type="text" value="<%- data.z %>"/></li>
-    <li>rotate :<input class="js-field-input js-rotate" data-field-name="rotate" type="text" value="<%- data.rotate %>"/></li>
-    <li>opacity :<input class="js-field-input js-opacity" data-field-name="opacity" type="text" value="<%- data.opacity %>"/></li>
-</ul>
