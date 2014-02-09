@@ -55,9 +55,7 @@ define([
 
         events: {
             'mousedown': 'onMouseDownBone',
-            'mouseup .js-bone': 'onMouseUpBone',
-            'click .js-data-list-toggle': 'onClickDataListToggle',
-            'input .js-field-input': 'onInputFieldVal'
+            'mouseup .js-bone': 'onMouseUpBone'
         },
 
         onMouseDownBone: function($event){
@@ -138,49 +136,6 @@ define([
             }
 
             this.$el.off('mousemove', this.onMouseMove);
-        },
-
-        // 单击展开/收缩骨骼的数据列表
-        onClickDataListToggle: function($event){
-            $($event.target)
-                .toggleClass('js-data-list-toggle-off')
-                .parentsUntil(this.$el, '.js-bone')
-                .eq(0)
-                .children('.js-data-list')
-                .toggleClass('js-hide');
-        },
-
-        // TODO: 验证输入内容的正确性
-        onInputFieldVal: function($event){
-            var $fieldInput = $($event.target),
-                $bone, boneId, fieldName, fieldVal, bone;
-
-            if( ( $bone = $fieldInput.parentsUntil(this.$el, '.js-bone').eq(0) ).length ){
-                boneId = $bone.data('bone-id');
-
-                // TODO: 抽离这部分可复用的验证
-                if( !boneId || !(boneId in this._boneHash) ){
-                    console.error('Bone id wrong when change field input, bone id is %s', boneId);
-                }
-                else if( !( fieldName = $fieldInput.data('field-name') ) ){
-                    console.error('Field name wrong when change field input. bone id: %s, field name: %s', boneId, fieldName);
-                }
-                else{
-                    bone = this._boneHash[boneId];
-                    bone[bone.FIELD_2_METHOD[fieldName]](
-                        $fieldInput.val(),
-                        {
-                            onlyCache: true
-                        }
-                    );
-                    this.trigger(
-                        'changedBone',
-                        boneId,
-                        fieldName,
-                        $fieldInput.val()
-                    );
-                }
-            }
         }
     });
 
