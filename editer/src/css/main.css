@@ -399,3 +399,6 @@ html, body,
 #js-boneTreePanel .name:hover::before {
   opacity: 1;
 }
+#js-boneTreePanel .js-activeBone > .name::before {
+  opacity: 1;
+}

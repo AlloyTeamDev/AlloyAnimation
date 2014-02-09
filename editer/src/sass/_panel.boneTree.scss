@@ -76,4 +76,9 @@
             opacity: 1;
         }
     }
+
+    // 激活骨骼始终处于高亮状态
+    .js-activeBone > .name::before {
+        opacity: 1;
+    }
 }
