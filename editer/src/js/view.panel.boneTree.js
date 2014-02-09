@@ -3,11 +3,11 @@
 @module
 **/
 define([
-    'jquery', 'underscore',
+    'jquery', 'jquery.defaultSetting', 'underscore',
     'view.panel.abstractSkeleton', 'view.abstractBone',
     'tmpl!html/panel.boneTree.html', 'tmpl!html/panel.boneTree.bone.html'
 ], function(
-    $, _,
+    $, undefined, _,
     AbstractSkeleton, AbstractBone,
     boneTreeTmpl, boneTmpl
 ){
@@ -25,11 +25,20 @@ define([
             // 复用父类的`initialize`方法
             BoneTreePanel.__super__.initialize.apply(this, arguments);
 
+            // 这些事件回调函数虽然是此类的方法，但是并不通过 `events` 配置来绑定，
+            // 所以绑定其执行上下文为此类的实例，
+            // 以便跟通过 `events` 配置的事件回调函数的执行上下文保持一致
+            [
+                'oneMouseMoveAfterMouseDownBone',
+                'oneMouseUpAfterDragBone'
+            ].forEach(function(method){
+                this[method] = bind(this[method], this);
+            }, this);
+
             // 保存具体的骨骼构造函数，覆盖从父类继承过来的抽象的骨骼构造函数
             this._Bone = Bone;
 
-            this.onMouseMove = bind(this.onMouseMove, this);
-
+            this._listeningMouseMoveEvent = false;
             this._mouseDownBone = null;
             this._dragingBone = null;
         },
@@ -56,124 +65,121 @@ define([
         events: {
             'mousedown': 'onMouseDownBone',
             'mouseup .js-bone': 'onMouseUpBone',
-            'click .js-data-list-toggle': 'onClickDataListToggle',
-            'input .js-field-input': 'onInputFieldVal'
+            'click .js-bone': 'onClickBone'
         },
 
         onMouseDownBone: function($event){
             var $target = $($event.target),
                 $bone;
 
+            // 判断是否在拖拽.js-bone
             if( ( $target.hasClass('js-bone') && ($bone = $target) ) ||
                 ( $bone = $target.parentsUntil(this.$el, '.js-bone') ).length
             ){
                 this._mouseDownBone = $bone.data('bone-id');
-                this.$el.on('mousemove', this.onMouseMove);
+
+                // 确定是在拖拽.js-bone时，才监听mousemove事件，
+                // 以免频繁触发不必要事件回调
+                if(!this._listeningMouseMoveEvent){
+                    // 这个mousemove事件，触发一次即可说明是在拖拽
+                    this.$el.one(
+                        'mousemove',
+                        this.oneMouseMoveAfterMouseDownBone
+                    );
+                    this._listeningMouseMoveEvent = true;
+                }
             }
         },
 
-        onMouseMove: function($event){
-            var $target = $($event.target),
-                $targetBone;
+        // 如果鼠标按下之后、放开之前有移动，说明是在拖拽，
+        // 设置当前正在拖拽的骨骼id，并停止监听mousemove事件。
+        // 这个事件回调函数，应在执行一次后就解除绑定
+        oneMouseMoveAfterMouseDownBone: function($event){
+            this._dragingBone = this._mouseDownBone;
+            this._mouseDownBone = null;
+            this._listeningMouseMoveEvent = false;
 
-            // 获取鼠标当前所在的骨骼
-            if( this._mouseDownBone &&
-                ( ( $target.hasClass('js-bone') && ($targetBone = $target) ) ||
-                ( $targetBone = $target.parentsUntil(this.$el, '.js-bone').eq(0) ).length )
-            ){
-                if($targetBone.data('bone-id') === this._mouseDownBone) return;
-                this._dragingBone = this._mouseDownBone;
-                this._mouseDownBone = null;
-                console.debug('Draging bone %s', this._dragingBone);
+            // 阻止在拖拽骨骼的过程中选中文本
+            this.$el.css('user-select', 'none', 'extra');
+            // 拖拽结束后取消阻止
+            this.$el.one('mouseup', this.oneMouseUpAfterDragBone);
 
-            }
+            console.debug('Draging bone %s', this._dragingBone);
         },
 
+        // 取消在拖拽骨骼的过程中对选中文本的阻止
+        oneMouseUpAfterDragBone: function($event){
+            console.log('user select text');
+            this.$el.css('userSelect', 'text');
+        },
+
+        // DOUBT: 
+        // 拖拽放开后，这个事件回调函数会触发两次，why?
+        // 而且第二次触发时，有时 `this._draginBone` 有值，有时没有，why?
         onMouseUpBone: function($event){
             var $target = $($event.target),
                 $targetBone, $dragingBone,
                 targetBoneId, dragingBoneId,
                 panel;
 
-            if( this._dragingBone &&
-                (   ( $target.hasClass('js-bone') && ($targetBone = $target) ) ||
+            // 如果正在拖拽骨骼
+            if( this._dragingBone ){
+                // 如果拖拽到某个骨骼上，获取该骨骼，赋给 `$targetBone`
+                if( ( $target.hasClass('js-bone') && ($targetBone = $target) ) ||
                     ( $targetBone = $target.parentsUntil(this.$el, '.js-bone').eq(0) ).length
-                )
-            ){
-                $dragingBone = this._boneHash[this._dragingBone].$el
+                ){
+                    targetBoneId = $targetBone.data('bone-id');
 
-                targetBoneId = $targetBone.data('bone-id');
-                dragingBoneId = $dragingBone.data('bone-id');
+                    if(targetBoneId === this._dragingBone){
+                        console.debug('End draging bone %s, still at origin place', targetBoneId);
+                        this._dragingBone = null;
+                        return;
+                    }
 
-                if(targetBoneId === dragingBoneId) return;
+                    $dragingBone = this._boneHash[this._dragingBone].$el
+                    $dragingBone.detach();
+                    dragingBoneId = this._dragingBone;
 
-                $dragingBone.detach();
+                    panel = this;
+                    setTimeout(function(){
+                        $dragingBone.appendTo($targetBone);
 
-                panel = this;
-                setTimeout(function(){
-                    $dragingBone.appendTo($targetBone);
+                        panel.trigger('dragedBoneTo', dragingBoneId, targetBoneId);
 
-                    panel.trigger('dragedBoneTo', dragingBoneId, targetBoneId);
+                        panel = null;
+                        $targetBone = null;
+                        $dragingBone = null;
 
-                    panel = null;
-                    $targetBone = null;
-                    $dragingBone = null;
+                        console.debug(
+                            'End draging bone %s, appent it to %s',
+                            dragingBoneId,
+                            targetBoneId
+                        );
+                    }, 300);
+                }
 
-                    console.debug(
-                        'End draging bone %s, appent it to %s',
-                        dragingBoneId,
-                        targetBoneId
-                    );
-                }, 300);
-
-                $target = null;
                 this._dragingBone = null;
             }
 
-            this.$el.off('mousemove', this.onMouseMove);
-        },
+            $target = null;
 
-        // 单击展开/收缩骨骼的数据列表
-        onClickDataListToggle: function($event){
-            $($event.target)
-                .toggleClass('js-data-list-toggle-off')
-                .parentsUntil(this.$el, '.js-bone')
-                .eq(0)
-                .children('.js-data-list')
-                .toggleClass('js-hide');
-        },
-
-        // TODO: 验证输入内容的正确性
-        onInputFieldVal: function($event){
-            var $fieldInput = $($event.target),
-                $bone, boneId, fieldName, fieldVal, bone;
-
-            if( ( $bone = $fieldInput.parentsUntil(this.$el, '.js-bone').eq(0) ).length ){
-                boneId = $bone.data('bone-id');
-
-                // TODO: 抽离这部分可复用的验证
-                if( !boneId || !(boneId in this._boneHash) ){
-                    console.error('Bone id wrong when change field input, bone id is %s', boneId);
-                }
-                else if( !( fieldName = $fieldInput.data('field-name') ) ){
-                    console.error('Field name wrong when change field input. bone id: %s, field name: %s', boneId, fieldName);
-                }
-                else{
-                    bone = this._boneHash[boneId];
-                    bone[bone.FIELD_2_METHOD[fieldName]](
-                        $fieldInput.val(),
-                        {
-                            onlyCache: true
-                        }
-                    );
-                    this.trigger(
-                        'changedBone',
-                        boneId,
-                        fieldName,
-                        $fieldInput.val()
-                    );
-                }
+            // 如果没有进行拖拽，则需要在mouseup事件的回调函数中停止监听mousemove事件
+            if(this._listeningMouseMoveEvent){
+                this.$el.off('mousemove', this.oneMouseMoveAfterMouseDownBone);
+                this._listeningMouseMoveEvent = false;
             }
+        },
+
+        onClickBone: function($event){
+            var $target = $($event.currentTarget),
+                targetBoneId = $target.data('bone-id');
+
+            if(targetBoneId === this._activeBone.id) return;
+
+            if( this.changeActiveBone(targetBoneId) ){
+                this.trigger('clickBone', targetBoneId);
+            }
+            $event.stopPropagation();
         }
     });
 

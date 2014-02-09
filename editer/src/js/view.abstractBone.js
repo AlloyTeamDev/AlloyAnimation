@@ -66,7 +66,11 @@ define([
         @return this
         **/
         activate: function(){
-            console.debug('Activate bone %s in panel %s', this.id, this.constructor._panelName);
+            console.debug(
+                'Activate bone %s in %s panel',
+                this.id,
+                this.constructor._panelName
+            );
 
             this.$el.addClass('js-activeBone');
 
@@ -80,7 +84,11 @@ define([
         deactivate: function(){
             this.$el.removeClass('js-activeBone');
 
-            console.debug('Deactivate bone ' + this.id);
+            console.debug(
+                'Deactivate bone %s in %s panel',
+                this.id,
+                this.constructor._panelName
+            );
 
             return this;
         },

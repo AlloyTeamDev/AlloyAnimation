@@ -4,11 +4,11 @@
 @exports 工作区面板的view实例
 **/
 define([
-    'jquery', 'base/math',
+    'jquery', 'jquery.defaultSetting', 'base/math',
     'view.panel.abstractSkeleton', 'view.abstractBone',
     'tmpl!html/panel.workspace.html', 'tmpl!html/panel.workspace.transformUtil.html'
 ], function(
-    $, math,
+    $, undefined, math,
     AbstractSkeleton, AbstractBone,
     workspaceTmpl, transformUtilTmpl
 ){
@@ -168,8 +168,9 @@ define([
                 ( $bone = $target.parentsUntil(this.$el, '.js-bone') ).length
             ){
                 boneId = Bone.htmlId2Id($bone.attr('id'));
-                this.changeActiveBone(boneId);
-                this.trigger('clickBone', boneId);
+                if( this.changeActiveBone(boneId) ){
+                    this.trigger('clickBone', boneId);
+                }
             }
         },
 

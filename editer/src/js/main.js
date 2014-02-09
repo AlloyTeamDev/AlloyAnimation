@@ -29,7 +29,7 @@ require.config({
 
 require([
     'controller',
-    'jquery.defaultSetting',
+    'jquery',
     'test/user'
 ], function(controller, $, user){
     // TODO: 判断是否高级浏览器；登陆

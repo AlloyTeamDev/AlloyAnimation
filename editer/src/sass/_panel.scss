@@ -81,12 +81,6 @@ html, body,
 #js-boneTreePanel {
     @extend %leftPanel;
     @extend %bottomPanel;
-
-    .hd {
-        $c: #91b493;
-        border-left-color: $c;
-        color: $c;
-    }
 }
 
 #js-timeLinePanel {
