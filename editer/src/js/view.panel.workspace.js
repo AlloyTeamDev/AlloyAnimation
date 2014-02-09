@@ -168,8 +168,9 @@ define([
                 ( $bone = $target.parentsUntil(this.$el, '.js-bone') ).length
             ){
                 boneId = Bone.htmlId2Id($bone.attr('id'));
-                this.changeActiveBone(boneId);
-                this.trigger('clickBone', boneId);
+                if( this.changeActiveBone(boneId) ){
+                    this.trigger('clickBone', boneId);
+                }
             }
         },
 

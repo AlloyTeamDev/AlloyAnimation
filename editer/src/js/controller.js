@@ -45,10 +45,13 @@ define([
             .on('remove', handler.onAllBoneCollRemoveModel);
 
         // 监听view事件
-        workspacePanelView.on('addBone', handler.onWorkspacePanelAddBone);
-        workspacePanelView.on('updateBone', handler.onWorkspacePanelUpdateBone);
-        workspacePanelView.on('clickBone', handler.onWorkspacePanelClickBone);
-        boneTreePanelView.on('changedBone', handler.onBoneTreePanelChangedBone);
+        workspacePanelView
+            .on('addBone', handler.onWorkspacePanelAddBone)
+            .on('updateBone', handler.onWorkspacePanelUpdateBone)
+            .on('clickBone', handler.onWorkspacePanelClickBone);
+        boneTreePanelView
+            .on('changedBone', handler.onBoneTreePanelChangedBone)
+            .on('clickBone', handler.onBoneTreePanelClickBone);
     };
 
     /**
@@ -257,6 +260,10 @@ define([
 
         onWorkspacePanelClickBone: function(boneId){
             boneTreePanelView.changeActiveBone(boneId);
+        },
+
+        onBoneTreePanelClickBone: function(boneId){
+            workspacePanelView.changeActiveBone(boneId);
         },
 
         onBoneTreePanelChangedBoneName: function(boneId, newName){

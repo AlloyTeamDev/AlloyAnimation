@@ -105,17 +105,17 @@ define([
         改变此面板中的激活骨骼。
         只要有骨骼，就有骨骼处于激活状态，并且只有一个激活骨骼。
         @param {String} boneId 要激活的骨骼的id
-        @return this
+        @return {Boolean} true: 有改变；false: 没改变
         **/
         changeActiveBone: function(boneId){
             var oldActiveBone = this._activeBone;
             if(oldActiveBone){
-                if(oldActiveBone.id === boneId) return this;
+                if(oldActiveBone.id === boneId) return false;
                 oldActiveBone.deactivate();
             }
             (this._activeBone = this._boneHash[boneId]).activate();
 
-            return this;
+            return true;
         },
 
         /* End: 对本面板中的骨骼的增删改 */

@@ -64,7 +64,8 @@ define([
 
         events: {
             'mousedown': 'onMouseDownBone',
-            'mouseup .js-bone': 'onMouseUpBone'
+            'mouseup .js-bone': 'onMouseUpBone',
+            'click .js-bone': 'onClickBone'
         },
 
         onMouseDownBone: function($event){
@@ -131,6 +132,7 @@ define([
 
                     if(targetBoneId === this._dragingBone){
                         console.debug('End draging bone %s, still at origin place', targetBoneId);
+                        this._dragingBone = null;
                         return;
                     }
 
@@ -166,6 +168,18 @@ define([
                 this.$el.off('mousemove', this.oneMouseMoveAfterMouseDownBone);
                 this._listeningMouseMoveEvent = false;
             }
+        },
+
+        onClickBone: function($event){
+            var $target = $($event.currentTarget),
+                targetBoneId = $target.data('bone-id');
+
+            if(targetBoneId === this._activeBone.id) return;
+
+            if( this.changeActiveBone(targetBoneId) ){
+                this.trigger('clickBone', targetBoneId);
+            }
+            $event.stopPropagation();
         }
     });
 
