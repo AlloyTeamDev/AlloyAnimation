@@ -128,25 +128,6 @@ input {
   font-size: 0;
 }
 
-#js-actionPanel, #js-boneTreePanel {
-  width: 38.2%;
-}
-
-#js-workspacePanel, #js-timeLinePanel {
-  width: 61.8%;
-  border-left: 0 none;
-}
-
-#js-actionPanel, #js-workspacePanel {
-  height: 61.8%;
-  min-height: 210px;
-}
-
-#js-boneTreePanel, #js-timeLinePanel {
-  height: 38.2%;
-  border-top: 0 none;
-}
-
 html, body,
 #js-panelWrap {
   width: 100%;
@@ -158,11 +139,12 @@ html, body,
   overflow: hidden;
   padding: 5px 10px;
   background-color: #444953;
+  background-clip: padding-box;
+  border: 1px solid transparent;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
-  border: 1px solid #2e3138;
 }
 .js-panel .hd {
   height: 30px;
@@ -174,12 +156,16 @@ html, body,
   font-size: 15px;
 }
 
-#js-actionPanel .hd {
-  border-left-color: #fb9966;
-  color: #fb9966;
+#js-bonePropPanel {
+  width: 38.2%;
+  height: 61.8%;
+  border-bottom: 0 none;
 }
 
 #js-workspacePanel {
+  width: 61.8%;
+  height: 61.8%;
+  border: 0 none;
   -webkit-box-shadow: inset 0 0 10px black;
   -moz-box-shadow: inset 0 0 10px black;
   -ms-box-shadow: inset 0 0 10px black;
@@ -187,9 +173,29 @@ html, body,
   background: transparent url(../img/workspace-bg.png);
 }
 
+#js-boneTreePanel {
+  width: 38.2%;
+  height: 38.2%;
+}
+
+#js-timeLinePanel {
+  width: 38.1924%;
+  height: 38.2%;
+  border-left: 0 none;
+}
 #js-timeLinePanel .hd {
   border-left-color: #3a8fb7;
   color: #3a8fb7;
+}
+
+#js-actionPanel {
+  width: 23.6076%;
+  height: 38.2%;
+  border-left: 0 none;
+}
+#js-actionPanel .hd {
+  border-left-color: #fb9966;
+  color: #fb9966;
 }
 
 .clearfix:after, #js-panelWrap:after {
