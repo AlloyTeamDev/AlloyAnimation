@@ -1,5 +1,5 @@
 /**
-骨骼数面板的view
+骨骼树面板的view
 @module
 **/
 define([
