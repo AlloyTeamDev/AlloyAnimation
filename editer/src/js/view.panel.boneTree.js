@@ -3,11 +3,11 @@
 @module
 **/
 define([
-    'jquery', 'underscore',
+    'jquery', 'jquery.defaultSetting', 'underscore',
     'view.panel.abstractSkeleton', 'view.abstractBone',
     'tmpl!html/panel.boneTree.html', 'tmpl!html/panel.boneTree.bone.html'
 ], function(
-    $, _,
+    $, undefined, _,
     AbstractSkeleton, AbstractBone,
     boneTreeTmpl, boneTmpl
 ){
@@ -64,11 +64,15 @@ define([
             var $target = $($event.target),
                 $bone;
 
+            // 如果拖拽的是.js-bone
             if( ( $target.hasClass('js-bone') && ($bone = $target) ) ||
                 ( $bone = $target.parentsUntil(this.$el, '.js-bone') ).length
             ){
                 this._mouseDownBone = $bone.data('bone-id');
                 this.$el.on('mousemove', this.onMouseMove);
+
+                // 防止在drag的过程中选中文本
+                this.$el.css('user-select', 'none', 'extra');
             }
         },
 
@@ -81,11 +85,11 @@ define([
                 ( ( $target.hasClass('js-bone') && ($targetBone = $target) ) ||
                 ( $targetBone = $target.parentsUntil(this.$el, '.js-bone').eq(0) ).length )
             ){
-                if($targetBone.data('bone-id') === this._mouseDownBone) return;
+                if( $targetBone.data('bone-id') === this._mouseDownBone ) return;
                 this._dragingBone = this._mouseDownBone;
                 this._mouseDownBone = null;
-                console.debug('Draging bone %s', this._dragingBone);
 
+                console.debug('Draging bone %s', this._dragingBone);
             }
         },
 
@@ -128,6 +132,9 @@ define([
 
                 $target = null;
                 this._dragingBone = null;
+
+                // 取消在drag的过程中对选中文本的阻止
+                this.$el.css('userSelect', 'text');
             }
 
             this.$el.off('mousemove', this.onMouseMove);

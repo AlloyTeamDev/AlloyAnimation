@@ -4,11 +4,11 @@
 @exports 工作区面板的view实例
 **/
 define([
-    'jquery', 'base/math',
+    'jquery', 'jquery.defaultSetting', 'base/math',
     'view.panel.abstractSkeleton', 'view.abstractBone',
     'tmpl!html/panel.workspace.html', 'tmpl!html/panel.workspace.transformUtil.html'
 ], function(
-    $, math,
+    $, undefined, math,
     AbstractSkeleton, AbstractBone,
     workspaceTmpl, transformUtilTmpl
 ){

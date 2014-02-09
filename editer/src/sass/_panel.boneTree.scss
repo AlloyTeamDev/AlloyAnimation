@@ -29,7 +29,7 @@
         position: relative;
 
         & > .js-bone {
-            padding-left: $indent;
+            margin-left: $indent;
         }
     }
 
@@ -38,10 +38,9 @@
         left: 0;
         top: 0;
         width: $drag-area-width;
-        height: 100%;
+        height: $item-height;
         background: repeat-y 50% 50% url(../img/dragable-area.png);
         cursor: move;
-        // 防止在drag的过程中选中文本
         @include prefix(user-select, none);
         // 使.js-drag-area浮于.name的上方
         z-index: 1;
@@ -55,6 +54,7 @@
     .name {
         height: $item-height;
         line-height: $item-height;
+        cursor: default;
         // 给.js-drag-area腾出空间
         padding-left: $drag-area-width + 10px;
         // 将z-index显示设置为非auto的定位元素，会创建stacking context

@@ -350,14 +350,14 @@ html, body,
   position: relative;
 }
 #js-boneTreePanel .js-bone > .js-bone {
-  padding-left: 10px;
+  margin-left: 10px;
 }
 #js-boneTreePanel .js-drag-area {
   position: absolute;
   left: 0;
   top: 0;
   width: 12px;
-  height: 100%;
+  height: 30px;
   background: repeat-y 50% 50% url(../img/dragable-area.png);
   cursor: move;
   -webkit-user-select: none;
@@ -376,6 +376,7 @@ html, body,
 #js-boneTreePanel .name {
   height: 30px;
   line-height: 30px;
+  cursor: default;
   padding-left: 22px;
   position: relative;
   z-index: 0;
