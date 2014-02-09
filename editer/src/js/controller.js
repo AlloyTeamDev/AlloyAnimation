@@ -6,12 +6,12 @@
 define([
     'exports',
     'underscore',
-    'view.panel.action', 'view.panel.workspace', 'view.panel.boneTree', 'view.panel.timeLine',
+    'view.panel.action', 'view.panel.workspace', 'view.panel.boneTree', 'view.panel.timeLine', 'view.panel.boneProp',
     'collection.bone', 'model.keyframe'
 ], function(
     exports,
     _,
-    actionPanelView, workspacePanelView, boneTreePanelView, timeLinePanelView,
+    actionPanelView, workspacePanelView, boneTreePanelView, timeLinePanelView, bonePropPanelView,
     BoneCollection, KeyframeModel
 ){
     var handler,
@@ -36,6 +36,7 @@ define([
         workspacePanelView.render(initBonesData);
         boneTreePanelView.render(initBonesData);
         timeLinePanelView.render(initBonesData);
+        bonePropPanelView.render(initBonesData);
         // 销毁引用，避免因为被事件回调函数的作用域链引用而没有释放内存
         initBonesData = null;
 

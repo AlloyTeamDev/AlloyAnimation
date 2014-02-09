@@ -151,7 +151,7 @@ html, body,
   line-height: 30px;
   margin-top: -5px;
   margin-left: -10px;
-  border-left: 3px solid #333;
+  border-left: 3px solid #fff;
   padding-left: 5px;
   font-size: 15px;
 }
@@ -407,4 +407,12 @@ html, body,
 }
 #js-boneTreePanel .js-activeBone > .name::before {
   opacity: 1;
+}
+
+#js-bonePropPanel {
+  overflow: auto;
+}
+#js-bonePropPanel .hd {
+  border-left-color: #897cbf;
+  color: #897cbf;
 }

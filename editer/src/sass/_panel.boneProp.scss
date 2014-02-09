@@ -1,0 +1,10 @@
+#js-bonePropPanel {
+    $main-color: #897CBF;
+
+    overflow: auto;
+
+    .hd {
+        border-left-color: $main-color;
+        color: $main-color;
+    }
+}
