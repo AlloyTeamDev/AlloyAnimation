@@ -1,0 +1,69 @@
+<%
+    /**
+    @param {Object} bone
+        @param {String} bone.name
+        @param {String} bone.texture
+        @param {Number|String} bone.w
+        @param {Number|String} bone.h
+        @param {Number|String} bone.x
+        @param {Number|String} bone.y
+        @param {Number|String} bone.z
+        @param {Number|String} bone.rotate
+        @param {Number|String} bone.opacity
+        @param {Number|String} bone.jointX
+        @param {Number|String} bone.jointY
+    **/
+
+    // 将数值类型的字段转化为字符串类型
+    var key;
+    for(key in bone){
+        if(!bone.hasOwnProperty(key)) continue;
+        if(typeof bone[key] === 'number'){
+            bone[key] = bone[key] + '';
+        }
+    }
+%>
+<div>
+    <label for="boneProp-name">名称</label>
+    <input id="boneProp-name" type="text" value="<%- bone.name %>">
+</div>
+<div>
+    <label for="boneProp-texture">纹理图</label>
+    <input id="boneProp-texture" type="file" value="<%= bone.texture %>">
+</div>
+<div>
+    <label for="boneProp-w">宽度</label>
+    <input id="boneProp-w" type="number" value="<%= bone.w %>">
+</div>
+<div>
+    <label for="boneProp-h">高度</label>
+    <input id="boneProp-h" type="number" value="<%= bone.h %>">
+</div>
+<div>
+    <label for="boneProp-x">X坐标</label>
+    <input id="boneProp-x" type="number" value="<%= bone.x %>">
+</div>
+<div>
+    <label for="boneProp-y">Y坐标</label>
+    <input id="boneProp-y" type="number" value="<%= bone.y %>">
+</div>
+<div>
+    <label for="boneProp-z">Z坐标</label>
+    <input id="boneProp-z" type="number" value="<%= bone.z %>">
+</div>
+<div>
+    <label for="boneProp-rotate">旋转角度</label>
+    <input id="boneProp-rotate" type="number" value="<%= bone.rotate %>">
+</div>
+<div>
+    <label for="boneProp-opacity">透明度</label>
+    <input id="boneProp-opacity" type="number" max="1" min="0" step="0.1" value="<%= bone.opacity %>">
+</div>
+<div>
+    <label for="boneProp-jointX">关节的X坐标</label>
+    <input id="boneProp-jointX" type="number" value="<%= bone.jointX %>">
+</div>
+<div>
+    <label for="boneProp-jointY">关节的Y坐标</label>
+    <input id="boneProp-jointY" type="number" value="<%= bone.jointY %>">
+</div>

@@ -1,2 +1,10 @@
 <div class="hd">骨骼属性</div>
-<div class="bd"></div>
+<div class="bd">
+    <%
+        if(typeof bone !== 'undefined'){
+    %>
+            <%@ panel.boneProp.bd.html %>
+    <%
+        }
+    %>
+</div>
