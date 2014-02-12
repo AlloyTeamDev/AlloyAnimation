@@ -23,6 +23,8 @@ define([
         comparator: 'time',
         toJSON: function(options){
             var json;
+
+            options = options || {};
             if('time' in options){
                 json = this.where({time: options.time})[0].toJSON();
                 json = [json];
