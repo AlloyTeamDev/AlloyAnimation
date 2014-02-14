@@ -1,8 +1,6 @@
 // 各个面板的布局样式，
 // 不包括面板内部的样式
 
-@import "_util";
-
 $panel-space: 1px;
 $panel-default-bg: #444953;
 $golden-ratio: 61.8%;
@@ -20,7 +18,7 @@ html, body,
 
 .js-panel {
     $panel-padding-vert: 5px;
-    $panel-padding-hori: 10px;
+    $panel-padding-hori: 25px;
 
     float: left;
     overflow: hidden;
@@ -36,6 +34,7 @@ html, body,
         line-height: $h;
         margin-top: -1 * $panel-padding-vert;
         margin-left: -1 * $panel-padding-hori;
+        margin-bottom: 10px;
         border-left: 3px solid #fff;
         padding-left: 5px;
         font-size: 15px;
@@ -45,6 +44,7 @@ html, body,
 #js-bonePropPanel {
     width: 100% - $golden-ratio;
     height: $golden-ratio;
+    border-top: 0 none;
     border-bottom: 0 none;
 }
 
@@ -60,28 +60,20 @@ html, body,
 #js-boneTreePanel {
     width: 100% - $golden-ratio;
     height: 100% - $golden-ratio;
+    border-bottom: 0 none;
 }
 
 #js-timeLinePanel {
     width: $golden-ratio * $golden-ratio / 100%;
     height: 100% - $golden-ratio;
     border-left: 0 none;
-
-    .hd {
-        $c: #3a8fb7;
-        border-left-color: $c;
-        color: $c;
-    }
+    border-bottom: 0 none;
 }
 
 #js-actionPanel {
     width: $golden-ratio * (100% - $golden-ratio) / 100%;
     height: 100% - $golden-ratio;
     border-left: 0 none;
-
-    .hd {
-        $c: #fb9966;
-        border-left-color: $c;
-        color: $c;
-    }
+    border-bottom: 0 none;
+    border-right: 0 none;
 }

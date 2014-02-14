@@ -1,8 +1,17 @@
 $app-bg: #2e3138;
+$topic-color1: #3a8fb7;
+$topic-color2: #69b0ac;
+$topic-color3: #897cbf;
+$topic-color4: #fb9966;
+
 body {
     font-family: 'hiragino sans gb', 'microsoft yahei', Helvetica, Arial, sans-serif;
     font-size: 14px;
     color: darken(#fff, 5%);
+    @include prefixVal(
+        background-image,
+        linear-gradient(135deg, $topic-color1, $topic-color2 22%, $topic-color3 45%, $topic-color4 80%, $topic-color1 85%)
+    );
     background-color: $app-bg;
 }
 
