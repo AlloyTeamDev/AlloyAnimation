@@ -67,9 +67,9 @@ define([
         **/
         activate: function(){
             console.debug(
-                'Activate bone %s in %s panel',
-                this.id,
-                this.constructor._panelName
+                'Panel %s activate bone %s',
+                this.constructor._panelName,
+                this.id
             );
 
             this.$el.addClass('js-activeBone');

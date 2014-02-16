@@ -168,9 +168,7 @@ define([
                 ( $bone = $target.parentsUntil(this.$el, '.js-bone') ).length
             ){
                 boneId = Bone.htmlId2Id($bone.attr('id'));
-                if( this.changeActiveBone(boneId) ){
-                    this.trigger('clickBone', boneId);
-                }
+                this.changeActiveBone(boneId)
             }
         },
 
@@ -439,7 +437,7 @@ define([
             // 而不是一边拖拽一边频繁的通知外界。
             // 并且是如果有数据更新，才通知外界
             if(this._boneChangedData){                
-                this.trigger('updateBone', this._activeBone.id, this._boneChangedData);
+                this.trigger('updatedBoneData', this._activeBone.id, this._boneChangedData);
             }
 
             // 重置调节骨骼时的状态表示
@@ -772,7 +770,7 @@ define([
 
         _styleInSizeUnit: function(prop, val, cacheProp){
             if(val !== void 0){
-                typeof val !== 'number' && console.debug('Warn: attribute type wrong');
+                typeof val !== 'number' && console.warn('Attribute\'s data type is wrong');
                 this.$el.css(prop, val + this.SIZE_UNIT);
                 this[cacheProp] = val;
                 return this;
@@ -811,5 +809,5 @@ define([
         _panelName: 'workspace'
     });
 
-    return new WorkspacePanel();
+    return new WorkspacePanel({panelName: 'workspace'});
 });

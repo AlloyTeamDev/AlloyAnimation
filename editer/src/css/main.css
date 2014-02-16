@@ -1,4 +1,14 @@
 @charset "UTF-8";
+.clearfix:after, #js-panelWrap:after {
+  content: '';
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  height: 0;
+  line-height: 0;
+  font-size: 0;
+}
+
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
@@ -111,40 +121,15 @@ body {
   font-family: 'hiragino sans gb', 'microsoft yahei', Helvetica, Arial, sans-serif;
   font-size: 14px;
   color: #f2f2f2;
+  background-image: -webkit-linear-gradient(150deg, #3a8fb7, #fb9966 28%, #69b0ac 40%, #897cbf 65%, #3a8fb7 90%);
+  background-image: -moz-linear-gradient(150deg, #3a8fb7, #fb9966 28%, #69b0ac 40%, #897cbf 65%, #3a8fb7 90%);
+  background-image: -ms-linear-gradient(150deg, #3a8fb7, #fb9966 28%, #69b0ac 40%, #897cbf 65%, #3a8fb7 90%);
+  background-image: linear-gradient(150deg, #3a8fb7, #fb9966 28%, #69b0ac 40%, #897cbf 65%, #3a8fb7 90%);
   background-color: #2e3138;
 }
 
 input {
   color: inherit;
-}
-
-.clearfix:after, #js-panelWrap:after {
-  content: '';
-  display: block;
-  overflow: hidden;
-  visibility: hidden;
-  height: 0;
-  line-height: 0;
-  font-size: 0;
-}
-
-#js-actionPanel, #js-boneTreePanel {
-  width: 38.2%;
-}
-
-#js-workspacePanel, #js-timeLinePanel {
-  width: 61.8%;
-  border-left: 0 none;
-}
-
-#js-actionPanel, #js-workspacePanel {
-  height: 61.8%;
-  min-height: 210px;
-}
-
-#js-boneTreePanel, #js-timeLinePanel {
-  height: 38.2%;
-  border-top: 0 none;
 }
 
 html, body,
@@ -156,30 +141,37 @@ html, body,
 .js-panel {
   float: left;
   overflow: hidden;
-  padding: 5px 10px;
+  padding: 5px 25px;
   background-color: #444953;
+  background-clip: padding-box;
+  border: 1px solid transparent;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
-  border: 1px solid #2e3138;
 }
 .js-panel .hd {
   height: 30px;
   line-height: 30px;
   margin-top: -5px;
-  margin-left: -10px;
-  border-left: 3px solid #333;
+  margin-left: -25px;
+  margin-bottom: 10px;
+  border-left: 3px solid #fff;
   padding-left: 5px;
   font-size: 15px;
 }
 
-#js-actionPanel .hd {
-  border-left-color: #fb9966;
-  color: #fb9966;
+#js-bonePropPanel {
+  width: 23.6076%;
+  height: 61.8%;
+  border-top: 0 none;
+  border-bottom: 0 none;
 }
 
 #js-workspacePanel {
+  width: 76.3924%;
+  height: 61.8%;
+  border: 0 none;
   -webkit-box-shadow: inset 0 0 10px black;
   -moz-box-shadow: inset 0 0 10px black;
   -ms-box-shadow: inset 0 0 10px black;
@@ -187,9 +179,121 @@ html, body,
   background: transparent url(../img/workspace-bg.png);
 }
 
-#js-timeLinePanel .hd {
+#js-boneTreePanel {
+  width: 38.2%;
+  height: 38.2%;
+  border-bottom: 0 none;
+  border-left: 0 none;
+}
+
+#js-timeLinePanel {
+  width: 38.1924%;
+  height: 38.2%;
+  border-right: 0 none;
+  border-bottom: 0 none;
+  border-left: 0 none;
+}
+
+#js-actionPanel {
+  width: 23.6076%;
+  height: 38.2%;
+  border-bottom: 0 none;
+}
+
+#js-bonePropPanel {
+  overflow: auto;
+}
+#js-bonePropPanel .hd {
   border-left-color: #3a8fb7;
   color: #3a8fb7;
+}
+#js-bonePropPanel .propItem {
+  height: 30px;
+  margin-bottom: 5px;
+}
+#js-bonePropPanel .propName {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 45%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  text-align: center;
+  line-height: 30px;
+  height: 30px;
+  padding: 0 10px;
+  vertical-align: middle;
+  background: #393d46;
+  -webkit-border-radius: 5px 0 0 5px;
+  -moz-border-radius: 5px 0 0 5px;
+  -ms-border-radius: 5px 0 0 5px;
+  border-radius: 5px 0 0 5px;
+}
+#js-bonePropPanel .js-propVal {
+  vertical-align: middle;
+  display: inline-block;
+  margin: 0 0 0 -4px;
+  border: 0 none;
+  padding: 2px 5px;
+  width: 55%;
+  height: 30px;
+  line-height: 30px;
+  background-color: #2f333a;
+  -webkit-border-radius: 0 5px 5px 0;
+  -moz-border-radius: 0 5px 5px 0;
+  -ms-border-radius: 0 5px 5px 0;
+  border-radius: 0 5px 5px 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  outline: 0 none;
+  text-align: center;
+}
+#js-bonePropPanel .js-propVal[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  border: 0 none;
+  padding: 0;
+  position: relative;
+  cursor: pointer;
+}
+#js-bonePropPanel .js-propVal[type=number]::-webkit-inner-spin-button::before, #js-bonePropPanel .js-propVal[type=number]::-webkit-inner-spin-button::after {
+  display: block;
+  position: absolute;
+  right: 0;
+  width: 30px;
+  height: 15px;
+  line-height: 15px;
+  background: #393d46;
+  text-align: center;
+  vertical-align: middle;
+}
+#js-bonePropPanel .js-propVal[type=number]::-webkit-inner-spin-button::before {
+  content: '+';
+  top: 0;
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-top-right-radius: 5px;
+  -ms-border-top-right-radius: 5px;
+  border-top-right-radius: 5px;
+}
+#js-bonePropPanel .js-propVal[type=number]::-webkit-inner-spin-button::after {
+  content: '-';
+  font-size: 18px;
+  bottom: 0;
+  border-top: 1px solid #2f333a;
+  background-clip: padding-box;
+  -webkit-border-bottom-right-radius: 5px;
+  -moz-border-bottom-right-radius: 5px;
+  -ms-border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  line-height: 13px;
 }
 
 .clearfix:after, #js-panelWrap:after {
@@ -401,4 +505,14 @@ html, body,
 }
 #js-boneTreePanel .js-activeBone > .name::before {
   opacity: 1;
+}
+
+#js-timeLinePanel .hd {
+  border-left-color: #897cbf;
+  color: #897cbf;
+}
+
+#js-actionPanel .hd {
+  border-left-color: #fb9966;
+  color: #fb9966;
 }

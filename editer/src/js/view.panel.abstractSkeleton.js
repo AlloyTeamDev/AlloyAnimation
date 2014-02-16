@@ -47,6 +47,10 @@ define([
         addBone: function(boneData, options){
             var parent, bone, childrenData;
 
+            console.debug(
+                'Panel %s start adding bone %s',
+                this.panelName, boneData.id
+            );
             if(parent = boneData.parent){
                 bone = this._addBone(
                     boneData,
@@ -61,6 +65,11 @@ define([
                 bone = this._addBone(boneData, options);
                 this.changeActiveBone(bone.id);
             }
+
+            console.debug(
+                'Panel %s end adding bone %s',
+                this.panelName, boneData.id
+            );
             return bone;
         },
 
@@ -98,11 +107,18 @@ define([
         **/
         updateBone: function(id, data, options){
             this._boneHash[id].update(data);
+
+            console.debug(
+                'Panel %s updated bone %s to %O',
+                this.panelName, id, data
+            );
+
             return this;
         },
 
         /**
-        改变此面板中的激活骨骼。
+        改变此面板中的激活骨骼，
+        并且如果改变产生，触发 `changedActiveBone` 事件，带上激活骨骼的id作为参数。
         只要有骨骼，就有骨骼处于激活状态，并且只有一个激活骨骼。
         @param {String} boneId 要激活的骨骼的id
         @return {Boolean} true: 有改变；false: 没改变
@@ -113,7 +129,19 @@ define([
                 if(oldActiveBone.id === boneId) return false;
                 oldActiveBone.deactivate();
             }
-            (this._activeBone = this._boneHash[boneId]).activate();
+            if( this._activeBone = this._boneHash[boneId] ){
+                this._activeBone.activate();
+            }
+            else{
+                console.warn(
+                    'Panel %s activate bone %s which is nonexistent in this panel',
+                    this.panelName,
+                    boneId
+                );
+                return;
+            }
+
+            this.trigger('changedActiveBone', boneId);
 
             return true;
         },

@@ -1,8 +1,17 @@
 $app-bg: #2e3138;
+$topic-color1: #3a8fb7; // 蓝色
+$topic-color2: #69b0ac; // 绿色
+$topic-color3: #897cbf; // 紫色
+$topic-color4: #fb9966; // 橙色
+
 body {
     font-family: 'hiragino sans gb', 'microsoft yahei', Helvetica, Arial, sans-serif;
     font-size: 14px;
     color: darken(#fff, 5%);
+    @include prefixVal(
+        background-image,
+        linear-gradient(150deg, $topic-color1, $topic-color4 28%, $topic-color2 40%, $topic-color3 65%, $topic-color1 90%)
+    );
     background-color: $app-bg;
 }
 

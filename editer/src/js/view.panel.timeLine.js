@@ -56,5 +56,5 @@ define([
         }
     });
 
-    return new TimeLinePanel();
+    return new TimeLinePanel({panelName: 'time-line'});
 });

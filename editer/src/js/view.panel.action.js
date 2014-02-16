@@ -36,5 +36,5 @@ define([
         **/
     });
 
-    return new ActionPanel();
+    return new ActionPanel({panelName: 'action'});
 });

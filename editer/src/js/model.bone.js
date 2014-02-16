@@ -57,7 +57,7 @@ define([
 
             // 创建骨骼id
             id = createId();
-            console.debug('Create a bone model with id %s', id);
+            console.debug('A new bone model %s is created', id);
             this.set('id', id);
 
             ++Bone._boneCount;
@@ -72,26 +72,30 @@ define([
         **/
         toJSON: function(options){
             var keyframeData,
-                json;
+                boneJson;
 
             options = options || {};
 
-            json = Bone.__super__.toJSON.call(this, options);
+            boneJson = Bone.__super__.toJSON.call(this, options);
             if('time' in options){
-                keyframeData = findWhere(json.keyframes, {time: options.time});
+                keyframeData = findWhere(boneJson.keyframes, {time: options.time});
+                delete boneJson.keyframes;
+
                 if(keyframeData){
-                    delete json.keyframes;
                     delete keyframeData.id;
                     delete keyframeData.bone;
-                    extend(json, keyframeData);
+                    extend(boneJson, keyframeData);
                 }
                 else{
                     // TODO: 支持获取关键帧范围内某个时间点的数据，即指定的时间点不一定是关键帧所在的时间点
-                    throw new Error('No keyframe at specified time');
+                    console.warn(
+                        'Cannot find keyframe with time %s in the model of bone %s',
+                        options.time, boneJson.id
+                    );
                 }
             }
 
-            return json;
+            return boneJson;
         },
 
         fetch: function(){},

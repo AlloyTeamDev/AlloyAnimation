@@ -6,19 +6,23 @@
 define([
     'exports',
     'underscore',
-    'view.panel.action', 'view.panel.workspace', 'view.panel.boneTree', 'view.panel.timeLine',
-    'collection.bone', 'model.keyframe'
+    'view.panel.action', 'view.panel.workspace', 'view.panel.boneTree', 'view.panel.timeLine', 'view.panel.boneProp',
+    'collection.bone', 'model.keyframe', 'collection.keyframe'
 ], function(
     exports,
     _,
-    actionPanelView, workspacePanelView, boneTreePanelView, timeLinePanelView,
-    BoneCollection, KeyframeModel
+    actionPanelView, workspacePanelView, boneTreePanelView, timeLinePanelView, bonePropPanelView,
+    BoneCollection, KeyframeModel, KeyframeCollection
 ){
     var handler,
-        keyframeModelDefaults;
+        keyframeModelDefaults,
+        allBoneColl;
 
     // 整个WebApp中所有骨骼的collection
     allBoneColl = new BoneCollection();
+    // to be more convenient for debug
+    // TODO: 发布前删掉
+    window.allBoneColl = allBoneColl;
 
     // 关键帧model包含的默认字段
     keyframeModelProperties = _.keys(KeyframeModel.prototype.defaults);
@@ -36,22 +40,25 @@ define([
         workspacePanelView.render(initBonesData);
         boneTreePanelView.render(initBonesData);
         timeLinePanelView.render(initBonesData);
+        bonePropPanelView.render(initBonesData);
         // 销毁引用，避免因为被事件回调函数的作用域链引用而没有释放内存
         initBonesData = null;
 
         // 监听model/collection事件
         allBoneColl
+            // 有骨骼之后，先确保各个视图里已渲染出骨骼，再同步所激活的骨骼
+            .once('add', handler.onceAllBoneCollAddModel)
             .on('add', handler.onAllBoneCollAddModel)
             .on('remove', handler.onAllBoneCollRemoveModel);
 
         // 监听view事件
+        bonePropPanelView
+            .on('updatedBoneData', handler.onCertainPanelUpdatedBoneData);
         workspacePanelView
             .on('addBone', handler.onWorkspacePanelAddBone)
-            .on('updateBone', handler.onWorkspacePanelUpdateBone)
-            .on('clickBone', handler.onWorkspacePanelClickBone);
+            .on('updatedBoneData', handler.onCertainPanelUpdatedBoneData);
         boneTreePanelView
-            .on('changedBone', handler.onBoneTreePanelChangedBone)
-            .on('clickBone', handler.onBoneTreePanelClickBone);
+            .on('changedBone', handler.onBoneTreePanelChangedBone);
     };
 
     /**
@@ -83,6 +90,11 @@ define([
             monitorKeyframeModel(keyframeModel);
         });
         keyframeColl.on('add', handler.onAddKeyFrameModel);
+
+        // TMP
+        keyframeColl.on('remove', function(){
+            debugger;
+        });
     }
     /**
     解除监听一个关键帧collection上的事件
@@ -123,12 +135,33 @@ define([
             monitorBoneModel(boneModel);
 
             boneData = boneModel.toJSON({time: timeLinePanelView.now});
+            console.debug('Controller add bone %s to panel views: workspace, bone-tree', boneData.id);
             // 在各个面板中添加此骨骼对应的view
             workspacePanelView.addBone(boneData);
             // TODO: 给其它面板也添加对应的view
             boneTreePanelView.addBone(boneData);
             // timelinePanelView.addTimeline(boneData);
         },
+
+        /**
+        当 `allBoneColl` 有骨骼model之后，
+        开始监听各个面板对激活元素的改变，在不同面板之间同步激活元素。
+        此事件回调应只被调用一次。
+        @triggerObj {BoneCollection} 此事件回调仅用于 `allBoneColl` 这个实例上
+        @event add 当collection中添加新model时触发
+        **/
+        onceAllBoneCollAddModel: function(){
+            console.debug('Controller start listening "changedActiveBone" event on panel views: workspace, bone-tree');
+            workspacePanelView.on(
+                'changedActiveBone',
+                handler.onCertainPanelChangedActiveBone
+            );
+            boneTreePanelView.on(
+                'changedActiveBone',
+                handler.onCertainPanelChangedActiveBone
+            );
+        },
+
         /**
         @triggerObj {BoneCollection} 此事件回调仅用于 `allBoneColl` 这个实例上
         @event remove collection中有model被移除时触发
@@ -204,7 +237,16 @@ define([
             // 获取此关键帧中改变了的数据
             changedData = keyframeModel.changedAttributes();
 
+            console.debug(
+                'Controller receive that keyframe %s changed attribute %O, and sync to other panels',
+                keyframeModel.get('id'), changedData
+            );
+
             // 更新各个面板的视图
+            if(!options.hasUpdatedBoneProp){
+                bonePropPanelView.updateProp(changedData, options);
+                options.hasUpdatedBoneProp = true;
+            }
             if(!options.hasUpdatedWorkspace){
                 workspacePanelView
                     .updateBone(
@@ -213,11 +255,6 @@ define([
                         options
                     );
                 options.hasUpdatedWorkspace = true;
-            }
-            if(!options.hasUpdatedBoneTree){
-                // TODO: 更新骨骼树面板中此骨骼的显示数据
-
-                options.hasUpdatedBoneTree = true;
             }
             if(!options.hasUpdatedTimeline){
                 // TODO: 更新时间轴面板中此关键帧的显示数据
@@ -235,35 +272,89 @@ define([
         @param {Object} [options]
         **/
         onWorkspacePanelAddBone: function(boneData, options){
+            var keyframesData, keyframeColl, boneModel;
+
+            console.debug('Controller receive a new bone added by workspace panel');
+
             if(options) options.hasUpdatedWorkspace = true;
             else options = { hasUpdatedBoneTree: true };
-            allBoneColl.add(
-                unmixKeyframeData(boneData, timeLinePanelView.now),
-                options
-            );
+
+            boneData = unmixKeyframeData(boneData, timeLinePanelView.now);
+            keyframesData = boneData.keyframes;
+            delete boneData.keyframes;
+
+            // 这时候骨骼model中的关键帧数据还没有准备好，
+            // 用 `silent` 延迟触发事件
+            options.silent = true;
+            boneModel = allBoneColl.add(boneData, options);
+
+            keyframesData.forEach(function(keyframeData){
+                keyframeData.bone = boneModel;
+                var keyframeModel = new KeyframeModel(keyframeData);
+            });
+
+            delete options.silent;
+            allBoneColl.trigger('add', boneModel, allBoneColl, options);
+
+            // 将所创建的骨骼model带在关键帧数据中
+            // keyframesData.forEach(function(keyframeData){
+            //     keyframeData.bone = boneModel;
+            // });
+            // boneModel.keyframes = new KeyframeCollection(keyframesData);
         },
 
         /**
-        @triggerObj {WorkspacePanelView} workspacePanelView
-        @event updateBone 当工作区面板中的骨骼有更新时触发
+        @triggerObj bonePropPanelView|workspacePanelView
+        @event updateBone 当骨骼属性面板或工作区面板更新了骨骼数据时触发
         @param {String} boneId 骨骼的id
         @param {Object} boneData 新的骨骼数据
         **/
-        onWorkspacePanelUpdateBone: function(boneId, boneData){
-            boneData = unmixKeyframeData(boneData, timeLinePanelView.now);
+        onCertainPanelUpdatedBoneData: function(boneId, boneData){
+            var options = {},
+                panelName2FlagName = {
+                    'bone-prop': 'hasUpdatedBoneProp',
+                    'workspace': 'hasUpdatedWorkspace',
+                    'bone-tree': 'hasUpdatedBoneTree',
+                    'time-line': 'hasUpdatedTimeline',
+                    'action': 'hasUpdatedAction'
+                };
+
+            console.debug(
+                'Controller receive that panel %s changed bone %s attributes %O, and set to model',
+                this.panelName, boneId, boneData
+            );
+
+            if(this.panelName in panelName2FlagName){
+                options[panelName2FlagName[this.panelName]] = true;
+            }
+
             allBoneColl
                 .get(boneId)
-                .set(boneData, {
-                    hasUpdatedWorkspace: true
-                });
+                .get('keyframes')
+                .findWhere({ time: timeLinePanelView.now })
+                .set(boneData, options);
         },
 
-        onWorkspacePanelClickBone: function(boneId){
-            boneTreePanelView.changeActiveBone(boneId);
-        },
+        onCertainPanelChangedActiveBone: function(boneId){
+            var fromPanel = this.panelName;
+            console.debug(
+                'Controller receive that %s panel changed active bone to %s, and sync active bone to other panels',
+                fromPanel, boneId
+            );
 
-        onBoneTreePanelClickBone: function(boneId){
-            workspacePanelView.changeActiveBone(boneId);
+            if(fromPanel !== 'workspace'){
+                workspacePanelView.changeActiveBone(boneId);
+            }
+            if(fromPanel !== 'bone-tree'){
+                boneTreePanelView.changeActiveBone(boneId);
+            }
+            if(fromPanel !== 'bone-prop'){
+                bonePropPanelView.changeBone(
+                    allBoneColl.get(boneId).toJSON({
+                        time: timeLinePanelView.now
+                    })
+                );
+            }
         },
 
         onBoneTreePanelChangedBoneName: function(boneId, newName){

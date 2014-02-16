@@ -109,7 +109,6 @@ define([
 
         // 取消在拖拽骨骼的过程中对选中文本的阻止
         oneMouseUpAfterDragBone: function($event){
-            console.log('user select text');
             this.$el.css('userSelect', 'text');
         },
 
@@ -174,12 +173,10 @@ define([
             var $target = $($event.currentTarget),
                 targetBoneId = $target.data('bone-id');
 
-            if(targetBoneId === this._activeBone.id) return;
-
-            if( this.changeActiveBone(targetBoneId) ){
-                this.trigger('clickBone', targetBoneId);
-            }
+            // 避免点击事件冒泡到父骨骼，使得最后激活的是父骨骼
             $event.stopPropagation();
+
+            this.changeActiveBone(targetBoneId);
         }
     });
 
@@ -438,5 +435,5 @@ define([
         _panelName: 'boneTree'
     });
 
-    return new BoneTreePanel();
+    return new BoneTreePanel({panelName: 'bone-tree'});
 });
