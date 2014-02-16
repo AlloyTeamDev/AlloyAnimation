@@ -107,6 +107,12 @@ define([
         **/
         updateBone: function(id, data, options){
             this._boneHash[id].update(data);
+
+            console.debug(
+                'Panel %s updated bone %s to %O',
+                this.panelName, id, data
+            );
+
             return this;
         },
 

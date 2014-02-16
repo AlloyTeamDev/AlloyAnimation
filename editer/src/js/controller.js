@@ -244,8 +244,7 @@ define([
 
             // 更新各个面板的视图
             if(!options.hasUpdatedBoneProp){
-                // TODO: 更新骨骼属性面板中此骨骼的显示数据
-
+                bonePropPanelView.updateProp(changedData, options);
                 options.hasUpdatedBoneProp = true;
             }
             if(!options.hasUpdatedWorkspace){

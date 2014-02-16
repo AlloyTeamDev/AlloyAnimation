@@ -35,11 +35,30 @@ define([
             return this;
         },
 
-        changeBone: function(boneData){
+        changeBone: function(boneData, options){
             if(this._boneId === boneData.id) return this;
 
             this._boneId = boneData.id;
             this._$bd.html( bdTmpl({ bone: boneData }) );
+        },
+
+        updateProp: function(boneData, options){
+            var propName, $propValField,
+                $bd = this._$bd;
+
+            $bd.on('change', '.js-propVal', this._preventPopupOnChangeProp);
+
+            $propValInput = $bd.find('.js-propVal');
+            for(propName in boneData){
+                if( !boneData.hasOwnProperty(propName) ) continue;
+                $propValInput
+                    .filter('[data-prop-name="' + propName + '"]')
+                    .val(boneData[propName]);
+            }
+
+            $bd.off('change', '.js-propVal', this._preventPopupOnChangeProp);
+
+            console.debug('Panel bone-prop updated properties %O', boneData);
         },
 
         events: {
@@ -64,6 +83,10 @@ define([
             console.debug('Panel bone-prop changed bone data: %O', boneData);
 
             this.trigger('updatedBoneData', this._boneId, boneData);
+        },
+
+        _preventPopupOnChangeProp: function($event){
+            $event.stopPropagation();
         }
     });
 
