@@ -38,13 +38,17 @@ define([
             // 创建骨骼id
             id = createId();
             this.set('id', id);
-            console.debug('Create a keyframe model with id %s', id);
+            console.debug('A new keyframe model %s is created', id);
 
-            this.on('change', this.onChange);
+            // 为变化打log
+            this.on('change', this._onChange);
         },
         
-        onChange: function(model, options){
-            console.debug('keyframe model changed attributes: %O', model.changed);
+        _onChange: function(model, options){
+            console.debug(
+                'Keyframe model %s changed attributes: %O',
+                model.get('id'), model.changed
+            );
         }
     });
 

@@ -4,25 +4,43 @@
 **/
 define([
     'backbone', 'relationalScope',
-    'model.bone'
+    'model.bone', 'modelUtil'
 ], function(
     Backbone, relationalScope,
-    Bone
+    Bone, util
 ){
-    var BoneCollection;
+    var BoneCollection,
+        createId = util.createId;
 
     /**
     @class BoneCollection
     @extends Backbone.Collection
     **/
     BoneCollection = Backbone.Collection.extend({
-        /**
-        Start: backbone内置属性/方法
-        **/
-        model: Bone
-        /**
-        End: backbone内置属性/方法
-        **/
+        model: Bone,
+
+        initialize: function(){
+            this.id = createId();
+            console.debug('A new bone collection %s is created', this.id);
+
+            // 为变化打log
+            this.on('add', this._onAdd);
+            this.on('remove', this._onRemove);
+        },
+
+        _onAdd: function(bone){
+            console.debug(
+                'Bone collection %s added bone %s',
+                this.id, bone.id
+            );
+        },
+
+        _onRemove: function(bone){
+            console.debug(
+                'Bone collection %s removed bone %s',
+                this.id, bone.id
+            );
+        }
     });
 
     relationalScope.BoneCollection = BoneCollection;

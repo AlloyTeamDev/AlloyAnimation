@@ -4,39 +4,59 @@
 **/
 define([
     'backbone', 'relationalScope',
-    'model.keyframe'
+    'model.keyframe', 'modelUtil'
 ], function(
     Backbone, relationalScope,
-    Keyframe
+    Keyframe, util
 ){
-    var KeyframeCollection;
+    var KeyframeCollection,
+        createId = util.createId;
 
     /**
     @class KeyframeCollection
     @extends Backbone.Collection
     **/
     KeyframeCollection = Backbone.Collection.extend({
-        /**
-        Start: backbone内置属性/方法
-        **/
         model: Keyframe,
+
         comparator: 'time',
+
+        initialize: function(){
+            this.id = createId();
+            console.debug('A new keyframe collection %s is created', this.id);
+
+            // 为变化打log
+            this.on('add', this._onAdd);
+            this.on('remove', this._onRemove);
+        },
+
         toJSON: function(options){
-            var json;
+            var keyframeModel;
 
             options = options || {};
-            if('time' in options){
-                json = this.where({time: options.time})[0].toJSON();
-                json = [json];
+            if( 'time' in options &&
+                ( keyframeModel = this.findWhere({time: options.time}) )
+            ){
+                return [keyframeModel.toJSON()];
             }
             else{
-                json = KeyframeCollection.__super__.toJSON.call(this, options);
+                return KeyframeCollection.__super__.toJSON.call(this, options);
             }
-            return json;
+        },
+
+        _onAdd: function(bone){
+            console.debug(
+                'Keyframe collection %s added keyframe %s',
+                this.id, bone.id
+            );
+        },
+
+        _onRemove: function(bone){
+            console.debug(
+                'Keyframe collection %s removed keyframe %s',
+                this.id, bone.id
+            );
         }
-        /**
-        End: backbone内置属性/方法
-        **/
     });
 
     relationalScope.KeyframeCollection = KeyframeCollection;

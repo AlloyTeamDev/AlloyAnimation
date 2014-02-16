@@ -435,5 +435,5 @@ define([
         _panelName: 'boneTree'
     });
 
-    return new BoneTreePanel();
+    return new BoneTreePanel({panelName: 'bone-tree'});
 });

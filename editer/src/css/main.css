@@ -232,7 +232,7 @@ html, body,
   -ms-border-radius: 5px 0 0 5px;
   border-radius: 5px 0 0 5px;
 }
-#js-bonePropPanel .propVal {
+#js-bonePropPanel .js-propVal {
   vertical-align: middle;
   display: inline-block;
   margin: 0 0 0 -4px;
@@ -253,7 +253,7 @@ html, body,
   outline: 0 none;
   text-align: center;
 }
-#js-bonePropPanel .propVal[type=number]::-webkit-inner-spin-button {
+#js-bonePropPanel .js-propVal[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   display: block;
   width: 30px;
@@ -264,7 +264,7 @@ html, body,
   position: relative;
   cursor: pointer;
 }
-#js-bonePropPanel .propVal[type=number]::-webkit-inner-spin-button::before, #js-bonePropPanel .propVal[type=number]::-webkit-inner-spin-button::after {
+#js-bonePropPanel .js-propVal[type=number]::-webkit-inner-spin-button::before, #js-bonePropPanel .js-propVal[type=number]::-webkit-inner-spin-button::after {
   display: block;
   position: absolute;
   right: 0;
@@ -275,7 +275,7 @@ html, body,
   text-align: center;
   vertical-align: middle;
 }
-#js-bonePropPanel .propVal[type=number]::-webkit-inner-spin-button::before {
+#js-bonePropPanel .js-propVal[type=number]::-webkit-inner-spin-button::before {
   content: '+';
   top: 0;
   -webkit-border-top-right-radius: 5px;
@@ -283,7 +283,7 @@ html, body,
   -ms-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
 }
-#js-bonePropPanel .propVal[type=number]::-webkit-inner-spin-button::after {
+#js-bonePropPanel .js-propVal[type=number]::-webkit-inner-spin-button::after {
   content: '-';
   font-size: 18px;
   bottom: 0;

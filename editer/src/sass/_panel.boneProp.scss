@@ -33,7 +33,7 @@
         @include prefix(border-radius, $border-radius 0 0 $border-radius);
     }
 
-    .propVal {
+    .js-propVal {
         $padding-vert: 2px;
         $h: $prop-item-height;
 
@@ -52,11 +52,11 @@
         text-align: center;
     }
 
-    .propVal[type=file] {
+    .js-propVal[type=file] {
         
     }
 
-    .propVal[type=number] {
+    .js-propVal[type=number] {
         $psuedo-btn-width: $prop-item-height;
 
         &::-webkit-inner-spin-button {

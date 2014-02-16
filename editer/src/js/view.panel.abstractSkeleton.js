@@ -47,6 +47,10 @@ define([
         addBone: function(boneData, options){
             var parent, bone, childrenData;
 
+            console.debug(
+                'Panel %s start adding bone %s',
+                this.panelName, boneData.id
+            );
             if(parent = boneData.parent){
                 bone = this._addBone(
                     boneData,
@@ -61,6 +65,11 @@ define([
                 bone = this._addBone(boneData, options);
                 this.changeActiveBone(bone.id);
             }
+
+            console.debug(
+                'Panel %s end adding bone %s',
+                this.panelName, boneData.id
+            );
             return bone;
         },
 
@@ -114,7 +123,17 @@ define([
                 if(oldActiveBone.id === boneId) return false;
                 oldActiveBone.deactivate();
             }
-            (this._activeBone = this._boneHash[boneId]).activate();
+            if( this._activeBone = this._boneHash[boneId] ){
+                this._activeBone.activate();
+            }
+            else{
+                console.warn(
+                    'Panel %s activate bone %s which is nonexistent in this panel',
+                    this.panelName,
+                    boneId
+                );
+                return;
+            }
 
             this.trigger('changedActiveBone', boneId);
 
