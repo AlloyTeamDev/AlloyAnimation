@@ -63,7 +63,7 @@ define([
 
             console.debug('Panel bone-prop changed bone data: %O', boneData);
 
-            this.trigger('changedBoneData', this._boneId, boneData);
+            this.trigger('updatedBoneData', this._boneId, boneData);
         }
     });
 

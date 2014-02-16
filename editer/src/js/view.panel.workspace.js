@@ -437,7 +437,7 @@ define([
             // 而不是一边拖拽一边频繁的通知外界。
             // 并且是如果有数据更新，才通知外界
             if(this._boneChangedData){                
-                this.trigger('changedBoneData', this._activeBone.id, this._boneChangedData);
+                this.trigger('updatedBoneData', this._activeBone.id, this._boneChangedData);
             }
 
             // 重置调节骨骼时的状态表示

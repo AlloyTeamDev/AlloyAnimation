@@ -53,10 +53,10 @@ define([
 
         // 监听view事件
         bonePropPanelView
-            .on('changedBoneData', handler.onCertainPanelChangedBoneData);
+            .on('updatedBoneData', handler.onCertainPanelUpdatedBoneData);
         workspacePanelView
             .on('addBone', handler.onWorkspacePanelAddBone)
-            .on('changedBoneData', handler.onCertainPanelChangedBoneData);
+            .on('updatedBoneData', handler.onCertainPanelUpdatedBoneData);
         boneTreePanelView
             .on('changedBone', handler.onBoneTreePanelChangedBone);
     };
@@ -310,7 +310,7 @@ define([
         @param {String} boneId 骨骼的id
         @param {Object} boneData 新的骨骼数据
         **/
-        onCertainPanelChangedBoneData: function(boneId, boneData){
+        onCertainPanelUpdatedBoneData: function(boneId, boneData){
             var options = {},
                 panelName2FlagName = {
                     'bone-prop': 'hasUpdatedBoneProp',
