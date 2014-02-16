@@ -121,10 +121,10 @@ body {
   font-family: 'hiragino sans gb', 'microsoft yahei', Helvetica, Arial, sans-serif;
   font-size: 14px;
   color: #f2f2f2;
-  background-image: -webkit-linear-gradient(135deg, #3a8fb7, #69b0ac 22%, #897cbf 45%, #fb9966 80%, #3a8fb7 85%);
-  background-image: -moz-linear-gradient(135deg, #3a8fb7, #69b0ac 22%, #897cbf 45%, #fb9966 80%, #3a8fb7 85%);
-  background-image: -ms-linear-gradient(135deg, #3a8fb7, #69b0ac 22%, #897cbf 45%, #fb9966 80%, #3a8fb7 85%);
-  background-image: linear-gradient(135deg, #3a8fb7, #69b0ac 22%, #897cbf 45%, #fb9966 80%, #3a8fb7 85%);
+  background-image: -webkit-linear-gradient(150deg, #3a8fb7, #fb9966 28%, #69b0ac 40%, #897cbf 65%, #3a8fb7 90%);
+  background-image: -moz-linear-gradient(150deg, #3a8fb7, #fb9966 28%, #69b0ac 40%, #897cbf 65%, #3a8fb7 90%);
+  background-image: -ms-linear-gradient(150deg, #3a8fb7, #fb9966 28%, #69b0ac 40%, #897cbf 65%, #3a8fb7 90%);
+  background-image: linear-gradient(150deg, #3a8fb7, #fb9966 28%, #69b0ac 40%, #897cbf 65%, #3a8fb7 90%);
   background-color: #2e3138;
 }
 
@@ -162,14 +162,14 @@ html, body,
 }
 
 #js-bonePropPanel {
-  width: 38.2%;
+  width: 23.6076%;
   height: 61.8%;
   border-top: 0 none;
   border-bottom: 0 none;
 }
 
 #js-workspacePanel {
-  width: 61.8%;
+  width: 76.3924%;
   height: 61.8%;
   border: 0 none;
   -webkit-box-shadow: inset 0 0 10px black;
@@ -183,21 +183,21 @@ html, body,
   width: 38.2%;
   height: 38.2%;
   border-bottom: 0 none;
+  border-left: 0 none;
 }
 
 #js-timeLinePanel {
   width: 38.1924%;
   height: 38.2%;
-  border-left: 0 none;
+  border-right: 0 none;
   border-bottom: 0 none;
+  border-left: 0 none;
 }
 
 #js-actionPanel {
   width: 23.6076%;
   height: 38.2%;
-  border-left: 0 none;
   border-bottom: 0 none;
-  border-right: 0 none;
 }
 
 #js-bonePropPanel {
@@ -216,7 +216,7 @@ html, body,
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 30%;
+  width: 45%;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
@@ -238,7 +238,7 @@ html, body,
   margin: 0 0 0 -4px;
   border: 0 none;
   padding: 2px 5px;
-  width: 70%;
+  width: 55%;
   height: 30px;
   line-height: 30px;
   background-color: #2f333a;

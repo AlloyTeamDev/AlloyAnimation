@@ -22,7 +22,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        width: 30%;
+        width: 45%;
         @include prefix(box-sizing, border-box);
         text-align: center;
         line-height: $prop-item-height;
@@ -42,7 +42,7 @@
         margin: 0 0 0 -4px;
         border: 0 none;
         padding: $padding-vert $prop-val-padding-hori;
-        width: 70%;
+        width: 55%;
         height: $h;
         line-height: $h;
         background-color: $prop-val-bg;

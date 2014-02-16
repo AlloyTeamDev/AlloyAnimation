@@ -41,15 +41,21 @@ html, body,
     }
 }
 
+$bonePropPanel-width: (100% - $golden-ratio) * $golden-ratio / 100%;
+$workspacePanel-width: 100% - $bonePropPanel-width;
+$boneTreePanel-width: 100% - $golden-ratio;
+$timeLinePanel-width: $golden-ratio * $golden-ratio / 100%;
+$actionPanel-width: $golden-ratio * (100% - $golden-ratio) / 100%;
+
 #js-bonePropPanel {
-    width: 100% - $golden-ratio;
+    width: $bonePropPanel-width;
     height: $golden-ratio;
     border-top: 0 none;
     border-bottom: 0 none;
 }
 
 #js-workspacePanel {
-    width: $golden-ratio;
+    width: $workspacePanel-width;
     height: $golden-ratio;
     border: 0 none;
 
@@ -58,22 +64,22 @@ html, body,
 }
 
 #js-boneTreePanel {
-    width: 100% - $golden-ratio;
+    width: $boneTreePanel-width;
     height: 100% - $golden-ratio;
     border-bottom: 0 none;
+    border-left: 0 none;
 }
 
 #js-timeLinePanel {
-    width: $golden-ratio * $golden-ratio / 100%;
+    width: $timeLinePanel-width;
     height: 100% - $golden-ratio;
-    border-left: 0 none;
+    border-right: 0 none;
     border-bottom: 0 none;
+    border-left: 0 none;
 }
 
 #js-actionPanel {
-    width: $golden-ratio * (100% - $golden-ratio) / 100%;
+    width: $actionPanel-width;
     height: 100% - $golden-ratio;
-    border-left: 0 none;
     border-bottom: 0 none;
-    border-right: 0 none;
 }
