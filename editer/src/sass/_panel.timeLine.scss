@@ -40,7 +40,7 @@
         }
     }
 
-    .axis {
+    .js-axis {
         // 刻度的高度
         $mark-height: 6px;
 
@@ -65,10 +65,11 @@
         top: 10px;
         font-size: 12px;
         cursor: default;
-    }
+        margin-left: -0.5em;
 
-    .axis-number-inner {
-        margin-left: -50%;
+        &:first-child, &:nth-child(2) {
+            margin-left: -0.25em;
+        }
     }
 
     .js-timeLine{

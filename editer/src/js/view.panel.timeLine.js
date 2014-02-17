@@ -22,10 +22,12 @@ define([
         initialize: function(){
             // 当前时刻
             this.now = 0;
-            // 坐标轴的步长（单位为px），即每个数字所示刻度之间的距离
-            this._axisStep = 50;
-            // 坐标轴每个刻度之间的距离
-            this._axisSubStep = 10;
+            // 坐标轴的步长（单位为px），即所显示的每个数字对应刻度之间的距离
+            this._AXIS_STEP = 50;
+            // 坐标轴每个小刻度之间的距离
+            this._AXIS_SUB_STEP = 10;
+            // 每个小刻度所表示的数字增量
+            this._INCREASE_PER_SUB_STEP = 1;
 
             // 复用父类的`initialize`方法
             TimeLinePanel.__super__.initialize.apply(this, arguments);
@@ -34,7 +36,8 @@ define([
             // 渲染空面板
             this.$el.html( panelTmpl({
                 now: this.now,
-                axisStep: this._axisStep
+                axisStep: this._AXIS_STEP,
+                axisSubStep: this._AXIS_SUB_STEP
             }) );
 
             if(timeLinesData){
@@ -61,22 +64,36 @@ define([
         },
 
         events: {
-            'click .js-timeLine': '_onClickTimeLine'
+            'click .js-timeLine, .js-axis': '_onClickTimeLine'
         },
 
         _onClickTimeLine: function($event){
-            var $target = $($event.target),
-                // 鼠标到所点击的 `.js-timeLine` 左边的距离
-                left = $event.pageX - $target.offset().left,
-                axisSubStep = this._axisSubStep,
-                remainder = left % axisSubStep;
+            // 获取 `.js-timeLine` 或 `.js-axis`
+            var $target = $($event.currentTarget);
+            // 鼠标到所点击的 `.js-timeLine` 左边的距离
+            var left = $event.pageX - $target.offset().left;
+            var AXIS_SUB_STEP = this._AXIS_SUB_STEP;
+            var remainder = left % AXIS_SUB_STEP;
+            var newTime;
 
             // 将表示当前时刻的游标移到最近的刻度上
             left = left - remainder;
-            if(remainder > axisSubStep / 2){
-                left += axisSubStep;
+            if(remainder > AXIS_SUB_STEP / 2){
+                left += AXIS_SUB_STEP;
             }
             this._$nowVernier.css('left', left + 'px');
+
+            // 修改当前时刻，触发事件
+            newTime = left / AXIS_SUB_STEP / this._INCREASE_PER_SUB_STEP;
+            if(newTime !== this.now){
+                this.now = newTime;
+                console.debug(
+                    'Panel %s change now time to %s',
+                    this.panelName, this.now
+                );
+
+                this.trigger('changedNowTime');
+            }
         }
     });
 

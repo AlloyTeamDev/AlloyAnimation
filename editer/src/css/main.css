@@ -541,12 +541,12 @@ html, body,
   border-color: transparent;
   border-top-color: #897cbf;
 }
-#js-timeLinePanel .axis {
+#js-timeLinePanel .js-axis {
   margin-top: -25px;
   height: 25px;
   background: repeat-x 0 0 url(../img/time-axis.png);
 }
-#js-timeLinePanel .axis::before {
+#js-timeLinePanel .js-axis::before {
   content: '';
   display: block;
   position: absolute;
@@ -561,9 +561,10 @@ html, body,
   top: 10px;
   font-size: 12px;
   cursor: default;
+  margin-left: -0.5em;
 }
-#js-timeLinePanel .axis-number-inner {
-  margin-left: -50%;
+#js-timeLinePanel .axis-number:first-child, #js-timeLinePanel .axis-number:nth-child(2) {
+  margin-left: -0.25em;
 }
 #js-timeLinePanel .js-timeLine {
   height: 20px;
