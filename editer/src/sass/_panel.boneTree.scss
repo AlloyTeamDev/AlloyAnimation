@@ -2,10 +2,10 @@
 针对骨骼树面板的样式，通过骨骼树面板的选择器限定样式的作用范围
 **/
 #js-boneTreePanel {
+    @import '_panel.boneTreeAndTimeLine';
+    
     // 缩进
     $indent: 10px;
-    // 一个骨骼条目的高度
-    $item-height: 30px;
     // 此面板的主色和配色
     $main-color: #69B0AC;
     $sub-color1: #3a8fb7;
@@ -22,6 +22,11 @@
         border-left-color: $main-color;
         color: $main-color;
     }
+
+    .bd {
+        padding-top: $time-axis-height;
+    }
+
     .js-bone {
         // 用于.drag-hint的绝对定位
         position: relative;
@@ -57,6 +62,7 @@
         // 将z-index显示设置为非auto的定位元素，会创建stacking context
         position: relative;
         z-index: 0;
+        margin-bottom: $item-space;
 
         &::before {
             content: '';

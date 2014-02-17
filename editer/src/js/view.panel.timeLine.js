@@ -5,11 +5,11 @@
 define([
     'jquery',
     'view.panel',
-    'tmpl!html/panel.timeLine.timeLine.html'
+    'tmpl!html/panel.timeLine.html', 'tmpl!html/panel.timeLine.timeLine.html'
 ], function(
     $,
     Panel,
-    timeLineTmpl
+    panelTmpl, timeLineTmpl
 ){
     var TimeLinePanel;
 
@@ -18,10 +18,7 @@ define([
     @extends Panel
     **/
     TimeLinePanel = Panel.extend({
-        /**
-        Start: backbone内置属性/方法
-        **/
-        el: $('#js-timeLinePanel'),
+        el: '#js-timeLinePanel',
         initialize: function(){
             // 当前时刻
             this.now = 0;
@@ -30,11 +27,8 @@ define([
             TimeLinePanel.__super__.initialize.apply(this, arguments);
         },
         render: function(timeLinesData){
-            this.$el
-                .html( this.panelTmpl({
-                    type: 'timeLine',
-                    title: '时间轴'
-                }) );
+            // 渲染空面板
+            this.$el.html(panelTmpl());
 
             if(timeLinesData){
                 timeLinesData.forEach(function(timeLineData){
@@ -43,21 +37,17 @@ define([
             }
 
             this._$bd = this.$el.children('.bd');
-            
 
             return this;
         },
-        /**
-        End: backbone内置属性/方法
-        **/
 
         /**
         添加一个时间轴view到此面板中
         @method addTimeline
         @param {Array} keyframes 此时间轴上的关键帧的数据
         **/
-        addTimeline: function(boneData){
-            this._$bd.append( timeLineTmpl() );
+        addTimeline: function(keyframes){
+            this._$bd.append( timeLineTmpl({keyframes: keyframes}) );
             return this;
         }
     });

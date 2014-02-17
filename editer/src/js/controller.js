@@ -140,7 +140,7 @@ define([
             workspacePanelView.addBone(boneData);
             // TODO: 给其它面板也添加对应的view
             boneTreePanelView.addBone(boneData);
-            timeLinePanelView.addTimeline(boneData);
+            timeLinePanelView.addTimeline(boneModel.get('keyframes').toJSON());
         },
 
         /**

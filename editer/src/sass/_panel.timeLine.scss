@@ -1,4 +1,6 @@
 #js-timeLinePanel {
+    @import '_panel.boneTreeAndTimeLine';
+
     $panel-color: $topic-color3;
 
     .hd {
@@ -6,9 +8,89 @@
         color: $panel-color;
     }
 
+    .bd {
+        padding-top: $time-axis-height;
+        position: relative;
+    }
+
+    .js-nowVernier {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 2px;
+        //background-color: #FFC408;
+        background-color: $panel-color;
+        margin-left: -1px;
+        z-index: 10;
+
+        &::before {
+            $triangle-height: 6px;
+            $triangle-width: 13px;
+            content: '';
+            position: absolute;
+            top: (-1 * $triangle-height) + 2px;
+            left: ($triangle-width / -2) + 1.5px;
+            display: block;
+            width: 0;
+            height: 0;
+            border-width: $triangle-height $triangle-width / 2;
+            border-style: solid;
+            border-color: transparent;
+            border-top-color: $panel-color;
+        }
+    }
+
+    .axis {
+        // 刻度的高度
+        $mark-height: 6px;
+
+        margin-top: -1 * $time-axis-height;
+        height: $time-axis-height;
+        background: repeat-x 0 0 url(../img/time-axis.png);
+
+        &::before {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1px;
+            height: $mark-height;
+            background: #fff;
+        }
+    }
+
+    .axis-number {
+        position: absolute;
+        top: 10px;
+        font-size: 12px;
+        cursor: default;
+    }
+
+    .axis-number-inner {
+        margin-left: -50%;
+    }
+
     .js-timeLine{
-        margin-bottom: 13px;
-        height: 2px;
-        background-color: rgba(#bbb, 0.7);
+        height: $item-height;
+        background-clip: content-box;
+        background-color: lighten($app-bg, 5%);
+        position: relative;
+        @include prefix(box-sizing, border-box);
+        margin-bottom: $item-space;
+    }
+
+    .keyframe {
+        $top: 0px;
+        $w: 8px;
+        $h: $item-height - $top * 2;
+
+        position: absolute;
+        top: $top;
+        margin-left: $w / -2;
+        height: $h;
+        width: $w;
+        background: #fff;
+        @include prefix(border-radius, $h);
     }
 }

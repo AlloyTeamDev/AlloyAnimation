@@ -1,1 +1,14 @@
-<div class="js-timeLine"></div>
+<%
+    /**
+    @param {Array} [keyframes]
+    **/
+%>
+<div class="js-timeLine">
+    <%
+        if(keyframes){
+            keyframes.forEach(function(keyframe, i){
+                print('<div class="keyframe" id="keyframe-' + keyframe.id + '" style="left: ' + (i * 50) + 'px">');
+            });
+        }
+    %>
+</div>

@@ -235,7 +235,7 @@ html, body,
 #js-bonePropPanel .js-propVal {
   vertical-align: middle;
   display: inline-block;
-  margin: 0 0 0 -4px;
+  margin: 0 0 0 -5px;
   border: 0 none;
   padding: 2px 5px;
   width: 55%;
@@ -450,6 +450,9 @@ html, body,
   border-left-color: #69b0ac;
   color: #69b0ac;
 }
+#js-boneTreePanel .bd {
+  padding-top: 25px;
+}
 #js-boneTreePanel .js-bone {
   position: relative;
 }
@@ -461,7 +464,7 @@ html, body,
   left: 0;
   top: 0;
   width: 12px;
-  height: 30px;
+  height: 20px;
   background: repeat-y 50% 50% url(../img/dragable-area.png);
   cursor: move;
   -webkit-user-select: none;
@@ -474,18 +477,19 @@ html, body,
   opacity: 1;
 }
 #js-boneTreePanel .name {
-  height: 30px;
-  line-height: 30px;
+  height: 20px;
+  line-height: 20px;
   cursor: default;
   padding-left: 22px;
   position: relative;
   z-index: 0;
+  margin-bottom: 5px;
 }
 #js-boneTreePanel .name::before {
   content: '';
   display: block;
   width: 100%;
-  height: 30px;
+  height: 20px;
   opacity: 0;
   -webkit-transition: opacity 0.3s;
   -moz-transition: opacity 0.3s;
@@ -511,17 +515,81 @@ html, body,
   border-left-color: #897cbf;
   color: #897cbf;
 }
+#js-timeLinePanel .bd {
+  padding-top: 25px;
+  position: relative;
+}
+#js-timeLinePanel .js-nowVernier {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  background-color: #897cbf;
+  margin-left: -1px;
+  z-index: 10;
+}
+#js-timeLinePanel .js-nowVernier::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -5px;
+  display: block;
+  width: 0;
+  height: 0;
+  border-width: 6px 6.5px;
+  border-style: solid;
+  border-color: transparent;
+  border-top-color: #897cbf;
+}
+#js-timeLinePanel .axis {
+  margin-top: -25px;
+  height: 25px;
+  background: repeat-x 0 0 url(../img/time-axis.png);
+}
+#js-timeLinePanel .axis::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 6px;
+  background: #fff;
+}
+#js-timeLinePanel .axis-number {
+  position: absolute;
+  top: 10px;
+  font-size: 12px;
+  cursor: default;
+}
+#js-timeLinePanel .axis-number-inner {
+  margin-left: -50%;
+}
+#js-timeLinePanel .js-timeLine {
+  height: 20px;
+  background-clip: content-box;
+  background-color: #393d46;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin-bottom: 5px;
+}
+#js-timeLinePanel .keyframe {
+  position: absolute;
+  top: 0px;
+  margin-left: -4px;
+  height: 20px;
+  width: 8px;
+  background: #fff;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  border-radius: 20px;
+}
 
 #js-actionPanel .hd {
   border-left-color: #fb9966;
   color: #fb9966;
-}
-
-#js-timeLinePanel .bd {
-  margin-top: 5px;
-}
-#js-timeLinePanel .js-timeLine {
-  margin-bottom: 13px;
-  height: 2px;
-  background-color: rgba(187, 187, 187, 0.7);
 }

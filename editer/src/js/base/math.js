@@ -74,8 +74,8 @@ define(['exports'], function(exports){
         radian && ( y = oldY * cos(radian) - oldX * sin(radian) );
 
         // 再翻转
-        transformer.turnOverX && x *= -1;
-        transformer.turnOverY && y *= -1;
+        transformer.turnOverX && (x *= -1);
+        transformer.turnOverY && (y *= -1);
 
         return [x, y];
     };
