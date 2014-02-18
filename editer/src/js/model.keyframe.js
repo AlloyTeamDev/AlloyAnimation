@@ -3,10 +3,10 @@
 @module
 **/
 define([
-    'backbone.relational', 'relationalScope',
+    'backbone',
     'modelUtil'
 ], function(
-    Backbone, relationalScope,
+    Backbone,
     util
 ){
     var createId = util.createId,
@@ -14,27 +14,32 @@ define([
 
     /**
     @class Keyframe
-    @extends Backbone.RelationalModel
+    @extends Backbone.Model
     **/
-    Keyframe = Backbone.RelationalModel.extend({
+    Keyframe = Backbone.Model.extend({
         defaults: {
             // 以下属性，类型全为数值
-            // TODO: 验证所设置的值是否为数值
-            // 关键帧所在的时刻
-            time: 0,
-            // 处于此关键帧时，骨骼及其纹理的各种数据：
             w: 100,
             h: 100,
-            jointX: 0,
-            jointY: 0,
             x: 0,
             y: 0,
             z: 0,
             rotate: 0,
-            opacity: 1
+            opacity: 1,
+            jointX: 0,
+            jointY: 0
         },
 
-        initialize: function(){
+        /**
+        @param {Object} attributes
+            @param {String} attributes.action 所属的动作的id
+            @param {String} attributes.bone 所属的骨骼的id
+            @param {String} attributes.time 所处的时刻
+            一个关键帧由动作、骨骼、时间三个维度共同确定
+        **/
+        initialize: function(attributes, options){
+            // 构造函数中已经把 `attributes` 设置进model中
+
             // 创建骨骼id
             id = createId();
             this.set('id', id);
@@ -51,8 +56,6 @@ define([
             );
         }
     });
-
-    relationalScope.Keyframe = Keyframe;
 
     return Keyframe;
 })

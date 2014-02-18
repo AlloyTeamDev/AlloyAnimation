@@ -89,6 +89,11 @@ define([
             return this._activeBone.getData();
         },
 
+        // 获取激活骨骼的id
+        getActiveBoneId: function(){
+            return this._activeBone.id;
+        },
+
         // 配置要委派的DOM事件
         events: {
             // 这个函数是是需要的,不然会按照浏览器的默认行为

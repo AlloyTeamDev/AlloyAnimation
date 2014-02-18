@@ -35,7 +35,7 @@ define([
             return this;
         },
 
-        changeBone: function(boneData, options){
+        changeBoneTo: function(boneData, options){
             if(this._boneId === boneData.id) return this;
 
             this._boneId = boneData.id;

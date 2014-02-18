@@ -16,9 +16,6 @@ define([
     @extends Panel
     **/
     ActionPanel = Panel.extend({
-        /**
-        Start: backbone内置属性/方法
-        **/
         el: $('#js-actionPanel'),
         initialize: function(){
             // 复用父类的`initialize`方法
@@ -30,10 +27,16 @@ define([
                     type: 'action',
                     title: '动作'
                 }) );
+        },
+
+        addAction: function(actionData){
+            this._activeAction = actionData;
+            return this;
+        },
+
+        getActiveActionId: function(){
+            return this._activeAction.id;
         }
-        /**
-        End: backbone内置属性/方法
-        **/
     });
 
     return new ActionPanel({panelName: 'action'});
