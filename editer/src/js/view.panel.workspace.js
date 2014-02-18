@@ -4,42 +4,36 @@
 @exports 工作区面板的view实例
 **/
 define([
-    'jquery', 'underscore', 'Backbone',
-    'tmpl!html/panel.workspace.bone.html', 'tmpl!html/workspace.html', 'tmpl!html/panel.workspace.transformUtil.html',
-    'view.panel',
-    'base/math'
+    'jquery', 'jquery.defaultSetting', 'base/math',
+    'view.panel.abstractSkeleton', 'view.abstractBone',
+    'tmpl!html/panel.workspace.html', 'tmpl!html/panel.workspace.transformUtil.html'
 ], function(
-    $, _, Backbone,
-    boneTmpl, workspaceTmpl, transformUtilTmpl,
-    PanelView,
-    math
+    $, undefined, math,
+    AbstractSkeleton, AbstractBone,
+    workspaceTmpl, transformUtilTmpl
 ){
-    var WorkspacePanelView, SkeletonView, BoneView;
+    var WorkspacePanel, Bone;
 
     // 减少搜索作用域链的局部变量
     var win = window,
         Math = win.Math;
 
     /**
-    @class WorkspacePanelView
-    @extends PanelView
+    @class WorkspacePanel
+    @extends AbstractSkeleton
     **/
-    var WorkspacePanelView = PanelView.extend({
+    WorkspacePanel = AbstractSkeleton.extend({
 
-        // 使用DOM中已有的元素作为此view的跟元素
+        // 使用DOM中已有的元素作为此view的根元素
         el: '#js-workspacePanel',
 
         initialize: function(){
             // 复用父类的initialize方法
-            this.constructor.__super__.initialize.apply(this, arguments);
+            WorkspacePanel.__super__.initialize.apply(this, arguments);
 
-            // 此面板中所有 **骨架** 的view构成的hash，用骨骼的id索引
-            this._skeletonHash = {};
-            // 此面板中所有 **骨骼** 的view构成的hash，用骨骼的id索引
-            this._boneHash = {};
+            // 保存具体的骨骼构造函数，覆盖从父类继承过来的抽象的骨骼构造函数
+            this._Bone = Bone;
 
-            // 当前被激活的骨骼
-            this._activeBone = null;
             // 重置调节骨骼时的状态表示
             this._resetState();
 
@@ -57,63 +51,47 @@ define([
         /**
         渲染此面板
         @method render
-        @param {Array} [skeletonsData] 多个骨架的的当前数据
+        @param {Array} [bonesData] 多个骨骼的的当前数据
         **/
-        render: function(skeletonsData){
+        render: function(bonesData){
             // 渲染空面板
             this.$el.html( workspaceTmpl());
 
-            // 如果有传入骨架数据，渲染出骨架view
-            if(skeletonsData){
-                skeletonsData.forEach(function(skeletonData){
-                    this.addSkeleton(skeletonData);
+            // 如果有传入骨骼数据，渲染出骨骼视图
+            if(bonesData && bonesData.length){
+                bonesData.forEach(function(boneData){
+                    this.addBone(boneData);
                 }, this);
             }
+
+            // 缓存DOM元素：
+            this._$emptyWording = this.$('#empty_wording');
+            // 工作区面板的坐标系元素，其位置表示坐标系原点，
+            // x轴水平向右，y轴竖直向下，
+            // 骨骼的坐标就是相对于这个坐标系而言的
+            this._$coordSys = this.$el.children('.js-coordinate-system');
+            // 覆盖从父类继承的、骨骼的默认DOM容器
+            this._boneDefaultContainer = this._$coordSys.get(0);
 
             return this;
         },
 
-        /**
-        获取此面板中的某个骨架view，或所有骨架view
-        @param {String} [id] 指定骨架的id
-        @return {SkeletonView|SkeletonView[]}
-        **/
-        getSkeleton: function(id){
-            if(id) return this._skeletonHash[id];
-            else return _.values(this._skeletonHash);
+        // 覆盖父类的同名方法
+        addBone: function(){
+            this._$emptyWording.hide();
+
+            // 复用父类的同名方法
+            WorkspacePanel.__super__.addBone.apply(this, arguments);
         },
 
-        /**
-        创建一个骨架view，并添加到此面板中
-        @method addSkeleton
-        @param {Object} data 骨架的当前数据
-        @return 所添加的骨架的view实例
-        **/
-        addSkeleton: function(data){
-            var skeleton, boneId;
-
-            // 创建骨架view，并插入DOM中
-            (skeleton = this._skeletonHash[data.id] = new SkeletonView())
-                .render(data, this.el);
-
-            // 将骨架中已有的骨骼保存起来
-            skeleton.getBone().forEach(function(bone){
-                this._boneHash[bone.id] = bone;
-            }, this);
-            // 监听这个骨架的事件，如果有添加骨骼，保存新添加的骨骼
-            skeleton.on('addBone', this._onSkeleonAddBone, this);
-
-            return skeleton;
+        // 获取激活骨骼的数据
+        getBoneData: function(){
+            return this._activeBone.getData();
         },
 
-        /**
-        获取此面板中的某个骨骼view，或所有骨骼view
-        @param {String} [id] 指定骨骼的id
-        @return {BoneView|BoneView[]}
-        **/
-        getBone: function(id){
-            if(id) return this._boneHash[id];
-            else return _.values(this._boneHash);
+        // 获取激活骨骼的id
+        getActiveBoneId: function(){
+            return this._activeBone.id;
         },
 
         // 配置要委派的DOM事件
@@ -130,6 +108,16 @@ define([
             'mouseup': 'onMouseUp'
         },
 
+        /**
+        当把图片拖拽放到工作区面板中时，读取图片的data url、宽高作为纹理图的url、骨骼的宽高，
+        如果当前有激活元素，使用激活元素作为父骨骼。
+        最后抛出 `addBone` 事件给controller以创建骨骼，带上骨骼的数据。
+        TODO: 考虑把事件名改为 `dropTexture` ，因为 `addBone` 有“骨骼视图已添加”的含义
+        TODO: 检验拖拽进来的文件是否图片文件
+        TODO: 考虑优化，data url数据量太大了，直接设置到DOM属性中对性能不友好
+        @triggerObj `workspacePanelView.$el` 工作区面板的根DOM元素
+        @event drop DOM事件drop
+        **/
         onDrop: function(e){
             var panel = this,
                 files, reader, i;
@@ -147,8 +135,6 @@ define([
                 reader.readAsDataURL(files[i]);
             }
 
-            this.$('#empty_wording').hide();
-
             /**
             写成函数声明而不是函数表达式，以免每循环一次重复创建一个函数对象
             @triggerObj {FileReader} `reader`
@@ -158,7 +144,9 @@ define([
                 // 使用 `this` 即可访问到触发 `onload` 事件的 `reader`
                 var texture = this.result,
                     img = new Image(),
-                    boneData;
+                    boneData,
+                    activeBone;
+
                 img.src = texture;
                 boneData = {
                     texture: texture
@@ -171,6 +159,9 @@ define([
                     boneData.h = img.height;
                     boneData.jointY = img.height / 2;
                 }
+                if(activeBone = panel._activeBone){
+                    boneData.parent = activeBone.id;
+                }
 
                 // 通知外界
                 panel.trigger('addBone', boneData);
@@ -181,17 +172,13 @@ define([
             var $target = $($event.target),
                 $bone, boneId;
 
-            // 当点击此面板时，如果点击了某个骨骼，激活之，
-            // 否则将已激活的骨骼取消激活
-            if( ($target.hasClass('js-bone') && ($bone = $target)) ||
-                ($bone = $target.parentsUntil(this.$el, '.js-bone')).length
+            // 当点击此面板时，如果点击了某个骨骼，改变激活元素为所点击的元素。
+            // **只要有骨骼，总有一个骨骼处于激活状态**
+            if( ( $target.hasClass('js-bone') && ($bone = $target) ) ||
+                ( $bone = $target.parentsUntil(this.$el, '.js-bone') ).length
             ){
-                boneId = boneHtmlId2boneId($bone.attr('id'));
-                this.activateBone(boneId);
-            }
-            else if(this._activeBone){
-                this.deactivateBone();
-                this._activeBone = null;
+                boneId = Bone.htmlId2Id($bone.attr('id'));
+                this.changeActiveBone(boneId)
             }
         },
 
@@ -211,6 +198,9 @@ define([
             bone = this._activeBone;
             this._boneOldX = bone.positionX();
             this._boneOldY = bone.positionY();
+
+            // 避免冒泡到父骨骼
+            $event.stopPropagation();
         },
             
         onMouseDownResizePoint: function($event){
@@ -457,43 +447,14 @@ define([
             // 而不是一边拖拽一边频繁的通知外界。
             // 并且是如果有数据更新，才通知外界
             if(this._boneChangedData){                
-                this.trigger('updateBone', this._activeBone.id, this._boneChangedData);
+                this.trigger('updatedBoneData', this._activeBone.id, this._boneChangedData);
             }
 
             // 重置调节骨骼时的状态表示
             this._resetState();
         },
 
-        /**
-        激活此面板中的一个骨骼。
-        同一时刻，只有一个骨骼被激活
-        @param {String} boneId 要激活的骨骼的id
-        @return this
-        **/
-        activateBone: function(boneId){
-            var oldActiveBone = this._activeBone;
-            if(oldActiveBone){
-                if(oldActiveBone.id === boneId) return this;
-                oldActiveBone.deactivate();
-            }
-            this._activeBone = this._boneHash[boneId];
-            this._activeBone.activate();
-
-            return this;
-        },
-
-        /**
-        将此面板中被激活的骨骼取消激活
-        @return this
-        **/
-        deactivateBone: function(){
-            this._activeBone && this._activeBone.deactivate();
-            return this;
-        },
-
-
-        /***** Start: 私有属性/方法 *****/
-
+        /* Start: 私有成员 */
         // 重置调节骨骼时的状态表示
         _resetState: function(){
             // 表示当前状态的各种私有属性
@@ -539,96 +500,31 @@ define([
             this._boneChangedData = null;
 
             return this;
-        },
-
-        /**
-        一个事件回调函数，专用于此面板中的骨架的 `addBone` 事件
-        @triggerObj {SkeletonView}
-        @event addBone 当骨架view中添加骨骼时触发
-        @param {BoneView} bone
-        @param {SkeletonView} skeleton
-        **/
-        _onSkeleonAddBone: function(bone, skeleton, options){
-            this._boneHash[bone.id] = bone;
         }
-        /***** End: 私有属性/方法 *****/
+        /* End: 私有成员 */
     });
 
-    /**
-    专用于此面板的骨架view
-    @class SkeletonView
-    @extends Backbone.View
-    **/
-    SkeletonView = Backbone.View.extend({
-        attributes: {
-            'class': 'js-skeleton'
-        },
-        initialize: function(){
-            this.$el.css({
-                'position': 'relative'
-            });
-
-            // 所有骨骼的view组成的hash，用id索引
-            this._boneHash = {};
-            // 根骨骼的view
-            this.root = null;
-        },
-        /**
-        @method render
-        @param {Object} skeletonData 骨架的数据
-            @param {Object} skeletonData.root
-        @param {DOMElement} [container] 要插入的DOM容器
-        @return this
-        **/
-        render: function(skeletonData, container){
-            // 创建根骨骼
-            (this.root = this._boneHash[skeletonData.root.id] = new BoneView())
-                .on('addChild', this._onAddChild, this)
-                .render(skeletonData.root, this.el);
-
-            // TODO: 如果有子骨骼的数据，创建之
-
-            container && this.$el.appendTo(container);
-
-            return this;
-        },
-        _onAddChild: function(child, parent, options){
-            this._boneHash[child.id] = child;
-            this.trigger('addBone', child, this, options);
-        },
-
-        /**
-        获取某个骨骼，或所有骨骼
-        @param {String} [boneId] 骨骼的id
-        @return {BoneView}
-        **/
-        getBone: function(boneId){
-            if(boneId) return this._boneHash[boneId];
-            else return _.values(this._boneHash);
-        }
-    });
 
     /**
     专用于此面板的骨骼view
-    @class BoneView
-    @extends Backbone.View
+    @class Bone
+    @extends AbstractBone
     **/
-    BoneView = Backbone.View.extend({
-        attributes: {
-            'class': 'js-bone'
-        },
-
+    Bone = AbstractBone.extend({
         transformUtilTmpl: transformUtilTmpl,
 
         initialize: function(){
-            this.children = [];
+            // 复用父类上的方法
+            Bone.__super__.initialize.apply(this, arguments);
+
             this.$el.attr('draggable', false);
 
-            // 几何数据的单位
+            // 几何数据的尺寸单位
             this.SIZE_UNIT = 'px';
 
             // 缓存骨骼的数据
             // 避免每次获取数据时，都要访问dom
+            this._name = null;
             this._texture = null;
             this._jointX = null;
             this._jointY = null;
@@ -642,38 +538,15 @@ define([
         },
 
         /**
-        将骨骼数据填入html模板，并将得到的html片段填入此视图的根元素当中。
-        如果提供的骨骼数据中有子骨骼的数据，不创建子骨骼。
-        @method render
-        @param {Object} boneData 骨骼的数据
-            @param {String} boneData.name
-            @param {String} boneData.texture
-            @param {Array} boneData.children
-        @param {DOMElement} [container] 要插入的DOM容器
-        @return this
-        **/
-        render: function(boneData, container){
-            this.id = boneData.id;
-            this.$el
-                .attr({
-                    'id': boneId2boneHtmlId(boneData.id)
-                });
-            this.update(boneData);
-
-            container && this.$el.appendTo(container);
-
-            return this;
-        },
-
-        /**
         激活此骨骼，表示开始操作此骨骼
         @return this
         **/
         activate: function(){
-            console.debug('Activate bone ' + this.id);
+            // 复用父类中被覆盖的同名方法
+            Bone.__super__.activate.apply(this, arguments);
 
+            // TODO: 缓存 `.js-transform-util` 元素
             this.$el
-                .addClass('js-activeBone')
                 .append(this.transformUtilTmpl())
                 .children('.js-joint')
                 .css({
@@ -689,71 +562,12 @@ define([
         @return this
         **/
         deactivate: function(){
-            this.$el
-                .removeClass('js-activeBone')
-                .children('.js-transform-util')
-                .remove();
+            this.$el.children('.js-transform-util').remove();
 
-            console.debug('Deactivate bone ' + this.id);
-
-            return this;
-        },
-
-        /**
-        给此骨骼添加一个子骨骼。
-        如果所提供的子骨骼数据中有子孙骨骼的数据，则添加子孙骨骼
-        @method addChild
-        @param {Object} data 子骨骼的数据
-        @param {Object} [options]
-        @return 所添加的子骨骼view
-        **/
-        addChild: function(data, options){
-            var child, grandChildrenData;
-
-            // 创建子骨骼view，并插入DOM容器中
-            (child = this._childrenHash[data.id] = new this.constructor)
-                .render(data)
-                .$el
-                .appendTo(this.$el);
-
-            // 保存引用
-            child.parent = this;
-            this.children.push(child);
-
-            // 如果有子孙骨骼的数据，递归添加之
-            if((grandChildrenData = data.children) && grandChildrenData.length){
-                grandChildrenData.forEach(function(grandChild){
-                    this.addChild(grandChild);
-                }, child);
-            }
-
-            // 通知此骨骼添加了一个子骨骼
-            this.trigger('addChild', child, this, options);
-
-            return child;
-        },
-
-        /**
-        彻底删除此骨骼view。
-        如果有子孙骨骼，一并删除。
-        @return this
-        **/
-        remove: function(){
-            var brothers;
-
-            // 先递归删除子骨骼
-            this.children.forEach(function(child){
-                child.remove();
-            });
-
-            // 删除在父骨骼中的引用
-            brothers = this.parent.children;
-            brothers.splice(brothers.indexOf(this), 1);
-
-            delete this.parent;
-            // 解除监听DOM事件，删除DOM元素，解除绑定在view实例上的事件
-            this.constructor.__super__.remove();
-
+            // 复用父类中被覆盖的同名方法。
+            // 执行移除操作的方法，先执行子类中的，再执行父类中的，
+            // 因为父类中的逻辑更根本
+            Bone.__super__.deactivate.apply(this, arguments);
             return this;
         },
 
@@ -776,7 +590,7 @@ define([
             var MAP, field;
             if(!data) return this;
 
-            MAP = this._FIELD_2_METHOD;
+            MAP = this.FIELD_2_METHOD;
             for(field in MAP){
                 if( !MAP.hasOwnProperty(field) ) continue;
                 if(field in data) this[MAP[field]](data[field]);
@@ -785,9 +599,42 @@ define([
             return this;
         },
 
-        /***** Start: 原子性的设置或获取骨骼数据的方法 *****/
+        getData: function(){
+            return {
+                name: this._name,
+                texture: this.texture,
+                w: this.w,
+                h: this.h,
+                x: this.x,
+                y: this.y,
+                z: this.z,
+                rotate: this.rotate,
+                opacity: this.opacity,
+                jointX: this.jointX,
+                jointY: this.jointY
+            };
+        },
+        
+        /*
+        Start: 原子性的设置或获取骨骼数据的方法 
+        请使用这些方法或 `update()` 来修改骨骼的数据，
+        而不是 `this.$el` ，以保证缓存数据的正确性
+        */
 
-        /* 请使用这些方法或 `update()` 来修改骨骼的数据，而不是 `this.$el` ，以保证缓存数据的正确性 */
+        /**
+        设置或获取骨骼名
+        @param {String} [url] 要设置成的骨骼名
+        @return {this|String} this, 或骨骼名
+        **/
+        name: function(name){
+            if(name !== void 0){
+                this._name = name;
+                return this;
+            }
+            else{
+                return this._name;
+            }
+        },
         
         /**
         设置或获取骨骼的纹理图。
@@ -795,11 +642,12 @@ define([
         可以直接用url来设置 `backgroundImage` 属性，
         或直接从 `backgroundImage` 属性获取url
         @param {String} [url] 要设置成的纹理图的url
-        @return {BoneView|String} this, 或纹理图的url
+        @return {this|String} this, 或纹理图的url
         **/
         texture: function(url){
             if(url !== void 0){
                 this.$el.css('backgroundImage', url);
+                this._texture = url;
                 return this;
             }
             else{
@@ -812,6 +660,7 @@ define([
         因为给jquery的 `.css()` 方法添加了钩子，
         用 `.css()` 方法设置 `transformOriginX` 属性时，能自动添加浏览器厂商前缀
         @param {Number} [x] 要设置成的水平坐标
+        @return {this|Number}
         **/
         jointX: function(x){
             return this._styleInSizeUnit('transformOriginX', x, '_jointX');
@@ -822,6 +671,7 @@ define([
         因为给jquery的 `.css()` 方法添加了钩子，
         用 `.css()` 方法设置 `transformOriginY` 属性时，能自动添加浏览器厂商前缀
         @param {Number} [y] 要设置成的水平坐标
+        @return {this|Number}
         **/
         jointY: function(y){
             return this._styleInSizeUnit('transformOriginY', y, '_jointY');
@@ -833,7 +683,8 @@ define([
         用jquery的 `.css()` 方法设置或获取css属性 `transform` 时：
         支持自动添加适当的浏览器厂商前缀；
         支持设置多个变换函数，而只会覆盖同名的变换函数，不覆盖不同名的；
-        @param {Number} angle
+        @param {Number} [angle] 要设置成的旋转角度
+        @return {this|Number}
         **/
         rotate: function(angle){
             if(angle !== void 0){
@@ -847,10 +698,20 @@ define([
             }
         },
 
+        /**
+        设置或获取骨骼的宽度
+        @param {Number} [w] 要设置成的宽度
+        @return {this|Number}
+        **/
         width: function(w){
             return this._styleInSizeUnit('width', w, '_w');
         },
 
+        /**
+        设置或获取骨骼的高度
+        @param {Number} [h] 要设置成的高度
+        @return {this|Number}
+        **/
         height: function(h){
             return this._styleInSizeUnit('height', h, '_h');
         },
@@ -858,7 +719,7 @@ define([
         /**
         设置或获取骨骼的水平坐标
         @param {Number} [x] 要设置成的水平坐标
-        @return {BoneView|Number}
+        @return {this|Number}
         **/
         positionX: function(x){
             // 清理缓存数据
@@ -867,9 +728,9 @@ define([
         },
 
         /**
-        设置或获取骨骼的垂直坐标
-        @param {Number} [y] 要设置成的垂直坐标
-        @return {BoneView|Number}
+        设置或获取骨骼的竖直坐标
+        @param {Number} [y] 要设置成的竖直坐标
+        @return {this|Number}
         **/
         positionY: function(y){
             // 清理缓存数据
@@ -877,6 +738,11 @@ define([
             return this._styleInSizeUnit('top', y, '_y');
         },
 
+        /**
+        设置或获取骨骼的垂直屏幕方向上的坐标
+        @param {Number} [z] 要设置成的坐标
+        @return {this|Number}
+        **/
         positionZ: function(z){
             if(z !== void 0){
                 typeof z !== 'number' && console.debug('Warn: attribute type wrong');
@@ -889,6 +755,11 @@ define([
             }
         },
 
+        /**
+        设置或获取骨骼的透明度
+        @param {Number} [alpha] 要设置成的透明度
+        @return {this|Number}
+        **/
         opacity: function(alpha){
             if(alpha !== void 0){
                 typeof alpha !== 'number' && console.debug('Warn: attribute type wrong');
@@ -900,6 +771,8 @@ define([
                 return this._opacity;
             }
         },
+
+        /***** End: 原子性的设置或获取骨骼数据的方法 *****/
 
         /**
         获取旋转角度为0时，相对于文档左边的偏移
@@ -919,6 +792,10 @@ define([
             return this._offsetLeft = offset.left;
         },
 
+        /**
+        获取旋转角度为0时，相对于文档顶部的偏移
+        @return {Number}
+        **/
         offsetTopOnRotate0: function(){
             var offset;
 
@@ -933,25 +810,9 @@ define([
             return this._offsetTop = offset.top;
         },
 
-        /***** End: 原子性的设置或获取骨骼数据的方法 *****/
-
-        // 将数据字段名映射到设置相应字段的方法名
-        _FIELD_2_METHOD: {
-            texture: 'texture',
-            jointX: 'jointX',
-            jointY: 'jointY',
-            rotate: 'rotate',
-            w: 'width',
-            h: 'height',
-            x: 'positionX',
-            y: 'positionY',
-            z: 'positionZ',
-            opacity: 'opacity'
-        },
-
         _styleInSizeUnit: function(prop, val, cacheProp){
             if(val !== void 0){
-                typeof val !== 'number' && console.debug('Warn: attribute type wrong');
+                typeof val !== 'number' && console.warn('Attribute\'s data type is wrong');
                 this.$el.css(prop, val + this.SIZE_UNIT);
                 this[cacheProp] = val;
                 return this;
@@ -985,29 +846,10 @@ define([
 
             return offset;
         }
+    }, {
+        // 覆盖继承自父类的同名属性，用于构成骨骼的html id
+        _panelName: 'workspace'
     });
 
-
-    /***** Start: helper function *****/
-
-    /**
-    获取骨骼的html id，其前缀表示这是工作区面板中的骨骼
-    @param {String} id 骨骼的id
-    @return {String} 骨骼的html id
-    **/
-    function boneId2boneHtmlId(id){
-        return 'js-workspace-bone-' + id;
-    }
-
-    /**
-    从骨骼的html id中获取骨骼id
-    @param {String} htmlId 骨骼的html id
-    @return {String} 骨骼的id
-    **/
-    function boneHtmlId2boneId(htmlId){
-        return htmlId.split('-').pop();
-    }
-    /***** End: helper function *****/
-
-    return new WorkspacePanelView();
+    return new WorkspacePanel({panelName: 'workspace'});
 });

@@ -3,61 +3,43 @@
 @module
 **/
 define([
-    'underscore', 'Backbone.Relational', 'relationalScope',
+    'underscore', 'backbone',
     'modelUtil', 'model.keyframe', 'collection.keyframe', 'collection.Bone'
 ], function(
-    _, Backbone, relationalScope,
+    _, Backbone,
     util
 ){
     var findWhere = _.findWhere,
         extend = _.extend,
         createId = util.createId,
-        BoneModel;
+        Bone;
 
     /**
-    @class BoneModel
-    @extends Backbone.RelationalModel
+    @class Bone
+    @extends Backbone.Model
     **/
-    BoneModel = Backbone.RelationalModel.extend({
+    Bone = Backbone.Model.extend({
         /**
         Start: backbone内置属性/方法
         **/
         defaults: {
             // 骨骼的名字
-            name: 'unknown bone',
+            name: 'bone',
             // 纹理图的url
-            texture: 'img/defaultTexture.gif'
+            texture: 'img/defaultTexture.png'
         },
-        relations: [{
-            // 有多个关键帧，组成一个关键帧集合
-            type: 'HasMany',
-            key: 'keyframes',
-            relatedModel: 'KeyframeModel',
-            collectionType: 'KeyframeCollection',
-            reverseRelation: {
-                // 一个关键帧集合对应一个骨骼
-                key: 'bone'
-            }
-        }, {
-            // 有多个子骨骼
-            type: 'HasMany',
-            key: 'children',
-            relatedModel: 'BoneModel',
-            collectionType: 'BoneCollection'
-        }, {
-            // 有一个父骨骼
-            type: 'HasOne',
-            key: 'parent',
-            relatedModel: 'BoneModel',
-            includeInJSON: 'id'
-        }],
 
         initialize: function(){
             var id;
 
+            // 创建骨骼id
             id = createId();
-            console.debug('Create a bone model with id %s', id);
+            console.debug('A new bone model %s is created', id);
             this.set('id', id);
+
+            ++Bone._boneCount;
+            // 设置默认骨骼名
+            this.set('name', 'bone' + Bone._boneCount);
         },
 
         /**
@@ -65,29 +47,33 @@ define([
             @param {Number} [options.time] 只获取指定时间点的数据
             @param {Boolean} [options.mixin=true] 是否将关键帧的数据混入到骨骼数据中。只有当设置了 `options.time` 时才有效
         **/
-        toJSON: function(options){
-            var keyframeData,
-                json;
+        // toJSON: function(options){
+        //     var keyframeData,
+        //         boneJson;
 
-            options = options || {};
+        //     options = options || {};
 
-            json = this.constructor.__super__.toJSON.call(this, options);
-            if('time' in options){
-                keyframeData = findWhere(json.keyframes, {time: options.time});
-                if(keyframeData){
-                    delete json.keyframes;
-                    delete keyframeData.id;
-                    delete keyframeData.bone;
-                    extend(json, keyframeData);
-                }
-                else{
-                    // TODO: 支持获取关键帧范围内某个时间点的数据，即指定的时间点不一定是关键帧所在的时间点
-                    throw new Error('No keyframe at specified time');
-                }
-            }
+        //     boneJson = Bone.__super__.toJSON.call(this, options);
+        //     if('time' in options){
+        //         keyframeData = findWhere(boneJson.keyframes, {time: options.time});
+        //         delete boneJson.keyframes;
 
-            return json;
-        },
+        //         if(keyframeData){
+        //             delete keyframeData.id;
+        //             delete keyframeData.bone;
+        //             extend(boneJson, keyframeData);
+        //         }
+        //         else{
+        //             // TODO: 支持获取关键帧范围内某个时间点的数据，即指定的时间点不一定是关键帧所在的时间点
+        //             console.warn(
+        //                 'Cannot find keyframe with time %s in the model of bone %s',
+        //                 options.time, boneJson.id
+        //             );
+        //         }
+        //     }
+
+        //     return boneJson;
+        // },
 
         fetch: function(){},
 
@@ -102,8 +88,8 @@ define([
         @param {String} [id] 子骨骼id
         @return {Boolean}
         @example
-            bodyBoneModel.hasChild() 是否有子骨骼
-            bodyBoneModel.hasChild(headBoneModel.get('id')) 是否有某个子骨骼
+            bodyBone.hasChild() 是否有子骨骼
+            bodyBone.hasChild(headBone.get('id')) 是否有某个子骨骼
         **/
         hasChild: function(id){
             var childBoneColl;
@@ -116,9 +102,10 @@ define([
                 return false;
             }
         }
+    }, {
+        // 骨骼实例的数量
+        _boneCount: 0
     });
 
-    relationalScope.BoneModel = BoneModel;
-
-    return BoneModel;
+    return Bone;
 });

@@ -4,111 +4,157 @@
 
 #js-workspacePanel {
 
-$active-color: darken(#26A9E0, 5%);
+    $active-color: darken(#26A9E0, 5%);
 
-#empty_wording{
-    display: table;
-    width: 100%;
-    height: 100%;
-    border: 2px dashed #6CAAD5;
-    overflow: hidden;
-    @include prefixVal(box-sizing, border-box);
-    @include prefix(user-select, none);
-    color: #6CAAD5;
-    font-size: 22px;
-}
-#empty_wording_inner{
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
-}
-
-.js-bone{
-    position: absolute;
-    // 新建骨骼的默认位置
-    left: 0;
-    top: 0;
-    background-repeat: no-repeat;
-    // 固定纹理图的位置
-    background-position: 0 0;
-    // 因为要用背景图来显示纹理，所以设置背景图的大小为容器div的大小，
-    // 这样就能方便的通过容器的大小来控制纹理图的大小。
-    background-size: 100% 100%;
-}
-
-.js-activeBone{
-    cursor: move;
-
-    &::before{
-        $border-width: 3px;
-        content: '';
-        display: block;
-        position: absolute;
-        left: -1 * $border-width;
-        top: -1 * $border-width;
+    #empty_wording {
+        display: table;
         width: 100%;
         height: 100%;
-        border: $border-width solid rgba($active-color, 0.5);
+        border: 2px dashed #6CAAD5;
+        overflow: hidden;
+        @include prefixVal(box-sizing, border-box);
+        @include prefix(user-select, none);
+        color: #6CAAD5;
+        font-size: 22px;
     }
-}
+    #empty_wording_inner {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+    }
 
-.js-joint{
-    $size: 8px;
-    position: absolute;
-    width: $size;
-    height: $size;
-    margin-left: $size / -2;
-    margin-top: $size / -2;
-    background-color: rgba(darken($active-color, 5%), 0.5);
-    @include prefix(border-radius, $size / 2);
-}
+    &>.js-coordinate-system {
+        position: relative;
+        left: 50%;
+        top: 50%;
+    }
 
-.js-rotate{
-    $size: 8px;
-    position: absolute;
-    left: $size / -2;
-    top: $size / -2;
-    width: $size;
-    height: $size;
-    cursor: url(../img/refresh.png), auto;
-    background-color: rgba(darken($active-color, 5%), 0.5);
-    @include prefix(border-radius, $size / 2);
-}
-
-.js-resize{
-    $size: 14px;
-    position: absolute;
-    right: -1px;
-    bottom: -1px;
-    width: $size;
-    height: $size;
-    cursor: nw-resize;
-    overflow: hidden;
-
-    &::before{
-        content: '';
-        display: block;
+    .js-bone {
         position: absolute;
+        // 新建骨骼的默认位置
+        left: 0;
+        top: 0;
+        background-repeat: no-repeat;
+        // 固定纹理图的位置
+        background-position: 0 0;
+        // 因为要用背景图来显示纹理，所以设置背景图的大小为容器div的大小，
+        // 这样就能方便的通过容器的大小来控制纹理图的大小。
+        background-size: 100% 100%;
+    }
+
+    $active-border-width: 1px;
+    $active-border-offset: $active-border-width / 2;
+    @if $active-border-offset <= 1px {
+        $active-border-offset: 1px;
+    }
+    .js-activeBone {
+        cursor: move;
+
+        &::before{
+            content: "";
+            display: block;
+            position: absolute;
+            left: -1 * $active-border-offset;
+            top: -1 * $active-border-offset;
+            width: 100%;
+            height: 100%;
+            border: $active-border-width solid rgba($active-color, 0.5);
+        }
+    }
+
+    .js-joint {
+        $size: 8px;
+        position: absolute;
+        width: $size;
+        height: $size;
+        margin-left: $size / -2;
+        margin-top: $size / -2;
+        background-color: rgba(darken($active-color, 5%), 0.5);
+        @include prefix(border-radius, $size / 2);
+    }
+
+    $rotate-size: 26px;
+    $rotate-pos: $rotate-size / -2 - 2;
+    .rotate {
+        position: absolute;
+        //visibility: hidden;
+        width: $rotate-size;
+        height: $rotate-size;
+        cursor: url(../img/refresh.png), auto;
+        background-color: rgba(0, 0, 0, 0);
+    }
+    .rotate1 {
+        left: $rotate-pos;
+        top: $rotate-pos;
+    }
+    .rotate2 {
+        right: $rotate-pos;
+        top: $rotate-pos;
+        // 如果用双向箭头，旋转的过程中双向箭头要跟着旋转才能表示正确的意思
+        // cursor: url(../img/rotate2.png), auto;
+    }
+    .rotate3 {
+        left: $rotate-pos;
+        bottom: $rotate-pos;
+    }
+    .rotate4 {
+        right: $rotate-pos;
+        bottom: $rotate-pos;
+    }
+
+    $resize-offset: 2px;
+    $resize-size: $rotate-size + $rotate-pos + $resize-offset;
+    .resize {
+        position: absolute;
+        width: $resize-size;
+        height: $resize-size;
+        // @include prefix(border-radius, $resize-size / 2);
+
+        &::before {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border: 1px solid rgba(darken($active-color, 5%), 0.5);
+            background-color: #fff;
+        }
+    }
+    .resize1 {
+        right: 0;
+        bottom: 0;
+        cursor: nw-resize;
+        &::before {
+            left: $resize-offset * -1;
+            top: $resize-offset * -1;
+        }
+    }
+    .resize2 {
         left: 0;
         bottom: 0;
-        @include prefix(transform, rotate(-45deg));
-        @include prefix(transform-origin, 0 0);
-        width: $size * 2;
-        height: 2px;
-        background-color: rgba($active-color, 0.5);
+        cursor: sw-resize;
+        &::before {
+            right: $resize-offset * -1;
+            top: $resize-offset * -1;
+        }
     }
-    &::after{
-        content: '';
-        display: block;
-        position: absolute;
-        left: 50%;
-        bottom: 0;
-        @include prefix(transform, rotate(-45deg));
-        @include prefix(transform-origin, 0 0);
-        width: $size * 2;
-        height: 2px;
-        background-color: rgba($active-color, 0.5);
+    .resize3 {
+        right: 0;
+        top: 0;
+        cursor: sw-resize;
+        &::before {
+            left: $resize-offset * -1;
+            bottom: $resize-offset * -1;
+        }
     }
-}
+    .resize4 {
+        left: 0;
+        top: 0;
+        cursor: nw-resize;
+        &::before {
+            right: $resize-offset * -1;
+            bottom: $resize-offset * -1;
+        }
+    }
 
 } // end of workspace panel

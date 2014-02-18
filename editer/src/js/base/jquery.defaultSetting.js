@@ -1,3 +1,8 @@
+/**
+对jquery的基础配置
+@module
+@exports undefined
+**/
 define([
     'jquery', 'underscore',
     'base/detector'
@@ -12,7 +17,8 @@ define([
         validProp = {
             transformOriginX: null,
             transformOriginY: null,
-            transform: null
+            transform: null,
+            userSelect: null
         };
         for(prop in validProp){
             if( !validProp.hasOwnProperty(prop) ) continue;
@@ -30,7 +36,7 @@ define([
                     elem.style[ validProp.transformOriginX ] = value;
                 }
             }
-        }
+        };
         $.cssHooks.transformOriginY = {
             get: function(elem, computed, extra){
                 if(validProp.transformOriginY){
@@ -42,7 +48,7 @@ define([
                     elem.style[ validProp.transformOriginY ] = value;
                 }
             }
-        }
+        };
 
         $.cssHooks.backgroundImage = {
             get: function(elem, computed, extra){
@@ -60,8 +66,11 @@ define([
         **/
         $.cssHooks.transform = {
             get: function(elem, computed, extra){
-                return elem.style[validProp.transform]
+                return elem.style[validProp.transform];
             },
+            // TODO:
+            // transform属性中的变换函数的顺序会对变换产生影响，
+            // 不要改变变换函数的顺序
             set: function(elem, newVal){
                 var MATCHER = /^(\w)+\(.+\)$/i,
                     SPLITER = ' ';
@@ -115,8 +124,20 @@ define([
                     return;
                 }
             }
-        }
+        };
+
+        $.cssHooks['userSelect'] = {
+            get: function(elem, computed, extra){
+                return elem.style[validProp.userSelect];
+            },
+            set: function(elem, newVal){
+                elem.style[validProp.userSelect] = newVal;
+            }
+        };
     });
 
-    return $;
+    // 显式的写出来返回undefined，是因为此模块约定为返回undefined，
+    // 避免被修改成返回其他的东西。
+    // 使用此模块的地方已经将此模块的输出视为undefined
+    return undefined;
 });

@@ -19,7 +19,9 @@ time, mark, audio, video {
     margin: 0;
     padding: 0;
     border: 0;
-    font-size: 100%;
+    //font-size: 100%;
+    font-size: inherit;
+    color: inherit;
     font: inherit;
     vertical-align: baseline;
 }
@@ -54,8 +56,8 @@ table {
 ::-webkit-scrollbar-button { }
 /*::-webkit-scrollbar-button:start:decrement { width:10px; height:11px;}*/
 ::-webkit-scrollbar-button:end:increment{ width:10px; height:0px;}
-::-webkit-scrollbar-track { border:0; background-color:#f6f7f8;}
-::-webkit-scrollbar-track-piece{ background-color:#f6f7f8;}
+::-webkit-scrollbar-track { border:0; background-color:transparent;}
+::-webkit-scrollbar-track-piece{ background-color:transparent;}
 ::-webkit-scrollbar-track-piece:vertical{}
 ::-webkit-scrollbar-track-piece:horizontal{}
 ::-webkit-scrollbar-thumb{ width:8px; background-color:#DDDADB;  border-radius:5px;}

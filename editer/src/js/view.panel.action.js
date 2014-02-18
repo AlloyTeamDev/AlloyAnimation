@@ -7,22 +7,19 @@ define([
     'view.panel'
 ], function(
     $,
-    PanelView
+    Panel
 ){
-    var ActionPanelView;
+    var ActionPanel;
 
     /**
-    @class ActionPanelView
-    @extends PanelView
+    @class ActionPanel
+    @extends Panel
     **/
-    ActionPanelView = PanelView.extend({
-        /**
-        Start: backbone内置属性/方法
-        **/
+    ActionPanel = Panel.extend({
         el: $('#js-actionPanel'),
         initialize: function(){
             // 复用父类的`initialize`方法
-            this.constructor.__super__.initialize.apply(this, arguments);
+            ActionPanel.__super__.initialize.apply(this, arguments);
         },
         render: function(){
             this.$el
@@ -30,11 +27,17 @@ define([
                     type: 'action',
                     title: '动作'
                 }) );
+        },
+
+        addAction: function(actionData){
+            this._activeAction = actionData;
+            return this;
+        },
+
+        getActiveActionId: function(){
+            return this._activeAction.id;
         }
-        /**
-        End: backbone内置属性/方法
-        **/
     });
 
-    return new ActionPanelView();
+    return new ActionPanel({panelName: 'action'});
 });

@@ -3,41 +3,45 @@
 @module
 **/
 define([
-    'Backbone', 'relationalScope',
-    'model.keyframe'
+    'backbone',
+    'model.keyframe', 'modelUtil'
 ], function(
-    Backbone, relationalScope,
-    KeyframeModel
+    Backbone,
+    Keyframe, util
 ){
-    var KeyframeCollection;
+    var KeyframeCollection,
+        createId = util.createId;
 
     /**
     @class KeyframeCollection
     @extends Backbone.Collection
     **/
     KeyframeCollection = Backbone.Collection.extend({
-        /**
-        Start: backbone内置属性/方法
-        **/
-        model: KeyframeModel,
-        comparator: 'time',
-        toJSON: function(options){
-            var json;
-            if('time' in options){
-                json = this.where({time: options.time})[0].toJSON();
-                json = [json];
-            }
-            else{
-                json = this.constructor.__super__.toJSON.call(this, options);
-            }
-            return json;
-        }
-        /**
-        End: backbone内置属性/方法
-        **/
-    });
+        model: Keyframe,
 
-    relationalScope.KeyframeCollection = KeyframeCollection;
+        initialize: function(){
+            this.id = createId();
+            console.debug('A new keyframe collection %s is created', this.id);
+
+            // 为变化打log
+            this.on('add', this._onAdd);
+            this.on('remove', this._onRemove);
+        },
+
+        _onAdd: function(bone){
+            console.debug(
+                'Keyframe collection %s added keyframe %s',
+                this.id, bone.id
+            );
+        },
+
+        _onRemove: function(bone){
+            console.debug(
+                'Keyframe collection %s removed keyframe %s',
+                this.id, bone.id
+            );
+        }
+    });
 
     return KeyframeCollection;
 });

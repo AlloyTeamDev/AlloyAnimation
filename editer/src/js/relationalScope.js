@@ -5,7 +5,7 @@ relational model/collection 的命名空间。
 @module
 **/
 define([
-    'Backbone.Relational'
+    'backbone.relational'
 ], function(
     Backbone
 ){

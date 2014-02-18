@@ -1,0 +1,110 @@
+#js-bonePropPanel {
+    $main-color: #3a8fb7;
+    $prop-item-height: 30px;
+    $border-radius: 5px;
+    $prop-val-bg: #2f333a;
+    $prop-val-padding-hori: 5px;
+
+    overflow: auto;
+
+    .hd {
+        border-left-color: $main-color;
+        color: $main-color;
+    }
+
+    .propItem {
+        height: $prop-item-height;
+        margin-bottom: 1px;
+    }
+
+    .propName {
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 45%;
+        @include prefix(box-sizing, border-box);
+        text-align: right;
+        line-height: $prop-item-height;
+        height: $prop-item-height;
+        padding: 0 10px;
+        vertical-align: middle;
+        background: lighten($app-bg, 5%);
+        @include prefix(border-radius, $border-radius 0 0 $border-radius);
+    }
+
+    .js-propVal {
+        $padding-vert: 2px;
+        $h: $prop-item-height;
+
+        vertical-align: middle;
+        display: inline-block;
+        // 负margin，去除与.propName之间的空隙，因为都是行内元素，html代码内的空格会产生空隙
+        margin: 0 0 0 -5px;
+        border: 0 none;
+        padding: $padding-vert $prop-val-padding-hori;
+        width: 55%;
+        height: $h;
+        line-height: $h;
+        background-color: $prop-val-bg;
+        @include prefix(border-radius, 0 $border-radius $border-radius 0);
+        @include prefix(box-sizing, border-box);
+        outline: 0 none;
+        text-align: left;
+    }
+
+    .js-propVal[type=file] {
+        
+    }
+
+    .js-propVal[type=number] {
+        $psuedo-btn-width: $prop-item-height;
+
+        &::-webkit-inner-spin-button {
+            $psuedo-btn-height: $prop-item-height / 2;
+
+            -webkit-appearance: none;
+            display: block;
+            width: $psuedo-btn-width;
+            height: $prop-item-height;
+            margin: 0;
+            border: 0 none;
+            padding: 0;
+            position: relative;
+            cursor: pointer;
+
+            &::before, &::after {
+                display: block;
+                position: absolute;
+                right: 0;
+                width: $psuedo-btn-width;
+                height: $psuedo-btn-height;
+                line-height: $psuedo-btn-height;
+                background: lighten($app-bg, 5%);
+                text-align: center;
+                vertical-align: middle;
+            }
+            &::before {
+                content: '+';
+                top: 0;
+                @include prefix(border-top-right-radius, $border-radius);
+            }
+            &::after {
+                content: '-';
+                font-size: 18px;
+                bottom: 0;
+                border-top: 1px solid $prop-val-bg;
+                background-clip: padding-box;
+                @include prefix(border-bottom-right-radius, $border-radius);
+                line-height: $psuedo-btn-height - 2px;
+            }
+        }
+        // 暂时不需要
+        // &::-webkit-outer-spin-button {
+        //     -webkit-appearance: none;
+        //     margin: 0;
+        //     border: 0 none;
+        //     padding: 0;
+        // }
+    }
+}

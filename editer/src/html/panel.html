@@ -2,23 +2,20 @@
     /**
     依赖的外部变量：
     title {String} 面板的标题
-    type {String} action|workspace|boneTree|timeline
+    type {String} action|workspace|boneTree|timeLine
     **/
 %>
 <div class="hd">
-    <span class="panelTitle"><%= title %></span>
+    <%= title %>
     <%
         switch(type){
             case 'action':
                 break;
             case 'workspace':
-    %>
-            <%@ panel.workspace.hd.html %>
-    <%
                 break;
             case 'boneTree':
                 break;
-            case 'timeline':
+            case 'timeLine':
                 break;
         }
     %>
@@ -29,13 +26,13 @@
             case 'action':
                 break;
             case 'workspace':
-    %>
-            <%@ panel.workspace.bd.html %>
-    <%
                 break;
             case 'boneTree':
                 break;
-            case 'timeline':
+            case 'timeLine':
+    %>
+            <div class="coordinate-axis"></div>
+    <%
                 break;
         }
     %>
