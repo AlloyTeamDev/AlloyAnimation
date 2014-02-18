@@ -209,7 +209,7 @@ html, body,
 }
 #js-bonePropPanel .propItem {
   height: 30px;
-  margin-bottom: 5px;
+  margin-bottom: 1px;
 }
 #js-bonePropPanel .propName {
   display: inline-block;
@@ -221,7 +221,7 @@ html, body,
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
-  text-align: center;
+  text-align: right;
   line-height: 30px;
   height: 30px;
   padding: 0 10px;
@@ -251,7 +251,7 @@ html, body,
   -ms-box-sizing: border-box;
   box-sizing: border-box;
   outline: 0 none;
-  text-align: center;
+  text-align: left;
 }
 #js-bonePropPanel .js-propVal[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;

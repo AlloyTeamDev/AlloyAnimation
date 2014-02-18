@@ -14,7 +14,7 @@
 
     .propItem {
         height: $prop-item-height;
-        margin-bottom: 5px;
+        margin-bottom: 1px;
     }
 
     .propName {
@@ -24,7 +24,7 @@
         white-space: nowrap;
         width: 45%;
         @include prefix(box-sizing, border-box);
-        text-align: center;
+        text-align: right;
         line-height: $prop-item-height;
         height: $prop-item-height;
         padding: 0 10px;
@@ -49,7 +49,7 @@
         @include prefix(border-radius, 0 $border-radius $border-radius 0);
         @include prefix(box-sizing, border-box);
         outline: 0 none;
-        text-align: center;
+        text-align: left;
     }
 
     .js-propVal[type=file] {
