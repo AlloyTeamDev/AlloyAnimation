@@ -140,7 +140,10 @@ define([
             workspacePanelView.addBone(boneData);
             // TODO: 给其它面板也添加对应的view
             boneTreePanelView.addBone(boneData);
-            timeLinePanelView.addTimeline(boneModel.get('keyframes').toJSON());
+            timeLinePanelView.addTimeline(
+                boneModel.get('id'),
+                boneModel.get('keyframes').toJSON()
+            );
         },
 
         /**
@@ -208,6 +211,11 @@ define([
         @event add 当有关键帧model被添加进某个关键帧collection时触发
         **/
         onAddKeyFrameModel: function(keyframeModel, keyframeColl, options){
+            // TOOD: 暂时注释掉触发error的语句
+            // timeLinePanelView.addKeyframe(
+            //     keyframeModel.get('bone').get('id'),
+            //     keyframe.toJSON()
+            // );
             monitorKeyframeModel(keyframeModel);
         },
 
@@ -342,7 +350,7 @@ define([
                 allBoneColl
                     .get(boneId)
                     .get('keyframes')
-                    .add(boneData.keyframes[0])
+                    .add(boneData.keyframes[0]);
             }
         },
 

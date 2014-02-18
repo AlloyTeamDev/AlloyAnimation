@@ -1,13 +1,20 @@
 <%
     /**
+    @param {String} boneId
     @param {Array} [keyframes]
+    @param {Function} time2Left 将time转换为left的函数
     **/
 %>
-<div class="js-timeLine">
+<div class="js-timeLine" data-bone-id="<%= boneId %>">
     <%
         if(keyframes){
-            keyframes.forEach(function(keyframe, i){
-                print('<div class="keyframe" id="keyframe-' + keyframe.id + '" style="left: ' + (i * 50) + 'px">');
+            keyframes.forEach(function(keyframe){
+                var id = keyframe.id,
+                    left = time2Left(keyframe.time);
+                // TODO: hack tmpl插件，支持传参；支持直接调用include函数
+    %>
+                <%@ panel.timeLine.keyframe.html %>
+    <%
             });
         }
     %>

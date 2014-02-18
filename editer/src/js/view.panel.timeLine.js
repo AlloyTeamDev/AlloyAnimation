@@ -3,11 +3,11 @@
 @module
 **/
 define([
-    'jquery',
+    'jquery', 'underscore',
     'view.panel',
     'tmpl!html/panel.timeLine.html', 'tmpl!html/panel.timeLine.timeLine.html'
 ], function(
-    $,
+    $, _,
     Panel,
     panelTmpl, timeLineTmpl
 ){
@@ -56,10 +56,31 @@ define([
         /**
         添加一个时间轴view到此面板中
         @method addTimeline
+        @param {String} boneId 此时间轴对应的骨骼
         @param {Array} keyframes 此时间轴上的关键帧的数据
         **/
-        addTimeline: function(keyframes){
-            this._$bd.append( timeLineTmpl({keyframes: keyframes}) );
+        addTimeline: function(boneId, keyframes){
+            this._$bd.append( timeLineTmpl({
+                boneId: boneId,
+                keyframes: keyframes,
+                time2Left: _.bind(this._time2Left, this)
+            }) );
+            return this;
+        },
+
+        /**
+        为指定的骨骼对应的时间轴添加关键帧
+        @param {String} boneId
+        @param {Object} keyframeData
+        @return this
+        **/
+        addKeyframe: function(boneId, keyframeData){
+            this._$bd
+                .find('.js-timeLine[data-bone-id="' + boneId + '"]')
+                .append({
+                    id: keyframeData.id,
+                    left: this._time2Left(keyframeData.time)
+                });
             return this;
         },
 
@@ -84,7 +105,7 @@ define([
             this._$nowVernier.css('left', left + 'px');
 
             // 修改当前时刻，触发事件
-            newTime = left / AXIS_SUB_STEP / this._INCREASE_PER_SUB_STEP;
+            newTime = this._left2Time(left);
             if(newTime !== this.now){
                 this.now = newTime;
                 console.debug(
@@ -94,6 +115,14 @@ define([
 
                 this.trigger('changedNowTime');
             }
+        },
+
+        _left2Time: function(left){
+            return left / this._AXIS_SUB_STEP / this._INCREASE_PER_SUB_STEP;
+        },
+
+        _time2Left: function(time){
+            return time * this._INCREASE_PER_SUB_STEP * this._AXIS_SUB_STEP;
         }
     });
 
