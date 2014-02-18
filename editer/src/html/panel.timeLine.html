@@ -1,0 +1,24 @@
+<%
+    /**
+    @param {Number} now 当前时刻
+    @param {Number} axisStep
+    @param {Number} axisSubStep
+    @param {Number} [axisNumberCount = 9] 坐标轴上的数字的个数
+    **/
+%>
+<div class="hd">时间轴</div>
+<div class="bd">
+    <div class="js-nowVernier" style="left: <%= now * axisStep %>px"></div>
+    <div class="js-axis">
+        <%
+            if(typeof axisNumberCount === 'undefined'){
+                axisNumberCount = 9;
+            }
+            for(var i = 0; i < axisNumberCount; ++i){
+        %>
+                <%@ panel.timeLine.axisNumber.html %>
+        <%
+            }
+        %>
+    </div>
+</div>

@@ -39,7 +39,8 @@
 
         vertical-align: middle;
         display: inline-block;
-        margin: 0 0 0 -4px;
+        // 负margin，去除与.propName之间的空隙，因为都是行内元素，html代码内的空格会产生空隙
+        margin: 0 0 0 -5px;
         border: 0 none;
         padding: $padding-vert $prop-val-padding-hori;
         width: 55%;

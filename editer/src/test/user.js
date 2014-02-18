@@ -12,7 +12,7 @@ define([
             boneData = {};
 
         parent && (boneData.parent = parent);
-        img.src = boneData.texture = texture || 'img/defaultTexture.gif';
+        img.src = boneData.texture = texture || 'img/defaultTexture.png';
         img.onload = function(){
             if(img.width){
                 boneData.w = img.width;

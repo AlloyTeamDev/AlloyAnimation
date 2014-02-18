@@ -62,10 +62,16 @@ define([
             return this;
         },
 
+        // 获取激活骨骼的id
+        getActiveBoneId: function(){
+            return this._activeBone.id;
+        },
+
         events: {
             'mousedown': 'onMouseDownBone',
             'mouseup .js-bone': 'onMouseUpBone',
-            'click .js-bone': 'onClickBone'
+            'click .js-bone': 'onClickBone',
+            'click .js-addBoneBtn': 'onClickAddBoneBtn'
         },
 
         onMouseDownBone: function($event){
@@ -177,6 +183,13 @@ define([
             $event.stopPropagation();
 
             this.changeActiveBone(targetBoneId);
+        },
+
+        onClickAddBoneBtn: function(){
+            // TODO: 暂时先这么写着先
+            require('test/user').uploadTexture();
+
+            // this.trigger('addBone');
         }
     });
 

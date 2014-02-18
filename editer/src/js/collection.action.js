@@ -1,27 +1,27 @@
 /**
-骨骼collection的类
+动作collection
 @module
 **/
 define([
     'backbone',
-    'model.bone', 'modelUtil'
+    'model.action', 'modelUtil'
 ], function(
     Backbone,
-    Bone, util
+    Action, util
 ){
-    var BoneCollection,
+    var ActionCollection,
         createId = util.createId;
 
     /**
-    @class BoneCollection
+    @class ActionCollection
     @extends Backbone.Collection
     **/
-    BoneCollection = Backbone.Collection.extend({
-        model: Bone,
+    ActionCollection = Backbone.Collection.extend({
+        model: Action,
 
         initialize: function(){
             this.id = createId();
-            console.debug('A new bone collection %s is created', this.id);
+            console.debug('A new action collection %s is created', this.id);
 
             // 为变化打log
             this.on('add', this._onAdd);
@@ -30,18 +30,18 @@ define([
 
         _onAdd: function(bone){
             console.debug(
-                'Bone collection %s added bone %s',
+                'Action collection %s added action %s',
                 this.id, bone.id
             );
         },
 
         _onRemove: function(bone){
             console.debug(
-                'Bone collection %s removed bone %s',
+                'Action collection %s removed action %s',
                 this.id, bone.id
             );
         }
     });
 
-    return BoneCollection;
+    return ActionCollection;
 });

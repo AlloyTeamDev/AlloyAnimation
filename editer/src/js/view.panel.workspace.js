@@ -84,6 +84,16 @@ define([
             WorkspacePanel.__super__.addBone.apply(this, arguments);
         },
 
+        // 获取激活骨骼的数据
+        getBoneData: function(){
+            return this._activeBone.getData();
+        },
+
+        // 获取激活骨骼的id
+        getActiveBoneId: function(){
+            return this._activeBone.id;
+        },
+
         // 配置要委派的DOM事件
         events: {
             // 这个函数是是需要的,不然会按照浏览器的默认行为
@@ -514,6 +524,7 @@ define([
 
             // 缓存骨骼的数据
             // 避免每次获取数据时，都要访问dom
+            this._name = null;
             this._texture = null;
             this._jointX = null;
             this._jointY = null;
@@ -587,12 +598,43 @@ define([
 
             return this;
         },
+
+        getData: function(){
+            return {
+                name: this._name,
+                texture: this.texture,
+                w: this.w,
+                h: this.h,
+                x: this.x,
+                y: this.y,
+                z: this.z,
+                rotate: this.rotate,
+                opacity: this.opacity,
+                jointX: this.jointX,
+                jointY: this.jointY
+            };
+        },
         
         /*
         Start: 原子性的设置或获取骨骼数据的方法 
         请使用这些方法或 `update()` 来修改骨骼的数据，
         而不是 `this.$el` ，以保证缓存数据的正确性
         */
+
+        /**
+        设置或获取骨骼名
+        @param {String} [url] 要设置成的骨骼名
+        @return {this|String} this, 或骨骼名
+        **/
+        name: function(name){
+            if(name !== void 0){
+                this._name = name;
+                return this;
+            }
+            else{
+                return this._name;
+            }
+        },
         
         /**
         设置或获取骨骼的纹理图。

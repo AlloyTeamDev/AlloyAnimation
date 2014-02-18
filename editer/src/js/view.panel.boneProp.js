@@ -35,7 +35,7 @@ define([
             return this;
         },
 
-        changeBone: function(boneData, options){
+        changeBoneTo: function(boneData, options){
             if(this._boneId === boneData.id) return this;
 
             this._boneId = boneData.id;
@@ -59,6 +59,17 @@ define([
             $bd.off('change', '.js-propVal', this._preventPopupOnChangeProp);
 
             console.debug('Panel bone-prop updated properties %O', boneData);
+        },
+
+        getBoneData: function(){
+            var boneData = {};
+
+            this._$bd.find('.js-propVal').each(function(i){
+                var $propVal = $(this);
+                boneData[$propVal.data('prop-name')] = $propVal.val();
+            });
+
+            return boneData;
         },
 
         events: {
