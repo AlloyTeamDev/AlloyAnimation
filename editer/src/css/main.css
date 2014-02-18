@@ -450,6 +450,11 @@ html, body,
   border-left-color: #69b0ac;
   color: #69b0ac;
 }
+#js-boneTreePanel .js-addBoneBtn {
+  float: right;
+  cursor: pointer;
+  color: #897cbf;
+}
 #js-boneTreePanel .bd {
   padding-top: 25px;
 }

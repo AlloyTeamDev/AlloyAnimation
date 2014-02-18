@@ -23,6 +23,12 @@
         color: $main-color;
     }
 
+    .js-addBoneBtn {
+        float: right;
+        cursor: pointer;
+        color: $topic-color3;
+    }
+
     .bd {
         padding-top: $time-axis-height;
     }

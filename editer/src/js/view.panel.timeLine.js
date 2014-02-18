@@ -5,11 +5,11 @@
 define([
     'jquery', 'underscore',
     'view.panel',
-    'tmpl!html/panel.timeLine.html', 'tmpl!html/panel.timeLine.timeLine.html'
+    'tmpl!html/panel.timeLine.html', 'tmpl!html/panel.timeLine.timeLine.html', 'tmpl!html/panel.timeLine.keyframe.html'
 ], function(
     $, _,
     Panel,
-    panelTmpl, timeLineTmpl
+    panelTmpl, timeLineTmpl, keyframeTmpl
 ){
     var TimeLinePanel;
 
@@ -77,10 +77,10 @@ define([
         addKeyframe: function(boneId, keyframeData){
             this._$bd
                 .find('.js-timeLine[data-bone-id="' + boneId + '"]')
-                .append({
+                .append(keyframeTmpl({
                     id: keyframeData.id,
                     left: this._time2Left(keyframeData.time)
-                });
+                }));
             return this;
         },
 

@@ -3,10 +3,10 @@
 @module
 **/
 define([
-    'backbone', 'relationalScope',
+    'backbone',
     'model.keyframe', 'modelUtil'
 ], function(
-    Backbone, relationalScope,
+    Backbone,
     Keyframe, util
 ){
     var KeyframeCollection,
@@ -19,8 +19,6 @@ define([
     KeyframeCollection = Backbone.Collection.extend({
         model: Keyframe,
 
-        comparator: 'time',
-
         initialize: function(){
             this.id = createId();
             console.debug('A new keyframe collection %s is created', this.id);
@@ -28,20 +26,6 @@ define([
             // 为变化打log
             this.on('add', this._onAdd);
             this.on('remove', this._onRemove);
-        },
-
-        toJSON: function(options){
-            var keyframeModel;
-
-            options = options || {};
-            if( 'time' in options &&
-                ( keyframeModel = this.findWhere({time: options.time}) )
-            ){
-                return [keyframeModel.toJSON()];
-            }
-            else{
-                return KeyframeCollection.__super__.toJSON.call(this, options);
-            }
         },
 
         _onAdd: function(bone){
@@ -58,8 +42,6 @@ define([
             );
         }
     });
-
-    relationalScope.KeyframeCollection = KeyframeCollection;
 
     return KeyframeCollection;
 });
