@@ -61,6 +61,17 @@ define([
             console.debug('Panel bone-prop updated properties %O', boneData);
         },
 
+        getBoneData: function(){
+            var boneData = {};
+
+            this._$bd.find('.js-propVal').each(function(i){
+                var $propVal = $(this);
+                boneData[$propVal.data('prop-name')] = $propVal.val();
+            });
+
+            return boneData;
+        },
+
         events: {
             'change .js-propVal': '_onChangeProp'
         },

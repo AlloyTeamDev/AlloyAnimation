@@ -307,9 +307,9 @@ define([
         @triggerObj bonePropPanelView|workspacePanelView
         @event updateBone 当骨骼属性面板或工作区面板更新了骨骼数据时触发
         @param {String} boneId 骨骼的id
-        @param {Object} boneData 新的骨骼数据
+        @param {Object} updatedBoneData 新的骨骼数据
         **/
-        onCertainPanelUpdatedBoneData: function(boneId, boneData){
+        onCertainPanelUpdatedBoneData: function(boneId, updatedBoneData){
             var options = {},
                 panelName2FlagName = {
                     'bone-prop': 'hasUpdatedBoneProp',
@@ -317,22 +317,33 @@ define([
                     'bone-tree': 'hasUpdatedBoneTree',
                     'time-line': 'hasUpdatedTimeline',
                     'action': 'hasUpdatedAction'
-                };
+                },
+                keyframeModel, fromPanel, boneData;
 
             console.debug(
                 'Controller receive that panel %s changed bone %s attributes %O, and set to model',
-                this.panelName, boneId, boneData
+                this.panelName, boneId, updatedBoneData
             );
 
             if(this.panelName in panelName2FlagName){
                 options[panelName2FlagName[this.panelName]] = true;
             }
 
-            allBoneColl
+            keyframeModel = allBoneColl
                 .get(boneId)
                 .get('keyframes')
-                .findWhere({ time: timeLinePanelView.now })
-                .set(boneData, options);
+                .findWhere({ time: timeLinePanelView.now });
+            if(keyframeModel){
+                keyframeModel.set(updatedBoneData, options)
+            }
+            else{
+                boneData = this.getBoneData();
+                boneData = unmixKeyframeData(boneData, timeLinePanelView.now);
+                allBoneColl
+                    .get(boneId)
+                    .get('keyframes')
+                    .add(boneData.keyframes[0])
+            }
         },
 
         onCertainPanelChangedActiveBone: function(boneId){
