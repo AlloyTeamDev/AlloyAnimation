@@ -76,6 +76,8 @@ define([
         boneTreePanelView
             .once('addBone', handler.onceCertainPanelAddBone)
             .on('addBone', handler.onCertainPanelAddBone);
+        timeLinePanelView
+            .on('updatedKeyframe', handler.onCertainPanelUpdatedKeyframe);
     };
 
     /**
@@ -222,9 +224,8 @@ define([
         @event add 当有关键帧model被添加进某个关键帧collection时触发
         **/
         onAddKeyFrameModel: function(keyframeModel, keyframeColl, options){
-            // TOOD: 暂时注释掉触发error的语句
             timeLinePanelView.addKeyframe(
-                boneTreePanelView.getActiveBoneId(),
+                keyframeModel.get('bone'),
                 keyframeModel.toJSON()
             );
             monitorKeyframeModel(keyframeModel);
@@ -249,36 +250,54 @@ define([
             @param {Boolean} [options.hasUpdatedTimeline=false]
         **/
         onChangeKeyframeModel: function(keyframeModel, options){
-            var changedData;
+            var changedData, keyframeId;
 
             options = options || {};
 
+            keyframeId = keyframeModel.get('id');
             // 获取此关键帧中改变了的数据
             changedData = keyframeModel.changedAttributes();
 
             console.debug(
-                'Controller receive that keyframe %s changed attribute %O, and sync to other panels',
-                keyframeModel.get('id'), changedData
+                'Controller receive that keyframe %s changed attribute %O',
+                keyframeId, changedData
             );
 
-            // 更新各个面板的视图
-            if(!options.hasUpdatedBoneProp){
-                bonePropPanelView.updateProp(changedData, options);
-                options.hasUpdatedBoneProp = true;
-            }
-            if(!options.hasUpdatedWorkspace){
-                workspacePanelView
-                    .updateBone(
-                        workspacePanelView.getActiveBoneId(),
-                        changedData,
-                        options
-                    );
-                options.hasUpdatedWorkspace = true;
-            }
-            if(!options.hasUpdatedTimeline){
-                // TODO: 更新时间轴面板中此关键帧的显示数据
+            // 检验此关键帧是否为当前激活的关键帧
+            if( keyframeModel.get('time') === timeLinePanelView.now &&
+                keyframeModel.get('bone') === boneTreePanelView.getActiveBoneId() &&
+                keyframeModel.get('action') === actionPanelView.getActiveActionId()
+            ){
+                console.debug(
+                    'Keyframe %s is active, controller sync change to other panels',
+                    keyframeId
+                );
 
-                options.hasUpdatedTimeline = true;
+                // 更新各个面板的视图
+                if(!options.hasUpdatedBoneProp){
+                    bonePropPanelView.updateProp(changedData, options);
+                    options.hasUpdatedBoneProp = true;
+                }
+                if(!options.hasUpdatedWorkspace){
+                    workspacePanelView
+                        .updateBone(
+                            workspacePanelView.getActiveBoneId(),
+                            changedData,
+                            options
+                        );
+                    options.hasUpdatedWorkspace = true;
+                }
+                if(!options.hasUpdatedTimeline){
+                    // TODO: 更新时间轴面板中此关键帧的显示数据
+
+                    options.hasUpdatedTimeline = true;
+                }
+            }
+            else{
+                console.debug(
+                    'Keyframe %s is not active, controller do nothing with this change',
+                    keyframeId
+                );
             }
         },
 
@@ -352,7 +371,7 @@ define([
                 keyframeModel, fromPanel, boneData;
 
             console.debug(
-                'Controller receive that panel %s changed bone %s attributes %O, and set to model',
+                'Controller receive that panel %s updated bone %s attributes %O, and set to model',
                 this.panelName, boneId, updatedBoneData
             );
 
@@ -405,6 +424,23 @@ define([
                     _.extend(keyframeModel.toJSON(), boneModel.toJSON())
                 );
             }
+        },
+
+        onCertainPanelUpdatedKeyframe: function(keyframeId, updatedKeyframeData){
+            var options = {};
+
+            console.debug(
+                'Controller receive that panel %s updated keyframe %s attributes %O, and set it to model',
+                this.panelName, keyframeId, updatedKeyframeData
+            );
+
+            if(this.panelName in PANEL_NAME_2_FLAG){
+                options[PANEL_NAME_2_FLAG[this.panelName]] = true;
+            }
+
+            keyframeColl
+                .get(keyframeId)
+                .set(updatedKeyframeData, options);
         }
         /****** End: view event handler ******/
     };

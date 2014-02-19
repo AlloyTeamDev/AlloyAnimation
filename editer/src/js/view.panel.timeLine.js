@@ -49,6 +49,8 @@ define([
             this._$timeLine = null;
             // 正在拖拽的关键帧所在的时间轴相对于文档左边的偏移
             this._timeLineOffsetLeft = null;
+            // 拖拽关键帧的过程中，鼠标是否有移动
+            this._isMouseMoved = false;
             // 拖拽关键帧的过程中做的标记，以免拖拽移动关键帧的同时移动游标
             this._notMoveVernier = false;
         },
@@ -153,7 +155,7 @@ define([
             this._timeLineOffsetLeft = this._$timeLine.offset().left;
 
             console.debug(
-                'Panel %s, start draging keyframe element %o',
+                'Panel %s start draging keyframe element %o',
                 this.panelName, this._$dragingKeyframe.get(0)
             );
 
@@ -166,7 +168,7 @@ define([
             var $keyframe, left;
 
             console.debug(
-                'Panel %s, draging keyframe element %o',
+                'Panel %s draging keyframe element %o',
                 this.panelName, this._$dragingKeyframe.get(0)
             );
 
@@ -177,31 +179,50 @@ define([
             left = $event.pageX - this._timeLineOffsetLeft;
             left = this._makeNearby(left);
             $keyframe.css('left', left + 'px');
+
+            this._isMouseMoved = true;
         },
 
         _oneMouseUpWithKeyframe: function($event){
-            var $timeLine;
+            var $keyframe, $timeLine,
+                keyframeId, time;
 
             this.off('mousemove', this._onMouseMoveWithKeyframe)
 
             console.debug(
-                'Panel %s, end draging keyframe element %o',
+                'Panel %s end draging keyframe element %o',
                 this.panelName, this._$dragingKeyframe.get(0)
             );
 
-            // 如果放开鼠标键时，鼠标还在所拖动的关键帧所在时间轴的上方，
+            $keyframe = this._$dragingKeyframe;
+            keyframeId = $keyframe.attr('id').split('-').pop();
+            time = this._left2Time(
+                this._makeNearby( parseInt($keyframe.css('left')) )
+            );
+            console.debug(
+                'Panel %s change keyframe %s to time %s',
+                this.panelName, keyframeId, time
+            );
+
+            // 如果放开鼠标左键时，鼠标还在所拖动的关键帧所在时间轴的上方，
             // 那么会触发时间轴的click事件，做个标记告诉该click事件的回调函数，
             // 以免拖拽移动关键帧的同时移动游标
-            if( $($event.target).parentsUntil(this._$bd).is(this._$timeLine) ){
-                console.log('Mouse up still in the time-line');
+            if( $($event.target).parentsUntil(this._$bd).is(this._$timeLine) &&
+                // 如果鼠标没有移动，说明是点击，不是拖拽，那就不应该不移动游标
+                this._isMouseMoved
+            ){
                 this._notMoveVernier = true;
             }
 
             this.$el.off('mousemove', this._onMouseMoveWithKeyframe)
 
+            // 重置与拖拽关键帧有关的状态
             this._$dragingKeyframe = null;
             this._$timeLine = null;
             this._timeLineOffsetLeft = null;
+            this._isMouseMoved = false;
+
+            this.trigger('updatedKeyframe', keyframeId, {time: time});
         },
 
         _left2Time: function(left){
