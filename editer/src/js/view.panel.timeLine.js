@@ -32,6 +32,10 @@ define([
             // 复用父类的`initialize`方法
             TimeLinePanel.__super__.initialize.apply(this, arguments);
         },
+
+        /**
+        @param {Array} [timeLinesData]
+        **/
         render: function(timeLinesData){
             // 渲染空面板
             this.$el.html( panelTmpl({
@@ -42,7 +46,7 @@ define([
 
             if(timeLinesData){
                 timeLinesData.forEach(function(timeLineData){
-                    this.addTimeline(timeLineData);
+                    this.addTimeLine(timeLineData);
                 }, this);
             }
 
@@ -55,16 +59,19 @@ define([
 
         /**
         添加一个时间轴view到此面板中
-        @method addTimeline
+        @method addTimeLine
         @param {String} boneId 此时间轴对应的骨骼
-        @param {Array} keyframes 此时间轴上的关键帧的数据
+        @param {Array} [keyframesData] 此时间轴上的关键帧的数据
         **/
-        addTimeline: function(boneId, keyframes){
-            this._$bd.append( timeLineTmpl({
-                boneId: boneId,
-                keyframes: keyframes,
-                time2Left: _.bind(this._time2Left, this)
-            }) );
+        addTimeLine: function(boneId, keyframesData){
+            var timeLineData = {
+                    boneId: boneId
+                };
+            if(keyframesData){
+                timeLineData.keyframes = keyframesData;
+                timeLineData.time2Left = _.bind(this._time2Left, this);
+            }
+            this._$bd.append( timeLineTmpl(timeLineData) );
             return this;
         },
 
@@ -85,7 +92,8 @@ define([
         },
 
         events: {
-            'click .js-timeLine, .js-axis': '_onClickTimeLine'
+            'click .js-timeLine, .js-axis': '_onClickTimeLine',
+            'mousedown .js-keyframe': '_onMouseDownKeyframe'
         },
 
         _onClickTimeLine: function($event){
@@ -115,6 +123,10 @@ define([
 
                 this.trigger('changedNowTime');
             }
+        },
+
+        _onMouseDownKeyframe: function($event){
+
         },
 
         _left2Time: function(left){

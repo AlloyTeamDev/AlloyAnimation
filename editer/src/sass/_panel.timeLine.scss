@@ -18,10 +18,12 @@
         top: 0;
         height: 100%;
         width: 2px;
-        //background-color: #FFC408;
         background-color: $panel-color;
         margin-left: -1px;
+        // 浮于关键帧上方
         z-index: 10;
+        // 以防阻碍拖动关键帧
+        pointer-events: none;
 
         &::before {
             $triangle-height: 6px;
@@ -81,7 +83,7 @@
         margin-bottom: $item-space;
     }
 
-    .keyframe {
+    .js-keyframe {
         $top: 0px;
         $w: 8px;
         $h: $item-height - $top * 2;

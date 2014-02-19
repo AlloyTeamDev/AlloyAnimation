@@ -532,6 +532,7 @@ html, body,
   background-color: #897cbf;
   margin-left: -1px;
   z-index: 10;
+  pointer-events: none;
 }
 #js-timeLinePanel .js-nowVernier::before {
   content: '';
@@ -582,7 +583,7 @@ html, body,
   box-sizing: border-box;
   margin-bottom: 5px;
 }
-#js-timeLinePanel .keyframe {
+#js-timeLinePanel .js-keyframe {
   position: absolute;
   top: 0px;
   margin-left: -4px;

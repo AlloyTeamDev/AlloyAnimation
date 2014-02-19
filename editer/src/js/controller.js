@@ -70,10 +70,11 @@ define([
         bonePropPanelView
             .on('updatedBoneData', handler.onCertainPanelUpdatedBoneData);
         workspacePanelView
-            .once('addBone', handler.onceWorkspacePanelAddBone)
+            .once('addBone', handler.onceCertainPanelAddBone)
             .on('addBone', handler.onCertainPanelAddBone)
             .on('updatedBoneData', handler.onCertainPanelUpdatedBoneData);
         boneTreePanelView
+            .once('addBone', handler.onceCertainPanelAddBone)
             .on('addBone', handler.onCertainPanelAddBone);
     };
 
@@ -120,16 +121,16 @@ define([
         @event add 当collection中添加新model时触发
         **/
         onBoneCollAddModel: function(boneModel, boneColl, options){
-            var boneId, boneData, keyframeModel, keyframesData;
+            var boneId, boneData, keyframeModel, keyframeModelArray;
 
             // 监听骨骼的事件
             monitorBoneModel(boneModel);
 
-            keyframesData = keyframeColl.where({
+            keyframeModelArray = keyframeColl.where({
                 bone: (boneId = boneModel.get('id')),
                 action: actionPanelView.getActiveActionId()
             });
-            keyframeModel = _.findWhere(keyframesData, {
+            keyframeModel = _.findWhere(keyframeModelArray, {
                 time: timeLinePanelView.time
             });
             if(keyframeModel){
@@ -153,7 +154,7 @@ define([
             workspacePanelView.addBone(boneData);
             // TODO: 给其它面板也添加对应的view
             boneTreePanelView.addBone(boneData);
-            timeLinePanelView.addTimeline(boneId, keyframesData);
+            timeLinePanelView.addTimeLine(boneId);
         },
 
         /**
@@ -288,17 +289,26 @@ define([
         /****** End: model/collection event handler ******/
 
         /****** Start: view event handler ******/
-        onceWorkspacePanelAddBone: function(boneData, options){
+        onceCertainPanelAddBone: function(boneData, options){
             // 对于第一个骨骼，如果还没有动作，创建初始动作
             if(!actionColl.length){
                 console.debug('Controller add a new action');
                 actionColl.add(new ActionModel);
             }
+
+            // 对于第一个骨骼，如果时间轴面板还没设置时间，设置初始时间
+            if(typeof timeLinePanelView.now !== 'number'){
+                timeLinePanelView.now = 0;
+            }
+
+            // 确保此函数只被调用一次
+            workspacePanelView.off('add', handler.onceCertainPanelAddBone);
+            boneTreePanelView.off('add', handler.onceCertainPanelAddBone);
         },
 
         /**
         @triggerObj workspacePanelView|boneTreePanelView
-        @event addBone 当有新骨骼从工作区面板中添加时触发
+        @event addBone 当有新骨骼从某个面板（目前支持的有工作区和骨骼树面板）中添加时触发
         @param {Object} boneData 新骨骼的数据
         @param {Object} [options]
         **/
