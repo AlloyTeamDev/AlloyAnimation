@@ -24,6 +24,7 @@
         z-index: 10;
         // 以防阻碍拖动关键帧
         pointer-events: none;
+        @include prefix(transition, left .15s);
 
         &::before {
             $triangle-height: 6px;
@@ -95,5 +96,6 @@
         width: $w;
         background: #fff;
         @include prefix(border-radius, $h);
+        //@include prefix(transition, left .1s);
     }
 }

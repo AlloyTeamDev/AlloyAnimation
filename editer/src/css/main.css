@@ -533,6 +533,10 @@ html, body,
   margin-left: -1px;
   z-index: 10;
   pointer-events: none;
+  -webkit-transition: left 0.15s;
+  -moz-transition: left 0.15s;
+  -ms-transition: left 0.15s;
+  transition: left 0.15s;
 }
 #js-timeLinePanel .js-nowVernier::before {
   content: '';
