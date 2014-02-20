@@ -54,6 +54,7 @@ define([
         // 销毁引用，避免因为被事件回调函数的作用域链引用而没有释放内存
         initBonesData = null;
 
+        // 注意：这些事件的处理逻辑跟事件回调函数的绑定顺序有关
         // 监听model/collection事件
         keyframeColl
             .on('add', handler.onAddKeyFrameModel)
@@ -123,30 +124,20 @@ define([
         @event add 当collection中添加新model时触发
         **/
         onBoneCollAddModel: function(boneModel, boneColl, options){
-            var boneId, boneData, keyframeModel, keyframeModelArray;
+            var boneId, boneData;
 
             // 监听骨骼的事件
             monitorBoneModel(boneModel);
 
-            keyframeModelArray = keyframeColl.where({
-                bone: (boneId = boneModel.get('id')),
-                action: actionPanelView.getActiveActionId()
-            });
-            keyframeModel = _.findWhere(keyframeModelArray, {
-                time: timeLinePanelView.time
-            });
-            if(keyframeModel){
-                // 要让骨骼id覆盖关键帧id
-                boneData = _.extend(
-                    keyframeModel.toJSON(),
-                    boneModel.toJSON()
-                );
-            }
-            else{
-                // TODO:
-                // 获取与当前时间相邻的两个关键帧，计算当前时间对应的补帧的数据
-                // 如果相邻的关键帧只有一个，则直接使用这个的数据
-            }
+            // 要让骨骼id覆盖关键帧id
+            boneData = _.extend(
+                keyframeColl.getFrameData({
+                    bone: (boneId = boneModel.get('id')),
+                    action: actionPanelView.getActiveActionId(),
+                    time: timeLinePanelView.now
+                }),
+                boneModel.toJSON()
+            );
 
             console.debug(
                 'Controller add bone %s to panel views: workspace, bone-tree',
@@ -401,7 +392,7 @@ define([
 
         onCertainPanelChangedActiveBone: function(boneId){
             var fromPanel = this.panelName,
-                keyframeModel, boneModel;
+                keyframeData, boneModel;
             console.debug(
                 'Controller receive that %s panel changed active bone to %s, and sync active bone to other panels',
                 fromPanel, boneId
@@ -414,14 +405,15 @@ define([
                 boneTreePanelView.changeActiveBone(boneId);
             }
             if(fromPanel !== 'bone-prop'){
-                keyframeModel = keyframeColl.findWhere({
+                keyframeData = keyframeColl.getFrameData({
                     action: actionPanelView.getActiveActionId(),
                     bone: boneId,
                     time: timeLinePanelView.now
                 });
+
                 boneModel = boneColl.get(boneId);
                 bonePropPanelView.changeBoneTo(
-                    _.extend(keyframeModel.toJSON(), boneModel.toJSON())
+                    _.extend(keyframeData, boneModel.toJSON())
                 );
             }
         },
