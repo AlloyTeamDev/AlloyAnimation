@@ -488,7 +488,7 @@ html, body,
   padding-left: 22px;
   position: relative;
   z-index: 0;
-  margin-bottom: 5px;
+  margin-bottom: 1px;
 }
 #js-boneTreePanel .name::before {
   content: '';
@@ -585,7 +585,7 @@ html, body,
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
-  margin-bottom: 5px;
+  margin-bottom: 1px;
 }
 #js-timeLinePanel .js-keyframe {
   position: absolute;
