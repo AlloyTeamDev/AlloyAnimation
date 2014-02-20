@@ -12,6 +12,7 @@ define([
     AbstractSkeleton, AbstractBone,
     workspaceTmpl, transformUtilTmpl
 ){
+    var PANEL_NAME = 'workspace';
     var WorkspacePanel, Bone;
 
     // 减少搜索作用域链的局部变量
@@ -851,8 +852,8 @@ define([
         }
     }, {
         // 覆盖继承自父类的同名属性，用于构成骨骼的html id
-        _panelName: 'workspace'
+        _panelName: PANEL_NAME
     });
 
-    return new WorkspacePanel({panelName: 'workspace'});
+    return new WorkspacePanel({panelName: PANEL_NAME});
 });

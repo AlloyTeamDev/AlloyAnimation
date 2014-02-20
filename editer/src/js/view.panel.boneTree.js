@@ -11,6 +11,7 @@ define([
     AbstractSkeleton, AbstractBone,
     boneTreeTmpl, boneTmpl
 ){
+    var PANEL_NAME = 'boneTree';
     var bind = _.bind;
     var BoneTreePanel, Bone;
 
@@ -441,12 +442,11 @@ define([
             else{
                 return this._cache.opacity;
             }
-        },
-
+        }
     }, {
         // 覆盖继承自父类的同名属性，用于构成骨骼的html id
-        _panelName: 'boneTree'
+        _panelName: PANEL_NAME
     });
 
-    return new BoneTreePanel({panelName: 'bone-tree'});
+    return new BoneTreePanel({panelName: PANEL_NAME});
 });
