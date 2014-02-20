@@ -593,11 +593,19 @@ html, body,
   margin-left: -4px;
   height: 20px;
   width: 8px;
-  background: #fff;
+  background: white;
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   -ms-border-radius: 20px;
   border-radius: 20px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#js-timeLinePanel .js-keyframe.js-selected {
+  background: #3a8fb7;
+  border: 1px solid #21526a;
 }
 
 #js-actionPanel .hd {

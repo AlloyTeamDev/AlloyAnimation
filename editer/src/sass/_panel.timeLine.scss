@@ -88,14 +88,21 @@
         $top: 0px;
         $w: 8px;
         $h: $item-height - $top * 2;
+        $bg: #fff;
 
         position: absolute;
         top: $top;
         margin-left: $w / -2;
         height: $h;
         width: $w;
-        background: #fff;
+        background: $bg;
         @include prefix(border-radius, $h);
-        //@include prefix(transition, left .1s);
+        @include prefix(box-sizing, border-box);
+
+        &.js-selected {
+            $selected-bg: $topic-color1;
+            background: $selected-bg;
+            border: 1px solid darken($selected-bg, 20%);
+        }
     }
 }

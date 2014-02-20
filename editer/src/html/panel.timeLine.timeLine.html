@@ -10,7 +10,8 @@
         if(typeof keyframes !== 'undefined'){
             keyframes.forEach(function(keyframe){
                 var id = keyframe.id,
-                    left = time2Left(keyframe.time);
+                    time = keyframe.time,
+                    left = time2Left(time);
                 // TODO: hack tmpl插件，支持传参；支持直接调用include函数
     %>
                 <%@ panel.timeLine.keyframe.html %>

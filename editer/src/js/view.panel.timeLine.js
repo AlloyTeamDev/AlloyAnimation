@@ -108,26 +108,30 @@ define([
                 .find('.js-timeLine[data-bone-id="' + boneId + '"]')
                 .append(keyframeTmpl({
                     id: keyframeData.id,
+                    time: keyframeData.time,
                     left: this._time2Left(keyframeData.time)
                 }));
             return this;
         },
 
         events: {
-            'click .js-timeLine, .js-axis': '_onClickTimeLine',
-            'mousedown .js-keyframe': '_onMouseDownKeyframe'
+            'click .js-timeLine, .js-axis': '_onClickTimeLineOrAxis',
+            'mousedown .js-keyframe': '_onMouseDownKeyframe',
+            'click .js-keyframe': '_onClickKeyframe',
+            'click .js-timeLine': '_onClickTimeLine'
         },
 
-        _onClickTimeLine: function($event){
+        // 当点击时间轴或坐标轴时，将表示当前时刻的游标移到离鼠标最近的刻度上
+        _onClickTimeLineOrAxis: function($event){
             if(this._notMoveVernier){
                 this._notMoveVernier = false;
                 return;
             }
 
             // 获取 `.js-timeLine` 或 `.js-axis`
-            var $target = $($event.currentTarget);
+            var $currentTarget = $($event.currentTarget);
             // 鼠标到所点击的 `.js-timeLine` 左边的距离
-            var left = $event.pageX - $target.offset().left;
+            var left = $event.pageX - $currentTarget.offset().left;
             var newTime;
 
             // 将表示当前时刻的游标移到最近的刻度上
@@ -175,10 +179,12 @@ define([
             $keyframe = this._$dragingKeyframe;
             if( !$keyframe || !$keyframe.length ) return;
 
-            // 将关键帧已到离鼠标最近的刻度上
+            // 将关键帧移到离鼠标最近的刻度上
             left = $event.pageX - this._timeLineOffsetLeft;
             left = this._makeNearby(left);
-            $keyframe.css('left', left + 'px');
+            $keyframe
+                .css('left', left + 'px')
+                .data('time', this._left2Time(left));
 
             this._isMouseMoved = true;
         },
@@ -223,6 +229,34 @@ define([
             this._isMouseMoved = false;
 
             this.trigger('updatedKeyframe', keyframeId, {time: time});
+        },
+
+        _onClickKeyframe: function($event){
+            var $keyframe = $($event.currentTarget);
+
+            // 如果点击关键帧的同时还按着ctrl键，复选所点击的关键帧；
+            // 否则单选所点击的关键帧
+            if($event.originalEvent.ctrlKey){
+                $keyframe.addClass('js-selected');
+            }
+            else{
+                this._$bd
+                    .children('.js-timeLine')
+                    .find('.js-keyframe.js-selected')
+                    .not($keyframe)
+                    .removeClass('js-selected');
+                $keyframe.addClass('js-selected');
+            }
+        },
+
+        // 当点击时间轴时，如果点击的不是关键帧，取消选中的关键帧
+        _onClickTimeLine: function($event){
+            if( $($event.target).hasClass('js-keyframe') ) return;
+
+            this._$bd
+                .children('.js-timeLine')
+                .find('.js-keyframe.js-selected')
+                .removeClass('js-selected');
         },
 
         _left2Time: function(left){
