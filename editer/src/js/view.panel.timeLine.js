@@ -267,7 +267,7 @@ define([
             return time * this._INCREASE_PER_SUB_STEP * this._AXIS_SUB_STEP;
         },
 
-        // 将left改成最近的的刻度的left
+        // 将所提供的left调节成最接近的刻度的left
         _makeNearby: function(left){
             var AXIS_SUB_STEP = this._AXIS_SUB_STEP,
                 remainder = left % AXIS_SUB_STEP;
