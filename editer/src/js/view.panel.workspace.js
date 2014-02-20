@@ -606,16 +606,16 @@ define([
         getData: function(){
             return {
                 name: this._name,
-                texture: this.texture,
-                w: this.w,
-                h: this.h,
-                x: this.x,
-                y: this.y,
-                z: this.z,
-                rotate: this.rotate,
-                opacity: this.opacity,
-                jointX: this.jointX,
-                jointY: this.jointY
+                texture: this._texture,
+                w: this._w,
+                h: this._h,
+                x: this._x,
+                y: this._y,
+                z: this._z,
+                rotate: this._rotate,
+                opacity: this._opacity,
+                jointX: this._jointX,
+                jointY: this._jointY
             };
         },
         

@@ -4,10 +4,12 @@
 **/
 define([
     'backbone',
-    'model.keyframe', 'modelUtil'
+    'model.keyframe', 'modelUtil',
+    'base/tween'
 ], function(
     Backbone,
-    Keyframe, util
+    Keyframe, util,
+    tween
 ){
     var KeyframeCollection,
         createId = util.createId;
@@ -41,7 +43,8 @@ define([
         getFrameData: function(fields){
             var time, keyframes, keyframe, nextKeyframe,
                 prevData, nextData,
-                i, l, prop, frameData;
+                i, l, prop, frameData,
+                attrsNotNumber;
 
             time = fields.time;
             delete fields.time;
@@ -49,7 +52,7 @@ define([
             keyframes = this.where(fields);
 
             keyframes.sort(function(a, b){
-                return a.time - b.time;
+                return a.get('time') - b.get('time');
             });
 
             if(time <= keyframes[0].get('time') ){
@@ -62,17 +65,36 @@ define([
             for(i = 0, l = keyframes.length; i < l; ++i){
                 keyframe = keyframes[i];
                 if(time === keyframe.get('time')) return keyframe.toJSON();
-                neighbourKeyframes = keyframes[i + 1];
+                nextKeyframe = keyframes[i + 1];
                 if(time > keyframe.get('time') && time < nextKeyframe.get('time')){
                     prevData = keyframe.toJSON();
                     nextData = nextKeyframe.toJSON();
+                    break;
                 }
             }
 
             frameData = {};
+            attrsNotNumber = Keyframe.attrsNotNumber;
             for(prop in prevData){
                 if(!prevData.hasOwnProperty(prop)) continue;
-                frameData[prop] = (0 + prevData[prop] + nextData[prop]) / 2;
+
+                if(attrsNotNumber.indexOf(prop) === -1){
+                    // TODO: 
+                    // 目前先使用默认的缓动函数linear，
+                    // 后续支持设置缓动函数时，再根据用户选取的缓冲函数来选择
+                    frameData[prop] = tween.linear(
+                        time - prevData.time,
+                        prevData[prop],
+                        nextData[prop] - prevData[prop],
+                        nextData.time - prevData.time
+                    );
+                }
+                else if(prop === 'id'){
+                    frameData[prop] = null;
+                }
+                else{
+                    frameData[prop] = prevData[prop];
+                }
             }
             return frameData;
         },

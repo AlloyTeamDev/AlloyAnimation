@@ -55,6 +55,9 @@ define([
                 model.get('id'), model.changed
             );
         }
+    }, {
+        // 不是数值类型的字段
+        attrsNotNumber: ['id', 'action', 'bone']
     });
 
     return Keyframe;

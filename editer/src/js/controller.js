@@ -392,7 +392,7 @@ define([
 
         onCertainPanelChangedActiveBone: function(boneId){
             var fromPanel = this.panelName,
-                keyframeData, boneModel;
+                frameData, boneModel;
             console.debug(
                 'Controller receive that %s panel changed active bone to %s, and sync active bone to other panels',
                 fromPanel, boneId
@@ -405,7 +405,7 @@ define([
                 boneTreePanelView.changeActiveBone(boneId);
             }
             if(fromPanel !== 'bone-prop'){
-                keyframeData = keyframeColl.getFrameData({
+                frameData = keyframeColl.getFrameData({
                     action: actionPanelView.getActiveActionId(),
                     bone: boneId,
                     time: timeLinePanelView.now
@@ -413,7 +413,7 @@ define([
 
                 boneModel = boneColl.get(boneId);
                 bonePropPanelView.changeBoneTo(
-                    _.extend(keyframeData, boneModel.toJSON())
+                    _.extend(frameData, boneModel.toJSON())
                 );
             }
         },
