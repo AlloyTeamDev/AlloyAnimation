@@ -78,7 +78,8 @@ define([
             .once('addBone', handler.onceCertainPanelAddBone)
             .on('addBone', handler.onCertainPanelAddBone);
         timeLinePanelView
-            .on('updatedKeyframe', handler.onCertainPanelUpdatedKeyframe);
+            .on('updatedKeyframe', handler.onCertainPanelUpdatedKeyframe)
+            .on('changedNowTime', handler.onTimeLinePanelChangedNowTime);
     };
 
     /**
@@ -433,6 +434,21 @@ define([
             keyframeColl
                 .get(keyframeId)
                 .set(updatedKeyframeData, options);
+        },
+
+        onTimeLinePanelChangedNowTime: function(now){
+            var boneId, boneData;
+            boneData = _.extend(
+                keyframeColl.getFrameData({
+                    bone: (boneId = boneTreePanelView.getActiveBoneId()),
+                    action: actionPanelView.getActiveActionId(),
+                    time: now
+                }),
+                boneColl.get(boneId).toJSON()
+            );
+
+            workspacePanelView.updateBone(boneId, boneData);
+            bonePropPanelView.updateProp(boneData);
         }
         /****** End: view event handler ******/
     };

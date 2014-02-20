@@ -147,7 +147,7 @@ define([
                     this.panelName, this.now
                 );
 
-                this.trigger('changedNowTime');
+                this.trigger('changedNowTime', this.now);
             }
         },
 
