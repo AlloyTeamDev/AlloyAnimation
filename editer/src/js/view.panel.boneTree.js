@@ -123,46 +123,46 @@ define([
         // 拖拽放开后，这个事件回调函数会触发两次，why?
         // 而且第二次触发时，有时 `this._draginBone` 有值，有时没有，why?
         onMouseUpBone: function($event){
-            var $target = $($event.target),
-                $targetBone, $dragingBone,
+            var $targetBone, $dragingBone,
                 targetBoneId, dragingBoneId,
                 panel;
 
             // 如果正在拖拽骨骼
             if( this._dragingBone ){
-                // 如果拖拽到某个骨骼上，获取该骨骼，赋给 `$targetBone`
-                if( ( $target.hasClass('js-bone') && ($targetBone = $target) ) ||
-                    ( $targetBone = $target.parentsUntil(this.$el, '.js-bone').eq(0) ).length
-                ){
-                    targetBoneId = $targetBone.data('bone-id');
+                $dragingBone = this._boneHash[this._dragingBone].$el;
+                $targetBone = $($event.currentTarget);
 
-                    if(targetBoneId === this._dragingBone){
-                        console.debug('End draging bone %s, still at origin place', targetBoneId);
-                        this._dragingBone = null;
-                        return;
-                    }
+                // 如果目标骨骼是所拖拽骨骼的子骨骼，直接返回；
+                // 否则，将所拖拽骨骼添加为目标骨骼的子骨骼
+                if( $targetBone.parentsUntil(this._$bd).is($dragingBone) ) return;
+                
+                targetBoneId = $targetBone.data('bone-id');
 
-                    $dragingBone = this._boneHash[this._dragingBone].$el
-                    $dragingBone.detach();
-                    dragingBoneId = this._dragingBone;
-
-                    panel = this;
-                    setTimeout(function(){
-                        $dragingBone.appendTo($targetBone);
-
-                        panel.trigger('dragedBoneTo', dragingBoneId, targetBoneId);
-
-                        panel = null;
-                        $targetBone = null;
-                        $dragingBone = null;
-
-                        console.debug(
-                            'End draging bone %s, appent it to %s',
-                            dragingBoneId,
-                            targetBoneId
-                        );
-                    }, 300);
+                if(targetBoneId === this._dragingBone){
+                    console.debug('End draging bone %s, still at origin place', targetBoneId);
+                    this._dragingBone = null;
+                    return;
                 }
+                
+                $dragingBone.detach();
+                dragingBoneId = this._dragingBone;
+
+                panel = this;
+                setTimeout(function(){
+                    $dragingBone.appendTo($targetBone);
+
+                    panel.trigger('dragedBoneTo', dragingBoneId, targetBoneId);
+
+                    panel = null;
+                    $targetBone = null;
+                    $dragingBone = null;
+
+                    console.debug(
+                        'End draging bone %s, appent it to %s',
+                        dragingBoneId,
+                        targetBoneId
+                    );
+                }, 300);
 
                 this._dragingBone = null;
             }
