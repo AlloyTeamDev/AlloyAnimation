@@ -117,7 +117,6 @@ define([
         events: {
             'click .js-timeLine, .js-axis': '_onClickTimeLineOrAxis',
             'mousedown .js-keyframe': '_onMouseDownKeyframe',
-            'click .js-keyframe': '_onClickKeyframe',
             'click .js-timeLine': '_onClickTimeLine'
         },
 
@@ -166,6 +165,20 @@ define([
             this.$el
                 .on('mousemove', this._onMouseMoveWithKeyframe)
                 .one('mouseup', this._oneMouseUpWithKeyframe);
+
+            // 如果点击关键帧的同时还按着ctrl键，复选所点击的关键帧；
+            // 否则单选所点击的关键帧
+            if($event.originalEvent.ctrlKey){
+                $keyframe.addClass('js-selected');
+            }
+            else{
+                this._$bd
+                    .children('.js-timeLine')
+                    .find('.js-keyframe.js-selected')
+                    .not($keyframe)
+                    .removeClass('js-selected');
+                $keyframe.addClass('js-selected');
+            }
         },
 
         _onMouseMoveWithKeyframe: function($event){
@@ -229,24 +242,6 @@ define([
             this._isMouseMoved = false;
 
             this.trigger('updatedKeyframe', keyframeId, {time: time});
-        },
-
-        _onClickKeyframe: function($event){
-            var $keyframe = $($event.currentTarget);
-
-            // 如果点击关键帧的同时还按着ctrl键，复选所点击的关键帧；
-            // 否则单选所点击的关键帧
-            if($event.originalEvent.ctrlKey){
-                $keyframe.addClass('js-selected');
-            }
-            else{
-                this._$bd
-                    .children('.js-timeLine')
-                    .find('.js-keyframe.js-selected')
-                    .not($keyframe)
-                    .removeClass('js-selected');
-                $keyframe.addClass('js-selected');
-            }
         },
 
         // 当点击时间轴时，如果点击的不是关键帧，取消选中的关键帧
