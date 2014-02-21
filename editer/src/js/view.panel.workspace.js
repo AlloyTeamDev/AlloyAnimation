@@ -599,6 +599,9 @@ define([
             return this;
         },
 
+        /**
+        获取此骨骼的完整数据
+        **/
         getData: function(){
             return {
                 name: this._name,
@@ -645,7 +648,7 @@ define([
         @return {this|String} this, 或纹理图的url
         **/
         texture: function(url){
-            if(url !== void 0){
+            if(url !== void 0 && url !== this._texture){
                 this.$el.css('backgroundImage', url);
                 this._texture = url;
                 return this;
@@ -687,7 +690,7 @@ define([
         @return {this|Number}
         **/
         rotate: function(angle){
-            if(angle !== void 0){
+            if(angle !== void 0 && angle !== this._rotate){
                 typeof angle !== 'number' && console.debug('Warn: attribute type wrong');
                 this.$el.css('transform', 'rotate(' + angle + 'deg)');
                 this._rotate = angle;
@@ -744,7 +747,7 @@ define([
         @return {this|Number}
         **/
         positionZ: function(z){
-            if(z !== void 0){
+            if(z !== void 0 && z !== this._z){
                 typeof z !== 'number' && console.debug('Warn: attribute type wrong');
                 this.$el.css('zIndex', z);
                 this._z = z;
@@ -761,7 +764,7 @@ define([
         @return {this|Number}
         **/
         opacity: function(alpha){
-            if(alpha !== void 0){
+            if(alpha !== void 0 && alpha !== this._opacity){
                 typeof alpha !== 'number' && console.debug('Warn: attribute type wrong');
                 this.$el.css('opacity', alpha);
                 this._opacity = alpha;
