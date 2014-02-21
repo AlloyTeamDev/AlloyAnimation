@@ -179,6 +179,9 @@ define([
                     .removeClass('js-selected');
                 $keyframe.addClass('js-selected');
             }
+
+            // 防止在拖拽的过程中选中文本
+            this.$el.css('user-select', 'none');
         },
 
         _onMouseMoveWithKeyframe: function($event){
@@ -240,6 +243,9 @@ define([
             this._$timeLine = null;
             this._timeLineOffsetLeft = null;
             this._isMouseMoved = false;
+
+            // 解除防止在拖拽的过程中选中文本
+            this.$el.css('user-select', 'text');
 
             this.trigger('updatedKeyframe', keyframeId, {time: time});
         },

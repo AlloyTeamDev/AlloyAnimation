@@ -107,7 +107,7 @@ define([
             this._listeningMouseMoveEvent = false;
 
             // 阻止在拖拽骨骼的过程中选中文本
-            this.$el.css('user-select', 'none', 'extra');
+            this.$el.css('user-select', 'none');
             // 拖拽结束后取消阻止
             this.$el.one('mouseup', this.oneMouseUpAfterDragBone);
 
