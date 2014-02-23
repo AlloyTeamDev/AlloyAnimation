@@ -19,13 +19,12 @@ define([
     var handler,
         keyframeModelDefaults,
         keyframeColl, boneColl, actionColl;
-    var PANEL_NAME_2_FLAG = {
-        'bone-prop': 'hasUpdatedBoneProp',
-        'workspace': 'hasUpdatedWorkspace',
-        'bone-tree': 'hasUpdatedBoneTree',
-        'time-line': 'hasUpdatedTimeline',
-        'action': 'hasUpdatedAction'
-    };
+    var PANEL_NAME_2_FLAG = {};
+    PANEL_NAME_2_FLAG[bonePropPanelView.panelName] = 'hasUpdatedBoneProp';
+    PANEL_NAME_2_FLAG[workspacePanelView.panelName] = 'hasUpdatedWorkspace';
+    PANEL_NAME_2_FLAG[boneTreePanelView.panelName] = 'hasUpdatedBoneTree';
+    PANEL_NAME_2_FLAG[timeLinePanelView.panelName] = 'hasUpdatedTimeline';
+    PANEL_NAME_2_FLAG[actionPanelView.panelName] = 'hasUpdatedAction';
 
     // 整个WebApp中所有关键帧的collection
     window.keyframeColl = keyframeColl = new KeyframeCollection();
@@ -88,7 +87,7 @@ define([
     **/
     function monitorBoneModel(boneModel){
         boneModel
-            .on('change', handler.onBoneModelChange)
+            .on('change', handler.onChangeBoneModel)
             .on('destroy', handler.onDestroyBoneModel);
     }
     /**
@@ -97,7 +96,7 @@ define([
     **/
     function unmonitorBoneModel(boneModel){
         boneModel
-            .off('change', handler.onBoneModelChange)
+            .off('change', handler.onChangeBoneModel)
             .off('destroy', handler.onDestroyBoneModel);
     }
 
@@ -188,7 +187,7 @@ define([
             @param {Boolean} [options.hasUpdatedBoneTree=false]
             @param {Boolean} [options.hasUpdatedTimeline=false]
         **/
-        onBoneModelChange: function(boneModel, options){
+        onChangeBoneModel: function(boneModel, options){
             var changedData;
 
             options = options || {};
@@ -210,6 +209,8 @@ define([
                 options.hasUpdatedBoneTree = true;
             }
         },
+
+        onDestroyBoneModel: function(){},
 
         /**
         @triggerObj {KeyframeCollection}
