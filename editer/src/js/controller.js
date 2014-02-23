@@ -285,7 +285,9 @@ define([
                     );
                     options.hasUpdatedWorkspace = true;
                 }
-                if(!options.hasUpdatedBoneTree && changedData.name){
+                if( !options.hasUpdatedBoneTree &&
+                    ('name' in changedData)
+                ){
                     boneTreePanelView.updateBone(
                         activeBoneId,
                         {name: changedData.name},
