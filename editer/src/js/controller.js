@@ -140,12 +140,12 @@ define([
             );
 
             console.debug(
-                'Controller add bone %s to panel views: workspace, bone-tree',
-                boneId
+                'Controller add bone %s to panels: %s, %s, %s',
+                boneId, workspacePanelView.panelName,
+                boneTreePanelView.panelName, timeLinePanelView.panelName
             );
             // 在各个面板中添加此骨骼对应的view
             workspacePanelView.addBone(boneData);
-            // TODO: 给其它面板也添加对应的view
             boneTreePanelView.addBone(boneData);
             timeLinePanelView.addTimeLine(boneId);
         },
@@ -158,7 +158,10 @@ define([
         @event add 当collection中添加新model时触发
         **/
         onceBoneCollAddModel: function(){
-            console.debug('Controller start listening "changedActiveBone" event on panel views: workspace, bone-tree');
+            console.debug(
+                'Controller start listening "changedActiveBone" event on panels: %s, %s',
+                workspacePanelView.panelName, boneTreePanelView.panelName
+            );
             workspacePanelView.on(
                 'changedActiveBone',
                 handler.onCertainPanelChangedActiveBone
@@ -402,20 +405,19 @@ define([
         },
 
         onCertainPanelChangedActiveBone: function(boneId){
-            var fromPanel = this.panelName,
-                frameData, boneModel;
+            var frameData, boneModel;
             console.debug(
                 'Controller receive that %s panel changed active bone to %s, and sync active bone to other panels',
-                fromPanel, boneId
+                this.panelName, boneId
             );
 
-            if(fromPanel !== 'workspace'){
+            if(this !== workspacePanelView){
                 workspacePanelView.changeActiveBone(boneId);
             }
-            if(fromPanel !== 'bone-tree'){
+            if(this !== boneTreePanelView){
                 boneTreePanelView.changeActiveBone(boneId);
             }
-            if(fromPanel !== 'bone-prop'){
+            if(this !== bonePropPanelView){
                 frameData = keyframeColl.getFrameData({
                     action: actionPanelView.getActiveActionId(),
                     bone: boneId,

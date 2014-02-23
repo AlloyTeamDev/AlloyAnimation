@@ -58,7 +58,7 @@ define([
 
             $bd.off('change', '.js-propVal', this._preventPopupOnChangeProp);
 
-            console.debug('Panel bone-prop updated properties %O', boneData);
+            console.debug('Panel %s updated properties %O', this.panelName, boneData);
         },
 
         getBoneData: function(){
@@ -91,7 +91,7 @@ define([
             }
             boneData[propName] = propVal;
 
-            console.debug('Panel bone-prop changed bone data: %O', boneData);
+            console.debug('Panel changed bone data: %O', this.panelName, boneData);
 
             this.trigger('updatedBoneData', this._boneId, boneData);
         },
