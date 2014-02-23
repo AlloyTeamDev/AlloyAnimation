@@ -265,7 +265,7 @@ define([
             if(val !== void 0){
                 this._cache.name = val;
                 if(options && options.onlyCache) return this;
-                this._$name.val(val);
+                this._$name.text(_.escape(val));
                 return this;
             }
             else{

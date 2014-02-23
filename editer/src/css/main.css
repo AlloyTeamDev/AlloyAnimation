@@ -478,10 +478,10 @@ html, body,
   user-select: none;
   z-index: 1;
 }
-#js-boneTreePanel .drag-hint:hover + .name::before {
+#js-boneTreePanel .drag-hint:hover + .js-name::before {
   opacity: 1;
 }
-#js-boneTreePanel .name {
+#js-boneTreePanel .js-name {
   height: 20px;
   line-height: 20px;
   cursor: default;
@@ -490,7 +490,7 @@ html, body,
   z-index: 0;
   margin-bottom: 1px;
 }
-#js-boneTreePanel .name::before {
+#js-boneTreePanel .js-name::before {
   content: '';
   display: block;
   width: 100%;
@@ -509,10 +509,10 @@ html, body,
   top: 0;
   z-index: -1;
 }
-#js-boneTreePanel .name:hover::before {
+#js-boneTreePanel .js-name:hover::before {
   opacity: 1;
 }
-#js-boneTreePanel .js-activeBone > .name::before {
+#js-boneTreePanel .js-activeBone > .js-name::before {
   opacity: 1;
 }
 

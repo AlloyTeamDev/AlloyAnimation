@@ -243,7 +243,7 @@ define([
             @param {Boolean} [options.hasUpdatedTimeline=false]
         **/
         onChangeKeyframeModel: function(keyframeModel, options){
-            var changedData, keyframeId;
+            var changedData, keyframeId, activeBoneId;
 
             options = options || {};
 
@@ -266,19 +266,28 @@ define([
                     keyframeId
                 );
 
+                // 各个面板中的激活骨骼是同步的
+                activeBoneId = workspacePanelView.getActiveBoneId();
+
                 // 更新各个面板的视图
                 if(!options.hasUpdatedBoneProp){
                     bonePropPanelView.updateProp(changedData, options);
                     options.hasUpdatedBoneProp = true;
                 }
                 if(!options.hasUpdatedWorkspace){
-                    workspacePanelView
-                        .updateBone(
-                            workspacePanelView.getActiveBoneId(),
-                            changedData,
-                            options
-                        );
+                    workspacePanelView.updateBone(
+                        activeBoneId,
+                        changedData,
+                        options
+                    );
                     options.hasUpdatedWorkspace = true;
+                }
+                if(!options.hasUpdatedBoneTree && changedData.name){
+                    boneTreePanelView.updateBone(
+                        activeBoneId,
+                        {name: changedData.name},
+                        options
+                    );
                 }
                 if(!options.hasUpdatedTimeline){
                     // TODO: 更新时间轴面板中此关键帧的显示数据

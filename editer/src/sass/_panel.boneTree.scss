@@ -51,15 +51,15 @@
         background: repeat-y 50% 50% url(../img/dragable-area.png);
         cursor: move;
         @include prefix(user-select, none);
-        // 使.drag-hint浮于.name的上方
+        // 使.drag-hint浮于.js-name的上方
         z-index: 1;
 
-        &:hover + .name::before {
+        &:hover + .js-name::before {
             opacity: 1;
         }
     }
 
-    .name {
+    .js-name {
         height: $item-height;
         line-height: $item-height;
         cursor: default;
@@ -81,7 +81,7 @@
             position: absolute;
             left: 0;
             top: 0;
-            // 使这个before伪元素衬在.name的普通子孙元素的下方
+            // 使这个before伪元素衬在.js-name的普通子孙元素的下方
             z-index: -1;
         }
         &:hover::before {
@@ -90,7 +90,7 @@
     }
 
     // 激活骨骼始终处于高亮状态
-    .js-activeBone > .name::before {
+    .js-activeBone > .js-name::before {
         opacity: 1;
     }
 }
