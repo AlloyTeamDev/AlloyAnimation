@@ -310,7 +310,6 @@ define([
             }
         },
 
-
         onActionCollAddModel: function(actionModel, actionColl, options){
             actionPanelView.addAction(actionModel.toJSON());
         },

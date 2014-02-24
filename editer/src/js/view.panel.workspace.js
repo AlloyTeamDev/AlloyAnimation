@@ -85,15 +85,22 @@ define([
         @return this
         **/
         updateBone: function(id, data, options){
+            var bone, siblings, i;
             if('parent' in data){
-                // TODO: 修改工作区中的骨骼父子结构
+                bone = this._boneHash[id];
+                // 删除在父骨骼中的引用
+                siblings = bone.parent.children;
+                siblings.splice(siblings.indexOf(bone), 1);
+                // 覆盖对父骨骼的引用
+                bone.parent = this._boneHash[data.parent];
 
-                data = _.clone(data);
-                delete data.parent;
+                bone.$el
+                    .detach()
+                    .appendTo(bone.parent.$el);
             }
 
             // 复用父类的同名方法
-            WorkspacePanel.__super__.updateBone.call(this, id, data, options);
+            WorkspacePanel.__super__.updateBone.apply(this, arguments);
         },
 
         // 覆盖父类的同名方法
