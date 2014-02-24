@@ -121,10 +121,15 @@ define([
         并且如果改变产生，触发 `changedActiveBone` 事件，带上激活骨骼的id作为参数。
         只要有骨骼，就有骨骼处于激活状态，并且只有一个激活骨骼。
         @param {String} boneId 要激活的骨骼的id
+        @param {Object} [options]
+            @param {Boolean} [options.silent=false] 不触发事件
         @return {Boolean} true: 有改变；false: 没改变
         **/
-        changeActiveBone: function(boneId){
+        changeActiveBone: function(boneId, options){
             var oldActiveBone = this._activeBone;
+
+            options = options || {};
+
             if(oldActiveBone){
                 if(oldActiveBone.id === boneId) return false;
                 oldActiveBone.deactivate();
@@ -141,7 +146,9 @@ define([
                 return;
             }
 
-            this.trigger('changedActiveBone', boneId);
+            if(!options.silent){
+                this.trigger('changedActiveBone', boneId);
+            }
 
             return true;
         },

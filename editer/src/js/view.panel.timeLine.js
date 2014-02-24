@@ -145,23 +145,47 @@ define([
         },
 
         events: {
+            // 先绑定 `_onClickTimeLine` ，再绑定 `_onClickTimeLineOrAxis` ，
+            // 因为它们触发的事件有先后关系
+            'click .js-timeLine': '_onClickTimeLine',
             'click .js-timeLine, .js-axis': '_onClickTimeLineOrAxis',
-            'mousedown .js-keyframe': '_onMouseDownKeyframe',
-            'click .js-timeLine': '_onClickTimeLine'
+            'mousedown .js-keyframe': '_onMouseDownKeyframe'
         },
 
-        // 当点击时间轴或坐标轴时，将表示当前时刻的游标移到离鼠标最近的刻度上
+        // 当点击时间轴时，触发表示切换激活骨骼的事件；
+        // 并且，如果点击的不是关键帧，取消选中的关键帧
+        _onClickTimeLine: function($event){
+            var boneId;
+
+            boneId = $($event.currentTarget).data('bone-id');
+            console.debug(
+                'Panel %s change active bone to %s',
+                this.panelName, boneId
+            );
+            this.trigger('changedActiveBone', boneId);
+
+            if( $($event.target).hasClass('js-keyframe') ) return;
+
+            this._$bd
+                .children('.js-timeLine')
+                .find('.js-keyframe.js-selected')
+                .removeClass('js-selected');
+        },
+
+        // 当点击时间轴或坐标轴时，将表示当前时刻的游标移到离鼠标最近的刻度上，
+        // 并触发表示切换当前时刻的事件
         _onClickTimeLineOrAxis: function($event){
+            var $currentTarget, left, newTime;
+
             if(this._notMoveVernier){
                 this._notMoveVernier = false;
                 return;
             }
 
             // 获取 `.js-timeLine` 或 `.js-axis`
-            var $currentTarget = $($event.currentTarget);
+            $currentTarget = $($event.currentTarget);
             // 鼠标到所点击的 `.js-timeLine` 左边的距离
-            var left = $event.pageX - $currentTarget.offset().left;
-            var newTime;
+            left = $event.pageX - $currentTarget.offset().left;
 
             // 将表示当前时刻的游标移到最近的刻度上
             left = this._makeNearby(left);
@@ -278,16 +302,6 @@ define([
             this.$el.css('user-select', 'text');
 
             this.trigger('updatedKeyframe', keyframeId, {time: time});
-        },
-
-        // 当点击时间轴时，如果点击的不是关键帧，取消选中的关键帧
-        _onClickTimeLine: function($event){
-            if( $($event.target).hasClass('js-keyframe') ) return;
-
-            this._$bd
-                .children('.js-timeLine')
-                .find('.js-keyframe.js-selected')
-                .removeClass('js-selected');
         },
 
         _left2Time: function(left){

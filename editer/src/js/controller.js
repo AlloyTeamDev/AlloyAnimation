@@ -167,14 +167,16 @@ define([
                 'Controller start listening "changedActiveBone" event on panels: %s, %s',
                 workspacePanelView.panelName, boneTreePanelView.panelName
             );
-            workspacePanelView.on(
-                'changedActiveBone',
-                handler.onCertainPanelChangedActiveBone
-            );
-            boneTreePanelView.on(
-                'changedActiveBone',
-                handler.onCertainPanelChangedActiveBone
-            );
+            [
+                workspacePanelView,
+                boneTreePanelView,
+                timeLinePanelView
+            ].forEach(function(panelView){
+                panelView.on(
+                    'changedActiveBone',
+                    handler.onCertainPanelChangedActiveBone
+                );
+            });
         },
 
         /**
@@ -414,18 +416,22 @@ define([
             }
         },
 
-        onCertainPanelChangedActiveBone: function(boneId){
+        onCertainPanelChangedActiveBone: function(boneId, options){
             var frameData, boneModel;
+
+            options = options || {};
+            options.silent = true;
+
             console.debug(
                 'Controller receive that %s panel changed active bone to %s, and sync active bone to other panels',
                 this.panelName, boneId
             );
 
             if(this !== workspacePanelView){
-                workspacePanelView.changeActiveBone(boneId);
+                workspacePanelView.changeActiveBone(boneId, options);
             }
             if(this !== boneTreePanelView){
-                boneTreePanelView.changeActiveBone(boneId);
+                boneTreePanelView.changeActiveBone(boneId, options);
             }
             if(this !== bonePropPanelView){
                 frameData = keyframeColl.getFrameData({
@@ -433,10 +439,11 @@ define([
                     bone: boneId,
                     time: timeLinePanelView.now
                 });
-
                 boneModel = boneColl.get(boneId);
+
                 bonePropPanelView.changeBoneTo(
-                    _.extend(frameData, boneModel.toJSON())
+                    _.extend( frameData, boneModel.toJSON() ),
+                    options
                 );
             }
         },
@@ -460,17 +467,19 @@ define([
 
         onTimeLinePanelChangedNowTime: function(now){
             var boneId, boneData;
+
+            boneId = boneTreePanelView.getActiveBoneId();
             boneData = _.extend(
                 keyframeColl.getFrameData({
-                    bone: (boneId = boneTreePanelView.getActiveBoneId()),
+                    bone: boneId,
                     action: actionPanelView.getActiveActionId(),
                     time: now
                 }),
                 boneColl.get(boneId).toJSON()
             );
 
-            workspacePanelView.updateBone(boneId, boneData);
             bonePropPanelView.updateProp(boneData);
+            workspacePanelView.updateBone(boneId, boneData);
         },
 
         /**
