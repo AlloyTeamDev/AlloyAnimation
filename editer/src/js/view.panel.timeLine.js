@@ -19,6 +19,7 @@ define([
     **/
     TimeLinePanel = Panel.extend({
         el: '#js-timeLinePanel',
+
         initialize: function(){
             // 复用父类的`initialize`方法
             TimeLinePanel.__super__.initialize.apply(this, arguments);

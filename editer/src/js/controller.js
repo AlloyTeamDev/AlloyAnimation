@@ -349,9 +349,7 @@ define([
             options[flag] = true;
 
             options.silent = true;
-            boneModel = boneColl.add({
-                texture: boneData.texture
-            }, options);
+            boneModel = boneColl.add(extractBoneData(boneData), options);
 
             keyframeModel = keyframeColl.add({
                 action: actionPanelView.getActiveActionId(),
