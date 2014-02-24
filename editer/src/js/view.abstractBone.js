@@ -68,8 +68,7 @@ define([
         activate: function(){
             console.debug(
                 'Panel %s activate bone %s',
-                this.constructor._panelName,
-                this.id
+                this.constructor._panelName, this.id
             );
 
             this.$el.addClass('js-activeBone');
@@ -85,9 +84,8 @@ define([
             this.$el.removeClass('js-activeBone');
 
             console.debug(
-                'Deactivate bone %s in %s panel',
-                this.id,
-                this.constructor._panelName
+                'Panel %s deactivate bone %s',
+                this.constructor._panelName, this.id
             );
 
             return this;
@@ -159,9 +157,9 @@ define([
             if(!data) return this;
 
             MAP = this.FIELD_2_METHOD;
-            for(field in MAP){
-                if( !MAP.hasOwnProperty(field) ) continue;
-                if(field in data) this[MAP[field]](data[field]);
+            for(field in data){
+                if( !data.hasOwnProperty(field) ) continue;
+                if(field in MAP) this[MAP[field]](data[field]);
             }
 
             return this;

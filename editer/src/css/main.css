@@ -478,19 +478,19 @@ html, body,
   user-select: none;
   z-index: 1;
 }
-#js-boneTreePanel .drag-hint:hover + .name::before {
+#js-boneTreePanel .drag-hint:hover + .js-name::before {
   opacity: 1;
 }
-#js-boneTreePanel .name {
+#js-boneTreePanel .js-name {
   height: 20px;
   line-height: 20px;
   cursor: default;
   padding-left: 22px;
   position: relative;
   z-index: 0;
-  margin-bottom: 5px;
+  margin-bottom: 1px;
 }
-#js-boneTreePanel .name::before {
+#js-boneTreePanel .js-name::before {
   content: '';
   display: block;
   width: 100%;
@@ -509,10 +509,10 @@ html, body,
   top: 0;
   z-index: -1;
 }
-#js-boneTreePanel .name:hover::before {
+#js-boneTreePanel .js-name:hover::before {
   opacity: 1;
 }
-#js-boneTreePanel .js-activeBone > .name::before {
+#js-boneTreePanel .js-activeBone > .js-name::before {
   opacity: 1;
 }
 
@@ -532,6 +532,11 @@ html, body,
   background-color: #897cbf;
   margin-left: -1px;
   z-index: 10;
+  pointer-events: none;
+  -webkit-transition: left 0.15s;
+  -moz-transition: left 0.15s;
+  -ms-transition: left 0.15s;
+  transition: left 0.15s;
 }
 #js-timeLinePanel .js-nowVernier::before {
   content: '';
@@ -580,19 +585,27 @@ html, body,
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
-  margin-bottom: 5px;
+  margin-bottom: 1px;
 }
-#js-timeLinePanel .keyframe {
+#js-timeLinePanel .js-keyframe {
   position: absolute;
   top: 0px;
   margin-left: -4px;
   height: 20px;
   width: 8px;
-  background: #fff;
+  background: white;
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   -ms-border-radius: 20px;
   border-radius: 20px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#js-timeLinePanel .js-keyframe.js-selected {
+  background: #3a8fb7;
+  border: 1px solid #21526a;
 }
 
 #js-actionPanel .hd {

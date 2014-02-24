@@ -4,14 +4,15 @@
 @exports 工作区面板的view实例
 **/
 define([
-    'jquery', 'jquery.defaultSetting', 'base/math',
+    'jquery', 'jquery.defaultSetting', 'underscore', 'base/math',
     'view.panel.abstractSkeleton', 'view.abstractBone',
     'tmpl!html/panel.workspace.html', 'tmpl!html/panel.workspace.transformUtil.html'
 ], function(
-    $, undefined, math,
+    $, undefined, _, math,
     AbstractSkeleton, AbstractBone,
     workspaceTmpl, transformUtilTmpl
 ){
+    var PANEL_NAME = 'workspace';
     var WorkspacePanel, Bone;
 
     // 减少搜索作用域链的局部变量
@@ -74,6 +75,32 @@ define([
             this._boneDefaultContainer = this._$coordSys.get(0);
 
             return this;
+        },
+
+        /**
+        覆盖父类的同名方法。更新此面板中的某个骨骼
+        @param {String} id 骨骼的id
+        @param {Object} data 要更新的骨骼数据
+        @param {Object} [options]
+        @return this
+        **/
+        updateBone: function(id, data, options){
+            var bone, siblings, i;
+            if('parent' in data){
+                bone = this._boneHash[id];
+                // 删除在父骨骼中的引用
+                siblings = bone.parent.children;
+                siblings.splice(siblings.indexOf(bone), 1);
+                // 覆盖对父骨骼的引用
+                bone.parent = this._boneHash[data.parent];
+
+                bone.$el
+                    .detach()
+                    .appendTo(bone.parent.$el);
+            }
+
+            // 复用父类的同名方法
+            WorkspacePanel.__super__.updateBone.apply(this, arguments);
         },
 
         // 覆盖父类的同名方法
@@ -599,19 +626,22 @@ define([
             return this;
         },
 
+        /**
+        获取此骨骼的完整数据
+        **/
         getData: function(){
             return {
                 name: this._name,
-                texture: this.texture,
-                w: this.w,
-                h: this.h,
-                x: this.x,
-                y: this.y,
-                z: this.z,
-                rotate: this.rotate,
-                opacity: this.opacity,
-                jointX: this.jointX,
-                jointY: this.jointY
+                texture: this._texture,
+                w: this._w,
+                h: this._h,
+                x: this._x,
+                y: this._y,
+                z: this._z,
+                rotate: this._rotate,
+                opacity: this._opacity,
+                jointX: this._jointX,
+                jointY: this._jointY
             };
         },
         
@@ -645,7 +675,7 @@ define([
         @return {this|String} this, 或纹理图的url
         **/
         texture: function(url){
-            if(url !== void 0){
+            if(url !== void 0 && url !== this._texture){
                 this.$el.css('backgroundImage', url);
                 this._texture = url;
                 return this;
@@ -687,7 +717,7 @@ define([
         @return {this|Number}
         **/
         rotate: function(angle){
-            if(angle !== void 0){
+            if(angle !== void 0 && angle !== this._rotate){
                 typeof angle !== 'number' && console.debug('Warn: attribute type wrong');
                 this.$el.css('transform', 'rotate(' + angle + 'deg)');
                 this._rotate = angle;
@@ -744,7 +774,7 @@ define([
         @return {this|Number}
         **/
         positionZ: function(z){
-            if(z !== void 0){
+            if(z !== void 0 && z !== this._z){
                 typeof z !== 'number' && console.debug('Warn: attribute type wrong');
                 this.$el.css('zIndex', z);
                 this._z = z;
@@ -761,7 +791,7 @@ define([
         @return {this|Number}
         **/
         opacity: function(alpha){
-            if(alpha !== void 0){
+            if(alpha !== void 0 && alpha !== this._opacity){
                 typeof alpha !== 'number' && console.debug('Warn: attribute type wrong');
                 this.$el.css('opacity', alpha);
                 this._opacity = alpha;
@@ -848,8 +878,8 @@ define([
         }
     }, {
         // 覆盖继承自父类的同名属性，用于构成骨骼的html id
-        _panelName: 'workspace'
+        _panelName: PANEL_NAME
     });
 
-    return new WorkspacePanel({panelName: 'workspace'});
+    return new WorkspacePanel({panelName: PANEL_NAME});
 });

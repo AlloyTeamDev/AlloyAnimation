@@ -17,6 +17,7 @@ define([
     @extends Backbone.Model
     **/
     Keyframe = Backbone.Model.extend({
+        // 约定这些默认字段就是model的全部字段（除了id, action, bone, time）
         defaults: {
             // 以下属性，类型全为数值
             w: 100,
@@ -55,6 +56,9 @@ define([
                 model.get('id'), model.changed
             );
         }
+    }, {
+        // 不是数值类型的字段
+        attrsNotNumber: ['id', 'action', 'bone']
     });
 
     return Keyframe;

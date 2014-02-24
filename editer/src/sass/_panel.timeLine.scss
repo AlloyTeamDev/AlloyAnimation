@@ -18,10 +18,13 @@
         top: 0;
         height: 100%;
         width: 2px;
-        //background-color: #FFC408;
         background-color: $panel-color;
         margin-left: -1px;
+        // 浮于关键帧上方
         z-index: 10;
+        // 以防阻碍拖动关键帧
+        pointer-events: none;
+        @include prefix(transition, left .15s);
 
         &::before {
             $triangle-height: 6px;
@@ -81,17 +84,25 @@
         margin-bottom: $item-space;
     }
 
-    .keyframe {
+    .js-keyframe {
         $top: 0px;
         $w: 8px;
         $h: $item-height - $top * 2;
+        $bg: #fff;
 
         position: absolute;
         top: $top;
         margin-left: $w / -2;
         height: $h;
         width: $w;
-        background: #fff;
+        background: $bg;
         @include prefix(border-radius, $h);
+        @include prefix(box-sizing, border-box);
+
+        &.js-selected {
+            $selected-bg: $topic-color1;
+            background: $selected-bg;
+            border: 1px solid darken($selected-bg, 20%);
+        }
     }
 }

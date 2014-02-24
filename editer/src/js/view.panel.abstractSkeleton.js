@@ -102,7 +102,7 @@ define([
         更新此面板中的某个骨骼
         @param {String} id 骨骼的id
         @param {Object} data 要更新的数据
-        @param {Object} options
+        @param {Object} [options]
         @return this
         **/
         updateBone: function(id, data, options){

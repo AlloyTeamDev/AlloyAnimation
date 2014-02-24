@@ -22,7 +22,7 @@ define([
             // 复用父类的`initialize`方法
             BonePropPanel.__super__.initialize.apply(this, arguments);
 
-            this._onChangeProp = bind(this._onChangeProp, this);
+            this._onInputPropVal = bind(this._onInputPropVal, this);
         },
 
         render: function(boneData){
@@ -58,7 +58,7 @@ define([
 
             $bd.off('change', '.js-propVal', this._preventPopupOnChangeProp);
 
-            console.debug('Panel bone-prop updated properties %O', boneData);
+            console.debug('Panel %s updated properties %O', this.panelName, boneData);
         },
 
         getBoneData: function(){
@@ -73,10 +73,15 @@ define([
         },
 
         events: {
-            'change .js-propVal': '_onChangeProp'
+            /**
+            IE 9 does not fire an input event when the user removes
+            characters from input filled by keyboard, cut, or drag
+            operations.
+            **/
+            'input .js-propVal': '_onInputPropVal'
         },
 
-        _onChangeProp: function($event){
+        _onInputPropVal: function($event){
             var $target = $($event.target),
                 propName = $target.data('prop-name'),
                 propVal = $target.val(),
@@ -91,9 +96,15 @@ define([
             }
             boneData[propName] = propVal;
 
-            console.debug('Panel bone-prop changed bone data: %O', boneData);
+            console.debug('Panel %s changed bone %s data: %O',
+                this.panelName, this._boneId, boneData
+            );
 
             this.trigger('updatedBoneData', this._boneId, boneData);
+        },
+
+        _keypressProp: function($event){
+            console.debug('keypress prop');
         },
 
         _preventPopupOnChangeProp: function($event){
