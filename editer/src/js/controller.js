@@ -8,13 +8,15 @@ define([
     'underscore',
     'view.panel.action', 'view.panel.workspace', 'view.panel.boneTree', 'view.panel.timeLine', 'view.panel.boneProp',
     'model.keyframe', 'collection.keyframe',
-    'collection.bone', 'collection.action', 'model.action'
+    'model.bone', 'collection.bone',
+    'model.action', 'collection.action'
 ], function(
     exports,
     _,
     actionPanelView, workspacePanelView, boneTreePanelView, timeLinePanelView, bonePropPanelView,
     KeyframeModel, KeyframeCollection,
-    BoneCollection, ActionCollection, ActionModel
+    BoneModel, BoneCollection,
+    ActionModel, ActionCollection
 ){
     var handler,
         keyframeModelDefaults,
@@ -33,8 +35,10 @@ define([
     // 整个WebApp中所有动作的collection
     window.actionColl = actionColl = new ActionCollection();
 
-    // 关键帧model包含的默认字段
-    keyframeModelProperties = _.keys(KeyframeModel.prototype.defaults);
+    // 关键帧model包含的默认字段，也是关键帧model中应有的全部字段（目前的约定）
+    KEYFRAME_MODEL_PROPS = _.keys(KeyframeModel.prototype.defaults);
+    // 骨骼model包含的默认字段，也是骨骼model中应有的全部字段（目前的约定）
+    BONE_MODEL_PROPS = _.keys(BoneModel.prototype.defaults);
 
     exports.init = function(){
         var initBonesData;
@@ -75,7 +79,8 @@ define([
             .on('updatedBoneData', handler.onCertainPanelUpdatedBoneData);
         boneTreePanelView
             .once('addBone', handler.onceCertainPanelAddBone)
-            .on('addBone', handler.onCertainPanelAddBone);
+            .on('addBone', handler.onCertainPanelAddBone)
+            .on('changeBoneParent', handler.onBoneTreePanelChangeBoneParent);
         timeLinePanelView
             .on('updatedKeyframe', handler.onCertainPanelUpdatedKeyframe)
             .on('changedNowTime', handler.onTimeLinePanelChangedNowTime);
@@ -185,31 +190,46 @@ define([
         @event change backbone内置事件，当model中的数据被修改时触发
         @param {BoneModel} 被修改的model
         @param {Object} [options]
-            以下参数表示各个面板的视图是否已更新，已更新的不必再次更新
+            以下几个布尔值参数表示各个面板的视图是否已更新，已更新的不必再次更新
             @param {Boolean} [options.hasUpdatedWorkspace=false]
             @param {Boolean} [options.hasUpdatedBoneTree=false]
             @param {Boolean} [options.hasUpdatedTimeline=false]
+
+            以下的参数，是为了提供给时间轴面板，当骨骼树结构变化时，
+            时间轴面板能保持时间轴跟对应的骨骼在一个水平线上
+            @param {Number} [options.childrenAmount]
+                当修改了骨骼model的 `parent` 字段时才会且一定会存在。
+                表示被移动的骨骼有多少个子骨骼
         **/
         onChangeBoneModel: function(boneModel, options){
-            var changedData;
+            var changedData, boneId;
 
             options = options || {};
 
             // 获取此骨骼中改变了的数据
             changedData = boneModel.changedAttributes();
+            boneId = boneModel.get('id');
 
-            // TODO: 更新各个面板视图
+            // 以下更新各个面板视图
             if(!options.hasUpdatedWorkspace){
-                workspacePanelView.updateBone(
-                    boneModel.get('id'),
-                    changedData,
-                    options
-                );
+                workspacePanelView.updateBone(boneId, changedData, options);
                 options.hasUpdatedWorkspace = true;
             }
-            if(!options.hasUpdatedBoneTree){
 
+            // 骨骼树面板中，需要展示的骨骼字段只有 `name`
+            if( !options.hasUpdatedBoneTree &&
+                ('name' in changedData)
+            ){
+                boneTreePanelView.updateBone(boneId, changedBone, options);
                 options.hasUpdatedBoneTree = true;
+            }
+
+            // 骨骼model中的各个字段，需要体现在时间轴面板中的只有 `parent`
+            if( !options.hasUpdatedTimeline &&
+                'parent' in changedData
+            ){
+                timeLinePanelView.moveTimeLine(boneId, changedData.parent, options);
+                options.hasUpdatedTimeline = true;
             }
         },
 
@@ -259,13 +279,13 @@ define([
                 keyframeId, changedData
             );
 
-            // 检验此关键帧是否为当前激活的关键帧
+            // 如果此关键帧是当前正在展示的关键帧
             if( keyframeModel.get('time') === timeLinePanelView.now &&
                 keyframeModel.get('bone') === boneTreePanelView.getActiveBoneId() &&
                 keyframeModel.get('action') === actionPanelView.getActiveActionId()
             ){
                 console.debug(
-                    'Keyframe %s is active, controller sync change to other panels',
+                    'Keyframe %s is displaying, controller sync change to other panel views',
                     keyframeId
                 );
 
@@ -273,36 +293,18 @@ define([
                 activeBoneId = workspacePanelView.getActiveBoneId();
 
                 // 更新各个面板的视图
-                if(!options.hasUpdatedBoneProp){
+                if( !options.hasUpdatedBoneProp ){
                     bonePropPanelView.updateProp(changedData, options);
                     options.hasUpdatedBoneProp = true;
                 }
-                if(!options.hasUpdatedWorkspace){
-                    workspacePanelView.updateBone(
-                        activeBoneId,
-                        changedData,
-                        options
-                    );
+                if( !options.hasUpdatedWorkspace ){
+                    workspacePanelView.updateBone(activeBoneId, changedData, options);
                     options.hasUpdatedWorkspace = true;
-                }
-                if( !options.hasUpdatedBoneTree &&
-                    ('name' in changedData)
-                ){
-                    boneTreePanelView.updateBone(
-                        activeBoneId,
-                        {name: changedData.name},
-                        options
-                    );
-                }
-                if(!options.hasUpdatedTimeline){
-                    // TODO: 更新时间轴面板中此关键帧的显示数据
-
-                    options.hasUpdatedTimeline = true;
                 }
             }
             else{
                 console.debug(
-                    'Keyframe %s is not active, controller do nothing with this change',
+                    'Keyframe %s is not displaying, controller do nothing with this change',
                     keyframeId
                 );
             }
@@ -371,11 +373,11 @@ define([
         @triggerObj bonePropPanelView|workspacePanelView
         @event updatedBone 当骨骼属性面板或工作区面板更新了骨骼数据时触发
         @param {String} boneId 骨骼的id
-        @param {Object} updatedBoneData 新的骨骼数据
+        @param {Object} updatedBoneData 新的骨骼数据（只包含有更新的字段）
         **/
         onCertainPanelUpdatedBoneData: function(boneId, updatedBoneData){
             var options = {},
-                keyframeModel, fromPanel, boneData;
+                keyframeData, keyframeModel;
 
             console.debug(
                 'Controller receive that panel %s updated bone %s attributes %O, and set to model',
@@ -386,23 +388,32 @@ define([
                 options[PANEL_NAME_2_FLAG[this.panelName]] = true;
             }
 
-            keyframeModel = keyframeColl
-                .findWhere({
-                    action: actionPanelView.getActiveActionId(),
-                    bone: boneTreePanelView.getActiveBoneId(),
-                    time: timeLinePanelView.now
-                });
-            if(keyframeModel){
-                keyframeModel.set(updatedBoneData, options)
-            }
-            else{
-                boneData = this.getBoneData();
-                keyframeData = _.extend(extractKeyframeData(boneData), {
-                    action: actionPanelView.getActiveActionId(),
-                    bone: boneTreePanelView.getActiveBoneId(),
-                    time: timeLinePanelView.now
-                });
-                keyframeColl.add(keyframeData);
+            keyframeData = extractKeyframeData(updatedBoneData);
+            if(keyframeData){
+                keyframeModel = keyframeColl
+                    .findWhere({
+                        action: actionPanelView.getActiveActionId(),
+                        bone: boneTreePanelView.getActiveBoneId(),
+                        time: timeLinePanelView.now
+                    });
+                // 如果对应的关键已存在，直接修改它
+                if(keyframeModel){
+                    keyframeModel.set(keyframeData, options);
+                }
+                // 否则用完整的关键帧数据创建一个关键帧
+                else{
+                    // 先获取完整的骨骼数据，
+                    // 再从中提取关键帧model需要的字段，
+                    // 最后补充action, bone, time字段，即得到完整的关键帧数据
+                    keyframeColl.add( _.extend(
+                        extractKeyframeData( this.getBoneData() ),
+                        {
+                            action: actionPanelView.getActiveActionId(),
+                            bone: boneTreePanelView.getActiveBoneId(),
+                            time: timeLinePanelView.now
+                        }
+                    ) );
+                }
             }
         },
 
@@ -463,32 +474,72 @@ define([
 
             workspacePanelView.updateBone(boneId, boneData);
             bonePropPanelView.updateProp(boneData);
+        },
+
+        /**
+        @triggerObj boneTreePanelView
+        @event changeBoneParent 当骨骼数面板中把 `changedBone` 的父骨骼改为 `parent` 时触发
+        @param {String} changedBone 被移动骨骼的id
+        @param {String} parent 被移动骨骼的新父骨骼的id
+        @param {Object} options
+            @param {Number} options.childrenAmount
+        **/
+        onBoneTreePanelChangeBoneParent: function(changedBone, parent, options){
+
+            console.debug(
+                'Controller receive that panel %s change parent of bone %s to %s, and set to model',
+                this.panelName, changedBone, parent
+            );
+
+            boneColl
+                .get(changedBone)
+                .set('parent', parent, options);
         }
         /****** End: view event handler ******/
     };
 
 
     /**
-    将混入骨骼数据中的关键帧数据抽离出来。
+    将关键帧model需要的数据从混合骨骼数据中抽离出来。
 
-    所谓混入骨骼数据中的关键帧数据，就是指 `KeyframeModel` 中的字段，
-    从骨骼model的角度来看的，这些字段应该定义在骨骼数据的关键帧属性中，所以称之为“混入”；
-    而从骨骼view的角度来看，这些字段（宽高、坐标、旋转角度等）都是骨骼的数据，骨骼view的视角中没有关键帧的概念（时间轴面板中的骨骼view除外），所以“混入”是自然而然的。
+    所谓混合骨骼数据，是指混入了 `KeyframeModel` 中的字段的骨骼数据。
+    在骨骼的view中，骨骼数据和帧数据共同决定骨骼的展示；但在model层中，骨骼数据和帧数据是分开存储的。
 
-    @param {Object} boneData 骨骼数据
-    @return {Object} 关键帧数据
+    @param {Object} boneAndFrameData 混合骨骼数据
+    @return {Object|null} 如果有，返回关键帧数据；否则返回 `null`
     **/
-    function extractKeyframeData(boneData){
-        var und = _;
-        var keyframe = {}, i, prop,
-            propList = keyframeModelProperties;
+    function extractKeyframeData(boneAndFrameData){
+        var keyframeData = {}, i, prop,
+            propList = KEYFRAME_MODEL_PROPS,
+            hasProp = false;
 
         for(i = 0; prop = propList[i]; ++i){
-            if(prop in boneData){
-                keyframe[prop] = boneData[prop];
+            if(prop in boneAndFrameData){
+                keyframeData[prop] = boneAndFrameData[prop];
+                hasProp = true;
             }
         }
 
-        return keyframe;
+        return hasProp ? keyframeData : null;
+    }
+
+    /**
+    将骨骼model需要的数据从混合骨骼数据中抽离出来
+    @param {Object} boneAndFrameData 混合骨骼数据
+    @return {Object|null} 如果有，返回骨骼数据；否则返回 `null`
+    **/
+    function extractBoneData(boneAndFrameData){
+        var boneData = {}, i, prop,
+            propList = BONE_MODEL_PROPS,
+            hasProp = false;
+
+        for(i = 0; prop = propList[i]; ++i){
+            if(prop in boneAndFrameData){
+                boneData[prop] = boneAndFrameData[prop];
+                hasProp = true;
+            }
+        }
+
+        return hasProp ? boneData : null;
     }
 });

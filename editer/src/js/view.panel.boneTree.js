@@ -143,15 +143,14 @@ define([
                     this._dragingBone = null;
                     return;
                 }
-                
+
                 $dragingBone.detach();
                 dragingBoneId = this._dragingBone;
 
                 panel = this;
                 setTimeout(function(){
-                    $dragingBone.appendTo($targetBone);
-
-                    panel.trigger('dragedBoneTo', dragingBoneId, targetBoneId);
+                    // TODO: 先始终插入为第一个子骨骼，后续支持指定插入为第几个子骨骼
+                    $dragingBone.insertAfter($targetBone.children('.js-name'));
 
                     panel = null;
                     $targetBone = null;
@@ -163,6 +162,15 @@ define([
                         targetBoneId
                     );
                 }, 300);
+                panel.trigger(
+                    'changeBoneParent',
+                    dragingBoneId, targetBoneId,
+                    // 注意：是在被拖拽的骨骼还没重新插入DOM的时候计算的
+                    // 参数含义详见controller
+                    {
+                        childrenAmount: $dragingBone.find('.js-bone').length
+                    }
+                );
 
                 this._dragingBone = null;
             }

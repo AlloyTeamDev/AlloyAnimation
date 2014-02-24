@@ -157,9 +157,9 @@ define([
             if(!data) return this;
 
             MAP = this.FIELD_2_METHOD;
-            for(field in MAP){
-                if( !MAP.hasOwnProperty(field) ) continue;
-                if(field in data) this[MAP[field]](data[field]);
+            for(field in data){
+                if( !data.hasOwnProperty(field) ) continue;
+                if(field in MAP) this[MAP[field]](data[field]);
             }
 
             return this;

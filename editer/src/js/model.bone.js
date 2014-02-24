@@ -19,14 +19,14 @@ define([
     @extends Backbone.Model
     **/
     Bone = Backbone.Model.extend({
-        /**
-        Start: backbone内置属性/方法
-        **/
+        // 约定这些默认字段就是骨骼model的全部字段（除了id）
         defaults: {
             // 骨骼的名字
             name: 'bone',
             // 纹理图的url
-            texture: 'img/defaultTexture.png'
+            texture: 'img/defaultTexture.png',
+            // 父骨骼的id
+            parent: null
         },
 
         initialize: function(){

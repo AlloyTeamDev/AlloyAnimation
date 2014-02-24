@@ -80,7 +80,8 @@ define([
         },
 
         /**
-        添加一个时间轴view到此面板中
+        TODO: 支持指定父骨骼与添加为第几个子骨骼
+        添加一个时间轴view到此面板中，一个骨骼对应一条时间轴
         @method addTimeLine
         @param {String} boneId 此时间轴对应的骨骼
         @param {Array} [keyframesData] 此时间轴上的关键帧的数据
@@ -93,8 +94,36 @@ define([
                 timeLineData.keyframes = keyframesData;
                 timeLineData.time2Left = _.bind(this._time2Left, this);
             }
+            // TODO: 并不是每次都应该 `append` 的
             this._$bd.append( timeLineTmpl(timeLineData) );
             return this;
+        },
+
+        /**
+        移动时间轴的位置。一个骨骼对应一条时间轴。
+        此方法将 `boneId` 对应的时间轴，已经 `boneId` 对应骨骼的子骨骼，按顺序一起移到 `parentId` 对应的时间轴后面第一个。
+        TODO: 先始终插入为第一个子骨骼，后续支持指定插入为第几个子骨骼
+        @param {String} boneId 被移动的时间轴对应的骨骼的id
+        @param {String} parentId 被移动的时间轴对应骨骼的父骨骼id
+        @param {Object} options
+        **/
+        moveTimeLine: function(boneId, parentId, options){
+            // TODO: 后续考虑使用统一的机制，以骨骼id为后缀构造统一的时间轴元素的id
+            var $parent = this._$bd.children('[data-bone-id="' + parentId + '"]'),
+                $toMove = this._$bd.children('[data-bone-id="' + boneId + '"]'),
+                nextEl;
+
+            $toMove = $toMove
+                .nextAll()
+                .slice(0, options.childrenAmount)
+                // When all elements are members of the same document, 
+                // the resulting collection from .add() will be sorted in document order.
+                // If the collection consists of elements from different 
+                // documents or ones not in any document, the sort order is undefined
+                .add($toMove);
+            $toMove
+                .detach()
+                .insertAfter($parent);
         },
 
         /**

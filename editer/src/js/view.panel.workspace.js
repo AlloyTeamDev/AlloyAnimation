@@ -4,11 +4,11 @@
 @exports 工作区面板的view实例
 **/
 define([
-    'jquery', 'jquery.defaultSetting', 'base/math',
+    'jquery', 'jquery.defaultSetting', 'underscore', 'base/math',
     'view.panel.abstractSkeleton', 'view.abstractBone',
     'tmpl!html/panel.workspace.html', 'tmpl!html/panel.workspace.transformUtil.html'
 ], function(
-    $, undefined, math,
+    $, undefined, _, math,
     AbstractSkeleton, AbstractBone,
     workspaceTmpl, transformUtilTmpl
 ){
@@ -75,6 +75,25 @@ define([
             this._boneDefaultContainer = this._$coordSys.get(0);
 
             return this;
+        },
+
+        /**
+        覆盖父类的同名方法。更新此面板中的某个骨骼
+        @param {String} id 骨骼的id
+        @param {Object} data 要更新的骨骼数据
+        @param {Object} [options]
+        @return this
+        **/
+        updateBone: function(id, data, options){
+            if('parent' in data){
+                // TODO: 修改工作区中的骨骼父子结构
+
+                data = _.clone(data);
+                delete data.parent;
+            }
+
+            // 复用父类的同名方法
+            WorkspacePanel.__super__.updateBone.call(this, id, data, options);
         },
 
         // 覆盖父类的同名方法

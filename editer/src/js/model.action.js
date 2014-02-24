@@ -17,6 +17,11 @@ define([
     @extends Backbone.Model
     **/
     Action = Backbone.Model.extend({
+        // 约定这些默认字段就是动作model的全部字段（除了id）
+        defaults: {
+            name: 'action'
+        },
+
         initialize: function(){
             // 创建动作id
             id = createId();
