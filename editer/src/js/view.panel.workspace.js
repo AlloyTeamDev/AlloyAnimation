@@ -86,7 +86,7 @@ define([
         **/
         updateBone: function(id, data, options){
             var bone, siblings, i;
-            if('parent' in data){
+            if(data.parent){
                 bone = this._boneHash[id];
                 // 删除在父骨骼中的引用
                 siblings = bone.parent.children;
