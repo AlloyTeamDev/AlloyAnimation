@@ -520,6 +520,13 @@ html, body,
   border-left-color: #897cbf;
   color: #897cbf;
 }
+#js-timeLinePanel .js-addKeyframeBtn, #js-timeLinePanel .js-removeKeyframeBtn {
+  float: right;
+  cursor: pointer;
+}
+#js-timeLinePanel .js-removeKeyframeBtn {
+  margin-right: 10px;
+}
 #js-timeLinePanel .bd {
   padding-top: 25px;
   position: relative;

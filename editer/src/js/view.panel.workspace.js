@@ -718,7 +718,7 @@ define([
         **/
         rotate: function(angle){
             if(angle !== void 0 && angle !== this._rotate){
-                typeof angle !== 'number' && console.debug('Warn: attribute type wrong');
+                typeof angle !== 'number' && console.warn('Attribute\'s data type is wrong');
                 this.$el.css('transform', 'rotate(' + angle + 'deg)');
                 this._rotate = angle;
                 return this;

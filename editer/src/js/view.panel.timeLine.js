@@ -144,7 +144,28 @@ define([
             return this;
         },
 
+        /**
+        删除指定的关键帧
+        @example
+            removeKeyframe([id])
+            @param {Array} keyframes 指定关键帧的id组成的数组
+        @example
+            removeKeyframe(id)
+            @param {String} keyframes 指定关键帧的id
+        **/
+        removeKeyframe: function(ids){
+            var $timeLine;
+
+            $timeLine = this._$bd.children('.js-timeLine');
+            ids = _.isArray(ids) ? ids : [ids];
+            ids.forEach(function(id){
+                this.find('#js-keyframe-' + id).remove();
+            }, $timeLine);
+        },
+
         events: {
+            'click .js-addKeyframeBtn': '_onClickAddKeyframeBtn',
+            'click .js-removeKeyframeBtn': '_onClickRemvoeKeyframeBtn',
             // 先绑定 `_onClickTimeLine` ，再绑定 `_onClickTimeLineOrAxis` ，
             // 因为它们触发的事件有先后关系
             'click .js-timeLine': '_onClickTimeLine',
@@ -152,12 +173,36 @@ define([
             'mousedown .js-keyframe': '_onMouseDownKeyframe'
         },
 
+        _onClickAddKeyframeBtn: function(){
+            console.debug('Panel %s\'s add-keyframe button is clicked', this.panelName);
+            this.trigger('toAddKeyframe', this.now);
+        },
+
+        _onClickRemvoeKeyframeBtn: function(){
+            var $selectedKeyframes, keyframesToRemove, jq;
+            console.debug('Panel %s\'s delete-keyframe button is clicked', this.panelName);
+
+            $selectedKeyframes = this._$bd.children('.js-timeLine').find('.js-keyframe.js-selected');
+            if($selectedKeyframes.length){
+                keyframesToRemove = [];
+                jq = $;
+                // 获取要删除的关键帧的id
+                $selectedKeyframes.each(function(i, selectedKeyframe){
+                    keyframesToRemove.push(
+                        jq(selectedKeyframe)
+                            .attr('id').split('-').pop()
+                    );
+                });
+                this.trigger('toRemoveKeyframe', keyframesToRemove);
+            }
+        },
+
         // 当点击时间轴时，触发表示切换激活骨骼的事件；
         // 并且，如果点击的不是关键帧，取消选中的关键帧
         _onClickTimeLine: function($event){
             var boneId;
 
-            boneId = $($event.currentTarget).data('bone-id');
+            boneId = $($event.currentTarget).data('bone-id') + '';
             console.debug(
                 'Panel %s change active bone to %s',
                 this.panelName, boneId

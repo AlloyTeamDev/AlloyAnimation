@@ -83,7 +83,7 @@ define([
             if( ( $target.hasClass('js-bone') && ($bone = $target) ) ||
                 ( $bone = $target.parentsUntil(this.$el, '.js-bone') ).length
             ){
-                this._mouseDownBone = $bone.data('bone-id');
+                this._mouseDownBone = $bone.data('bone-id') + '';
 
                 // 确定是在拖拽.js-bone时，才监听mousemove事件，
                 // 以免频繁触发不必要事件回调
@@ -136,7 +136,7 @@ define([
                 // 否则，将所拖拽骨骼添加为目标骨骼的子骨骼
                 if( $targetBone.parentsUntil(this._$bd).is($dragingBone) ) return;
                 
-                targetBoneId = $targetBone.data('bone-id');
+                targetBoneId = $targetBone.data('bone-id') + '';
 
                 if(targetBoneId === this._dragingBone){
                     console.debug('End draging bone %s, still at origin place', targetBoneId);
@@ -186,7 +186,7 @@ define([
 
         onClickBone: function($event){
             var $target = $($event.currentTarget),
-                targetBoneId = $target.data('bone-id');
+                targetBoneId = $target.data('bone-id') + '';
 
             // 避免点击事件冒泡到父骨骼，使得最后激活的是父骨骼
             $event.stopPropagation();

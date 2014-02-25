@@ -65,8 +65,12 @@ define([
             var boneData = {};
 
             this._$bd.find('.js-propVal').each(function(i){
-                var $propVal = $(this);
-                boneData[$propVal.data('prop-name')] = $propVal.val();
+                var $propVal = $(this),
+                    propName = $propVal.data('prop-name');
+                boneData[propName] = $propVal.val();
+                if($propVal.attr('type') === 'number'){
+                    boneData[propName] = +boneData[propName];
+                }
             });
 
             return boneData;

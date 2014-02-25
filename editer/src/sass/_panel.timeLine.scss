@@ -8,6 +8,15 @@
         color: $panel-color;
     }
 
+    .js-addKeyframeBtn, .js-removeKeyframeBtn {
+        float: right;
+        cursor: pointer;
+    }
+
+    .js-removeKeyframeBtn {
+        margin-right: 10px;
+    }
+
     .bd {
         padding-top: $time-axis-height;
         position: relative;

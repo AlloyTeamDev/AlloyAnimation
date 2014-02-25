@@ -82,6 +82,8 @@ define([
             .on('addBone', handler.onCertainPanelAddBone)
             .on('changeBoneParent', handler.onBoneTreePanelChangeBoneParent);
         timeLinePanelView
+            .on('toAddKeyframe', handler.onTimeLinePanelToAddKeyframe)
+            .on('toRemoveKeyframe', handler.onTimeLinePanelToRemoveKeyframe)
             .on('updatedKeyframe', handler.onCertainPanelUpdatedKeyframe)
             .on('changedNowTime', handler.onTimeLinePanelChangedNowTime);
     };
@@ -254,7 +256,21 @@ define([
         @event remove 当有关键帧model被从某个关键帧collection中移除时触发
         **/
         onRemoveKeyFrameModel: function(keyframeModel, keyframeColl, options){
+            var keyframeId = keyframeModel.get('id'),
+                time, bone, action;
+            console.debug(
+                'Controller receive that keyframe model %s is removed, and remove corresponding view',
+                keyframeId
+            );
+            timeLinePanelView.removeKeyframe(keyframeId);
 
+            // 如果删除的关键帧正在被展示，使用补间帧的数据展示到骨骼属性面板和工作区面板中
+            if( keyframeModel.get('time') === (time = timeLinePanelView.now) &&
+                keyframeModel.get('bone') === (bone = boneTreePanelView.getActiveBoneId()) &&
+                keyframeModel.get('action') === (action = actionPanelView.getActiveActionId())
+            ){
+                displayBoneData(time, bone, action);
+            }
         },
 
         /**
@@ -448,6 +464,55 @@ define([
             }
         },
 
+        /**
+        以指定的时间、激活骨骼、激活动作来创建一个关键帧，如果这样的关键帧已存在，则不创建
+        @param {Number} time 指定的时间
+        **/
+        onTimeLinePanelToAddKeyframe: function(time){
+            var keyframeModel, attrs;
+
+            attrs = {
+                time: time,
+                bone: boneTreePanelView.getActiveBoneId(),
+                action: actionPanelView.getActiveActionId()
+            };
+
+            console.debug(
+                'Controller receive that panel %s want to add keyframe with attributes %O',
+                this.panelName, time
+            );
+
+            keyframeModel = keyframeColl.findWhere(attrs);
+
+            if(keyframeModel){
+                console.debug(
+                    'Keyframe with attributes %O already exists, no need to add',
+                    attrs
+                );
+            }
+            else{
+                console.debug('Controller add keyframe with attributes %O');
+                // 用骨骼属性面板当前显示的数据补全关键帧的各个字段
+                attrs = _.extend(
+                    extractKeyframeData(bonePropPanelView.getBoneData()),
+                    attrs
+                );
+                keyframeColl.add(attrs);
+            }
+        },
+
+        /**
+        将指定的关键帧删除
+        @param {Array} ids 要删除的关键帧的id
+        **/
+        onTimeLinePanelToRemoveKeyframe: function(ids){
+            var keyframeModels;
+            keyframeModels = ids.map(function(id){
+                return this.get(id);
+            }, keyframeColl);
+            keyframeColl.remove(keyframeModels);
+        },
+
         onCertainPanelUpdatedKeyframe: function(keyframeId, updatedKeyframeData){
             var options = {};
 
@@ -466,20 +531,10 @@ define([
         },
 
         onTimeLinePanelChangedNowTime: function(now){
-            var boneId, boneData;
+            var boneId;
 
             boneId = boneTreePanelView.getActiveBoneId();
-            boneData = _.extend(
-                keyframeColl.getFrameData({
-                    bone: boneId,
-                    action: actionPanelView.getActiveActionId(),
-                    time: now
-                }),
-                boneColl.get(boneId).toJSON()
-            );
-
-            bonePropPanelView.updateProp(boneData);
-            workspacePanelView.updateBone(boneId, boneData);
+            displayBoneData( now, boneId, actionPanelView.getActiveActionId() );
         },
 
         /**
@@ -547,5 +602,26 @@ define([
         }
 
         return hasProp ? boneData : null;
+    }
+
+    /**
+    将指定的混合骨骼数据（由指定的帧和骨骼混合而得）展示到骨骼属性面板和工作区面板。
+    @param {Number} time 指定帧的时间
+    @param {String} bone 指定骨骼的id
+    @param {String} action 指定动作的id
+    **/
+    function displayBoneData(time, bone, action){
+        var boneData;
+        boneData = _.extend(
+            keyframeColl.getFrameData({
+                time: time,
+                bone: bone,
+                action: action
+            }),
+            boneColl.get(bone).toJSON()
+        );
+
+        bonePropPanelView.updateProp(boneData);
+        workspacePanelView.updateBone(bone, boneData);
     }
 });
