@@ -107,10 +107,6 @@ define([
             this.trigger('updatedBoneData', this._boneId, boneData);
         },
 
-        _keypressProp: function($event){
-            console.debug('keypress prop');
-        },
-
         _preventPopupOnChangeProp: function($event){
             $event.stopPropagation();
         }
