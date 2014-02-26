@@ -295,6 +295,12 @@ html, body,
   border-bottom-right-radius: 5px;
   line-height: 13px;
 }
+#js-bonePropPanel #js-boneProp-texture-file {
+  /*position: absolute;
+  left: -99999px;
+  width: 1px;
+  height: 1px;*/
+}
 
 .clearfix:after, #js-panelWrap:after {
   content: '';

@@ -224,7 +224,7 @@ define([
             if( !options.hasUpdatedBoneTree &&
                 ('name' in changedData)
             ){
-                boneTreePanelView.updateBone(boneId, changedBone, options);
+                boneTreePanelView.updateBone(boneId, changedData, options);
                 options.hasUpdatedBoneTree = true;
             }
 
@@ -404,6 +404,7 @@ define([
             }
 
             keyframeData = extractKeyframeData(updatedBoneData);
+            // 如果有更新关键帧的字段
             if(keyframeData){
                 keyframeModel = keyframeColl
                     .findWhere({
@@ -429,6 +430,12 @@ define([
                         }
                     ) );
                 }
+            }
+
+            boneData = extractBoneData(updatedBoneData);
+            // 如果有更新骨骼的字段
+            if(boneData){
+                boneColl.get(boneId).set(boneData);
             }
         },
 

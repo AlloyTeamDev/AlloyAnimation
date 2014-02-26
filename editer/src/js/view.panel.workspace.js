@@ -174,6 +174,7 @@ define([
                     boneData,
                     activeBone;
 
+                // TODO: 验证是否图片
                 img.src = texture;
                 boneData = {
                     texture: texture
@@ -192,6 +193,10 @@ define([
 
                 // 通知外界
                 panel.trigger('addBone', boneData);
+
+                reader.onload = null;
+                reader = null;
+                img = null;
             }
         },
 

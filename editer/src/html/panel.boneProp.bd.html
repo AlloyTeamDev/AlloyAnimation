@@ -29,7 +29,8 @@
 </div>
 <div class="propItem">
     <label class="propName" for="boneProp-texture">纹理图</label>
-    <input class="js-propVal" data-prop-name="texture" type="text" value="<%= bone.texture %>">
+    <input class="js-propVal" id="js-boneProp-texture" data-prop-name="texture" type="text" value="<%= bone.texture %>">
+    <input id="js-boneProp-texture-file" type="file" name="file" hidden>
 </div>
 <div class="propItem">
     <label class="propName" for="boneProp-w">宽度</label>

@@ -53,10 +53,6 @@
         text-align: left;
     }
 
-    .js-propVal[type=file] {
-        
-    }
-
     .js-propVal[type=number] {
         $psuedo-btn-width: $prop-item-height;
 
@@ -106,5 +102,12 @@
         //     border: 0 none;
         //     padding: 0;
         // }
+    }
+
+    #js-boneProp-texture-file {
+        /*position: absolute;
+        left: -99999px;
+        width: 1px;
+        height: 1px;*/
     }
 }

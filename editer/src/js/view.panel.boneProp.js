@@ -22,7 +22,12 @@ define([
             // 复用父类的`initialize`方法
             BonePropPanel.__super__.initialize.apply(this, arguments);
 
-            this._onInputPropVal = bind(this._onInputPropVal, this);
+            [
+                '_onInputPropVal',
+                '_onChangeTextureFile'
+            ].forEach(function(method){
+                this[method] = bind(this[method], this);
+            }, this);
         },
 
         render: function(boneData){
@@ -30,6 +35,7 @@ define([
             this.$el.html( bonePropTmpl({ bone: boneData }) );
 
             // 缓存DOM元素
+            // $bd的子元素会在 `changeBoneTo()` 中被复写，所以不要缓存
             this._$bd = this.$('.bd');
 
             return this;
@@ -82,7 +88,9 @@ define([
             characters from input filled by keyboard, cut, or drag
             operations.
             **/
-            'input .js-propVal': '_onInputPropVal'
+            'input .js-propVal': '_onInputPropVal',
+            'click #js-boneProp-texture': '_onClickTexture',
+            'change #js-boneProp-texture-file': '_onChangeTextureFile'
         },
 
         _onInputPropVal: function($event){
@@ -109,6 +117,40 @@ define([
 
         _preventPopupOnChangeProp: function($event){
             $event.stopPropagation();
+        },
+
+        _onClickTexture: function(){
+            this._$bd.find('#js-boneProp-texture-file').click();
+        },
+
+        _onChangeTextureFile: function($event){
+            var panel = this,
+                $bd = this._$bd,
+                $fileInput,
+                file, reader;
+
+            // TODO: 
+            // 1) 验证是否图片
+            // 2) 处理多个图片
+            file = $event.target.files[0];
+
+            if(!file) return;
+
+            console.debug(
+                'Panel %s change texture to %s',
+                this.panelName, file.name
+            );
+
+            $bd.find('#js-boneProp-texture').val(file.name);
+            reader = new FileReader();
+            reader.onload = function(){
+                panel.trigger('updatedBoneData', panel._boneId, {
+                    texture: this.result
+                });
+                reader.onload = null;
+                reader = null;
+            };
+            reader.readAsDataURL(file);
         }
     });
 
