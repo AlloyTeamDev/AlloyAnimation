@@ -524,7 +524,7 @@ html, body,
   float: right;
   cursor: pointer;
 }
-#js-timeLinePanel .js-removeKeyframeBtn {
+#js-timeLinePanel .js-addKeyframeBtn {
   margin-right: 10px;
 }
 #js-timeLinePanel .bd {
