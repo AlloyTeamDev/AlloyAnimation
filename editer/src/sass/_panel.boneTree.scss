@@ -23,10 +23,14 @@
         color: $main-color;
     }
 
-    .js-addBoneBtn {
+    .js-removeBoneBtn, .js-addBoneBtn {
         float: right;
         cursor: pointer;
         color: $topic-color3;
+    }
+
+    .js-addBoneBtn {
+        margin-right: $add-remove-btn-space;
     }
 
     .bd {

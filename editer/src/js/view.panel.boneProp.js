@@ -44,6 +44,11 @@ define([
         changeBoneTo: function(boneData, options){
             if(this._boneId === boneData.id) return this;
 
+            console.debug(
+                'Panel %s change to bone %s',
+                this.panelName, boneData.id
+            );
+
             this._boneId = boneData.id;
             this._$bd.html( bdTmpl({ bone: boneData }) );
         },

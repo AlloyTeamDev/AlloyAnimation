@@ -80,6 +80,7 @@ define([
         boneTreePanelView
             .once('addBone', handler.onceCertainPanelAddBone)
             .on('addBone', handler.onCertainPanelAddBone)
+            .on('removedBone', handler.onBoneTreePanelRemoveBone)
             .on('changeBoneParent', handler.onBoneTreePanelChangeBoneParent);
         timeLinePanelView
             .on('toAddKeyframe', handler.onTimeLinePanelToAddKeyframe)
@@ -186,7 +187,38 @@ define([
         @event remove collection中有model被移除时触发
         **/
         onBoneCollRemoveModel: function(boneModel, boneColl, options){
+            var boneId = boneModel.get('id');
 
+            console.debug(
+                'Controller receive that bone collection %s remove bone %s, then remove keyframes of this bone, and sync to panels views',
+                boneColl.id, boneId
+            );
+
+            // 静默删除此骨骼对应的关键帧，以免触发事件让时间轴面板多次访问DOM来删除关键帧，
+            // 后面直接删除这些关键帧所在的
+            // TODO: 使用自定义的silent标记
+            keyframeColl.remove(
+                keyframeColl.where({ bone: boneId })
+            );
+
+            // 删除各个面板中对应的骨骼
+            [
+                workspacePanelView,
+                boneTreePanelView,
+                timeLinePanelView
+            ].forEach(function(panel){
+                if( !options[ PANEL_NAME_2_FLAG[panel.panelName] ] ){
+                    if(panel === timeLinePanelView){
+                        panel.removeTimeLine(boneId);
+                        return;
+                    }
+                    else{
+                        panel.removeBone(boneId);
+                    }
+                }
+            }, this);
+
+            // TODO: 如果没有骨骼了，重新监听第一个骨骼的添加
         },
 
         /**
@@ -385,6 +417,24 @@ define([
         },
 
         /**
+        @triggerObj boneTreePanelView
+        @event removedBone 当有骨骼视图被删除时触发
+        @param {Array} bones 骨骼的id
+        @param {Object} [options]
+        **/
+        onBoneTreePanelRemoveBone: function(bones, options){
+            console.debug(
+                'Controller receive that panel %s removed bones %O',
+                this.panelName, bones
+            );
+
+            options = options || {};
+            options[PANEL_NAME_2_FLAG[this.panelName]] = true;
+
+            boneColl.remove(bones, options);
+        },
+
+        /**
         @triggerObj bonePropPanelView|workspacePanelView
         @event updatedBone 当骨骼属性面板或工作区面板更新了骨骼数据时触发
         @param {String} boneId 骨骼的id
@@ -446,7 +496,7 @@ define([
             options.silent = true;
 
             console.debug(
-                'Controller receive that %s panel changed active bone to %s, and sync active bone to other panels',
+                'Controller receive that panel %s changed active bone to %s, and sync active bone to other panels',
                 this.panelName, boneId
             );
 

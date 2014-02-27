@@ -63,6 +63,29 @@ define([
             return this;
         },
 
+        // 覆盖父类的同名方法
+        updateBone: function(id, data, options){
+            var $boneEl, $newParentEl;
+
+            // 如果改变了某个骨骼的父骨骼，更新父子骨骼的DOM结构
+            if(data.parent){
+                $boneEl = this._boneHash[id].$el;
+                $newParentEl = this._boneHash[data.parent].$el;
+
+                setTimeout(function(){
+                    // TODO: 先始终插入为第一个子骨骼，后续支持指定插入为第几个子骨骼
+                    $boneEl.insertAfter($newParentEl.children('.js-name'));
+
+                    $newParentEl = null;
+                    $boneEl = null;     
+                }, 300);
+                // TODO: 先弄个300ms的延迟，后续再做移动骨骼的动画
+            }
+
+            // 复用父类的同名方法
+            BoneTreePanel.__super__.updateBone.apply(this, arguments);
+        },
+
         // 获取激活骨骼的id
         getActiveBoneId: function(){
             return this._activeBone.id;
@@ -72,7 +95,8 @@ define([
             'mousedown': 'onMouseDownBone',
             'mouseup .js-bone': 'onMouseUpBone',
             'click .js-bone': 'onClickBone',
-            'click .js-addBoneBtn': 'onClickAddBoneBtn'
+            'click .js-addBoneBtn': 'onClickAddBoneBtn',
+            'click .js-removeBoneBtn': 'onClickRemoveBoneBtn'
         },
 
         onMouseDownBone: function($event){
@@ -132,36 +156,30 @@ define([
                 $dragingBone = this._boneHash[this._dragingBone].$el;
                 $targetBone = $($event.currentTarget);
 
+                dragingBoneId = this._dragingBone;
+                targetBoneId = $targetBone.data('bone-id') + '';
+
+                console.debug(
+                    'End draging bone %s when mouse is on bone %s',
+                    dragingBoneId, targetBoneId
+                );
+
                 // 如果目标骨骼是所拖拽骨骼的子骨骼，直接返回；
                 // 否则，将所拖拽骨骼添加为目标骨骼的子骨骼
                 if( $targetBone.parentsUntil(this._$bd).is($dragingBone) ) return;
                 
-                targetBoneId = $targetBone.data('bone-id') + '';
-
                 if(targetBoneId === this._dragingBone){
                     console.debug('End draging bone %s, still at origin place', targetBoneId);
                     this._dragingBone = null;
                     return;
                 }
 
+                // 维护父子骨骼view的引用关系
+                this.updateBone(dragingBoneId, {parent: targetBoneId});
+
                 $dragingBone.detach();
-                dragingBoneId = this._dragingBone;
-
                 panel = this;
-                setTimeout(function(){
-                    // TODO: 先始终插入为第一个子骨骼，后续支持指定插入为第几个子骨骼
-                    $dragingBone.insertAfter($targetBone.children('.js-name'));
 
-                    panel = null;
-                    $targetBone = null;
-                    $dragingBone = null;
-
-                    console.debug(
-                        'End draging bone %s, appent it to %s',
-                        dragingBoneId,
-                        targetBoneId
-                    );
-                }, 300);
                 panel.trigger(
                     'changeBoneParent',
                     dragingBoneId, targetBoneId,
@@ -199,7 +217,48 @@ define([
             require('test/user').uploadTexture();
 
             // this.trigger('addBone');
-        }
+        },
+
+        /**
+        删除激活骨骼（及其子骨骼），并切换其父骨骼为激活骨骼；
+        如果激活骨骼是根骨骼，在删除之前先弹窗询问用户是否删除。
+        **/
+        onClickRemoveBoneBtn: function(){
+            var bone = this._activeBone,
+                toRemove, parent;
+
+            console.debug(
+                'Panel %s\'s remove-bone button is clicked when bone %s is active',
+                this.panelName, bone.id
+            );
+
+            // 如果没有父骨骼，说明是根骨骼
+            if( !(parent = bone.parent) &&
+                !window.confirm(BoneTreePanel._CONFIRM_TEXT_ON_REMOVE_ROOT_BONE)
+            ){
+                return;
+            }
+
+            // 切换激活骨骼的父骨骼为新的激活骨骼
+            if(parent){
+                this.changeActiveBone(parent.id);
+            }
+
+            // 收集要删除骨骼的id
+            toRemove = [];
+            bone.traversal(function(bone){
+                this.push(bone.id);
+            }, toRemove);
+
+            // 删除激活骨骼
+            this.removeBone(bone.id);
+
+            this.trigger('removedBone', toRemove);
+        },
+
+
+    }, {
+        _CONFIRM_TEXT_ON_REMOVE_ROOT_BONE: '你确定要删除根骨骼及其所有子孙骨骼吗？'
     });
 
     /**

@@ -115,21 +115,25 @@ define([
         },
 
         /**
-        彻底删除此骨骼view。
+        按 **后序遍历** 的顺序删除子骨骼和此骨骼。
+        注意：此方法不会删除此骨骼在其父骨骼中的引用，更不会删除此骨骼在其它地方的引用
         @return this
         **/
         remove: function(){
-            var parent, brothers;
+            var l, children, child, parent, brothers,
+                removed = [];
 
-            // 删除父子骨骼之间的相互引用
-            if( ( parent = this.parent ) &&
-                ( brothers = parent.children )
-            ){
-                // 删除在父骨骼中的引用
-                brothers.splice(brothers.indexOf(this), 1);
-                // 删除对父骨骼的引用
-                delete this.parent;
+            // 如果有子骨骼，先递归删除子骨骼
+            children = this.children;
+            while(l = children.length){
+                // 删除此骨骼对子骨骼的引用
+                child = children.shift();
+                // 删除子骨骼
+                removed.push(child.remove());
             }
+
+            // 删除对父骨骼的引用
+            delete this.parent;
 
             // 解除监听DOM事件，删除DOM元素，解除绑定在view实例上的事件
             AbstractBone.__super__.remove.call(this);
@@ -163,6 +167,23 @@ define([
             }
 
             return this;
+        },
+
+        /**
+        **后序遍历** 以此骨骼为根骨骼的骨骼树。
+        对遍历到的每一个骨骼，提供给 `iterator` 函数执行需要的操作，
+        @param {Function} iterator
+        @param {Object} context `iterator` 的执行上下文
+        @return this
+        **/
+        traversal: function(iterator, context){
+            // 先递归遍历子骨骼
+            // 对各个子骨骼的遍历顺序，按 `children` 数组中的前后顺序
+            this.children.forEach(function(child){
+                child.traversal(iterator, context);
+            });
+
+            iterator.call(context, this);
         },
 
         /*

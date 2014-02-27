@@ -101,6 +101,20 @@ define([
         },
 
         /**
+        删除指定骨骼对应的时间轴
+        @param {String} boneId
+        @return this
+        **/
+        removeTimeLine: function(boneId){
+            
+            
+            this._$bd
+                .children('[data-bone-id="' + boneId + '"]')
+                .remove();
+            return this;
+        },
+
+        /**
         移动时间轴的位置。一个骨骼对应一条时间轴。
         此方法将 `boneId` 对应的时间轴，已经 `boneId` 对应骨骼的子骨骼，按顺序一起移到 `parentId` 对应的时间轴后面第一个。
         TODO: 先始终插入为第一个子骨骼，后续支持指定插入为第几个子骨骼
@@ -155,6 +169,11 @@ define([
         **/
         removeKeyframe: function(ids){
             var $timeLine;
+
+            console.debug(
+                'Panel %s remove keyframe %O',
+                this.panelName, ids
+            );
 
             $timeLine = this._$bd.children('.js-timeLine');
             ids = _.isArray(ids) ? ids : [ids];

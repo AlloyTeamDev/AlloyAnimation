@@ -74,28 +74,35 @@ define([
         },
 
         /**
-        彻底移除指定的骨骼。
-        如果指定的骨骼有子骨骼，先递归移除子骨骼。
+        将指定的骨骼从此骨架中删除。
         @param {String} id 骨骼的id
         @param {Object} [options]
-        @return {this._Bone[]} 所移除的骨骼组成的数组。移除的过程中会断开它们的父子关系
+        @return this
         **/
         removeBone: function(id, options){
-            var bone, children, removedBones;
+            var bone = this._boneHash[id],
+                parent, siblings;
 
-            bone = this._boneHash[id];
-            removedBones = [];
-            if( (children = bone.children) && children.length ){
-                children.forEach(function(child){
-                    removedBones.concat( this.removeBone(child.id, options) );
-                }, this);
+            if(!bone){
+                console.warn(
+                    'Panel %s remove bone %s that does not exist in this panel',
+                    this.panel, id
+                );
             }
 
+            // 删除指定的骨骼及其子骨骼
             bone.remove();
-            removedBones.push(bone);
 
+            // 删除指定骨骼在其父骨骼中的引用
+            if( (parent = bone.parent) ){
+                siblings = parent.children;
+                siblings.splice(siblings.indexOf(bone), 1);
+            }
+
+            // 删除此骨架对指定骨骼的引用
             delete this._boneHash[id];
-            return removedBones;
+
+            return this;
         },
 
         /**
@@ -106,7 +113,22 @@ define([
         @return this
         **/
         updateBone: function(id, data, options){
-            this._boneHash[id].update(data);
+            var bone, siblings;
+
+            // 更新父子骨骼view的引用关系
+            if(data.parent){
+                bone = this._boneHash[id];
+                // 删除在父骨骼中的引用
+                siblings = bone.parent.children;
+                siblings.splice(siblings.indexOf(bone), 1);
+                // 引用新的父骨骼
+                bone.parent = this._boneHash[data.parent];
+                // 将自身引用插入到新的父骨骼中
+                // TODO: 先始终插入为第一个子骨骼，后续支持指定插入为第几个子骨骼
+                bone.parent.children.unshift(bone);
+            }
+
+            this._boneHash[id].update(data, options);
 
             console.debug(
                 'Panel %s updated bone %s to %O',

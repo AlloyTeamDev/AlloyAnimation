@@ -77,26 +77,15 @@ define([
             return this;
         },
 
-        /**
-        覆盖父类的同名方法。更新此面板中的某个骨骼
-        @param {String} id 骨骼的id
-        @param {Object} data 要更新的骨骼数据
-        @param {Object} [options]
-        @return this
-        **/
+        // 覆盖父类的同名方法
         updateBone: function(id, data, options){
-            var bone, siblings, i;
-            if(data.parent){
-                bone = this._boneHash[id];
-                // 删除在父骨骼中的引用
-                siblings = bone.parent.children;
-                siblings.splice(siblings.indexOf(bone), 1);
-                // 覆盖对父骨骼的引用
-                bone.parent = this._boneHash[data.parent];
-
-                bone.$el
+            var parent;
+            // 如果改变了某个骨骼的父骨骼，更新父子骨骼的DOM结构
+            if( (parent = data.parent) ){
+                this._boneHash[id]
+                    .$el
                     .detach()
-                    .appendTo(bone.parent.$el);
+                    .appendTo(this._boneHash[parent].$el);
             }
 
             // 复用父类的同名方法
