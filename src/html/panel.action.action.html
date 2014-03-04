@@ -1,0 +1,13 @@
+<%
+    /**
+    动作面板中的一个动作条目
+    @param {String} id 动作的id
+    @param {String} name 动作名
+    **/
+%>
+<input id="js-action-<%= id %>"
+    class="js-action"
+    spellcheck="false"
+    data-action-id="<%= id %>"
+    value="<%- name %>"
+>

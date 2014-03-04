@@ -627,3 +627,23 @@ html, body,
   border-left-color: #fb9966;
   color: #fb9966;
 }
+#js-actionPanel .js-action {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 15px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  outline: 0 none;
+  font-size: 14px;
+}
+#js-actionPanel .js-action:nth-child(odd) {
+  background: #393d46;
+}

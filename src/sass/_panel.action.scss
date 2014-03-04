@@ -1,8 +1,26 @@
 #js-actionPanel {
     $panel-color: $topic-color4;
+    // 一个动作条目的高度
+    $item-height: 30px;
 
     .hd {
         border-left-color: $panel-color;
         color: $panel-color;
+    }
+
+    .js-action {
+        width: 100%;
+        height: $item-height;
+        line-height: $item-height;
+        padding: 0 15px;
+        @include prefix(border-radius, 5px);
+        @include prefix(box-sizing, border-box);
+        border: 1px solid transparent;
+        outline: 0 none;
+        font-size: 14px;
+
+        &:nth-child(odd) {
+            background: lighten($app-bg, 5%);
+        }
     }
 }

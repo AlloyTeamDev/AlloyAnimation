@@ -77,6 +77,8 @@ define([
             .once('addBone', handler.onceCertainPanelAddBone)
             .on('addBone', handler.onCertainPanelAddBone)
             .on('updatedBoneData', handler.onCertainPanelUpdatedBoneData);
+        actionPanelView
+            .on('updatedActionData', handler.onActionPanelUpdatedAction)
         boneTreePanelView
             .once('addBone', handler.onceCertainPanelAddBone)
             .on('addBone', handler.onCertainPanelAddBone)
@@ -364,7 +366,10 @@ define([
         },
 
         onActionCollAddModel: function(actionModel, actionColl, options){
-            actionPanelView.addAction(actionModel.toJSON());
+            var actionData = actionModel.toJSON()
+            actionPanelView
+                .addAction(actionData)
+                .changeActiveAction(actionData.id);
         },
         /****** End: model/collection event handler ******/
 
@@ -417,6 +422,29 @@ define([
             delete options.silent;
             boneColl.trigger('add', boneModel, boneColl, options);
             keyframeColl.trigger('add', keyframeModel, keyframeColl, options);
+        },
+
+        /**
+        @triggerObj actionPanelView
+        @event updatedActionData 当动作面板修改了动作的数据时触发
+        @param {String} actionId 动作id
+        @param {Object} actionData 修改了的动作数据（只包括修改了的字段）
+        @param {Object} [options]
+        **/
+        onActionPanelUpdatedAction: function(actionId, actionData, options){
+            var actionModel;
+
+            options = options || {};
+
+            console.debug(
+                'Controller receive that panel %s updated action %s attributes %O, and set to model',
+                this.panelName, actionId, actionData
+            );
+
+            options[PANEL_NAME_2_FLAG[this.panelName]] = true;
+            actionColl
+                .get(actionId)
+                .set(actionData, options);
         },
 
         /**
