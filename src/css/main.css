@@ -335,6 +335,7 @@ html, body,
 }
 #js-workspacePanel .js-bone {
   position: absolute;
+  z-index: 0;
   left: 0;
   top: 0;
   background-repeat: no-repeat;
@@ -438,6 +439,10 @@ html, body,
 #js-workspacePanel .resize4::before {
   right: -2px;
   bottom: -2px;
+}
+#js-workspacePanel .js-activeBone::before,
+#js-workspacePanel .js-transform-util {
+  z-index: -1;
 }
 
 /**

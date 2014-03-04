@@ -30,7 +30,9 @@
     }
 
     .js-bone {
+        // 将z-index显示设置为非auto的定位元素，会创建stacking context
         position: absolute;
+        z-index: 0;
         // 新建骨骼的默认位置
         left: 0;
         top: 0;
@@ -155,6 +157,11 @@
             right: $resize-offset * -1;
             bottom: $resize-offset * -1;
         }
+    }
+    .js-activeBone::before,
+    .js-transform-util {
+        // 使其衬在非激活骨骼的下方
+        z-index: -1;
     }
 
 } // end of workspace panel
