@@ -156,6 +156,9 @@ define([
             workspacePanelView.addBone(boneData);
             boneTreePanelView.addBone(boneData);
             timeLinePanelView.addTimeLine(boneId);
+
+            // 切换新骨骼为激活骨骼
+            workspacePanelView.changeActiveBone(boneData.id);
         },
 
         /**
