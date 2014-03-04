@@ -91,6 +91,7 @@
         position: relative;
         @include prefix(box-sizing, border-box);
         margin-bottom: $item-space;
+        @include prefix(border-radius, $item-border-radius);
     }
 
     .js-keyframe {

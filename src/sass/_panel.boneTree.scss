@@ -48,7 +48,7 @@
 
     .drag-hint {
         position: absolute;
-        left: 0;
+        left: 4px;
         top: 0;
         width: $drag-hint-width;
         height: $item-height;
@@ -80,12 +80,13 @@
             width: 100%;
             height: $item-height;
             opacity: 0;
+            @include prefix(border-radius, $item-border-radius);
             @include prefix(transition, opacity 0.3s);
             @include prefixVal(background-image, linear-gradient(left, $hover-bg1, $hover-bg2));
             position: absolute;
             left: 0;
             top: 0;
-            // 使这个before伪元素衬在.js-name的普通子孙元素的下方
+            // 使这个before伪元素衬在.js-name的、处于普通流中的子孙元素的下方
             z-index: -1;
         }
         &:hover::before {
