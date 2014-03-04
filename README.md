@@ -1,3 +1,4 @@
-# AlloyStick
+AlloyAnimation
+==============
 
-Render engine and editer for skeleton annimation
+AlloyAnimation Editor 合金动画编辑器
