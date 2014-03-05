@@ -220,45 +220,43 @@ define([
         },
 
         /**
-        删除激活骨骼（及其子骨骼），并切换其父骨骼为激活骨骼；
-        如果激活骨骼是根骨骼，在删除之前先弹窗询问用户是否删除。
+        删除激活骨骼（及其子骨骼），并切换其父骨骼为激活骨骼，
+        如果没有父骨骼，则切换其他根骨骼为激活骨骼
         **/
         onClickRemoveBoneBtn: function(){
-            var bone = this._activeBone,
-                toRemove, parent;
+            var activeBone = this._activeBone,
+                toRemove, boneId, bone;
 
             console.debug(
                 'Panel %s\'s remove-bone button is clicked when bone %s is active',
-                this.panelName, bone.id
+                this.panelName, activeBone.id
             );
 
-            // 如果没有父骨骼，说明是根骨骼
-            if( !(parent = bone.parent) &&
-                !window.confirm(BoneTreePanel._CONFIRM_TEXT_ON_REMOVE_ROOT_BONE)
-            ){
-                return;
-            }
-
-            // 切换激活骨骼的父骨骼为新的激活骨骼
-            if(parent){
-                this.changeActiveBone(parent.id);
-            }
-
-            // 收集要删除骨骼的id
+            // 从最底部的子骨骼开始删除，
+            // 并收集要删除骨骼的id（最底部的子骨骼先收集到）
             toRemove = [];
-            bone.traversal(function(bone){
-                this.push(bone.id);
-            }, toRemove);
+            activeBone.traversal(function(bone){
+                this.removeBone(bone.id);
+                toRemove.push(bone.id);
+            }, this);
 
-            // 删除激活骨骼
-            this.removeBone(bone.id);
+            // 再切换激活骨骼，因为如果删除的是根骨骼，需要遍历出一个根骨骼来激活
+            if(activeBone.parent){
+                this.changeActiveBone(activeBone.parent.id);
+            }
+            else{
+                for(boneId in this._boneHash){
+                    if( !this._boneHash.hasOwnProperty(boneId) ) continue;
+                    bone = this._boneHash[boneId];
+                    if(!bone.parent){
+                        this.changeActiveBone(bone.id);
+                        break;
+                    }
+                }
+            }
 
             this.trigger('removedBone', toRemove);
-        },
-
-
-    }, {
-        _CONFIRM_TEXT_ON_REMOVE_ROOT_BONE: '你确定要删除根骨骼及其所有子孙骨骼吗？'
+        }
     });
 
     /**
