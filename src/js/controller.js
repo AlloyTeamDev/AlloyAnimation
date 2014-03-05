@@ -96,18 +96,14 @@ define([
     @param {BoneModel} boneModel 要监听的骨骼model实例
     **/
     function monitorBoneModel(boneModel){
-        boneModel
-            .on('change', handler.onChangeBoneModel)
-            .on('destroy', handler.onDestroyBoneModel);
+        boneModel.on('change', handler.onChangeBoneModel);
     }
     /**
     解除监听一个骨骼model实例上的事件
     @param {BoneModel} boneModel 要解除监听的骨骼model实例
     **/
     function unmonitorBoneModel(boneModel){
-        boneModel
-            .off('change', handler.onChangeBoneModel)
-            .off('destroy', handler.onDestroyBoneModel);
+        boneModel.off('change', handler.onChangeBoneModel);
     }
 
     /**
@@ -135,6 +131,11 @@ define([
         **/
         onBoneCollAddModel: function(boneModel, boneColl, options){
             var boneId, boneData;
+
+            console.debug(
+                'Controller receive that bone collection %s add bone %s, then monitor this bone',
+                boneColl.id, boneModel.id
+            );
 
             // 监听骨骼的事件
             monitorBoneModel(boneModel);
@@ -199,9 +200,7 @@ define([
                 boneColl.id, boneId
             );
 
-            // 静默删除此骨骼对应的关键帧，以免触发事件让时间轴面板多次访问DOM来删除关键帧，
-            // 后面直接删除这些关键帧所在的
-            // TODO: 使用自定义的silent标记
+            // 删除此骨骼对应的关键帧
             keyframeColl.remove(
                 keyframeColl.where({ bone: boneId })
             );
@@ -251,6 +250,11 @@ define([
             changedData = boneModel.changedAttributes();
             boneId = boneModel.get('id');
 
+            console.debug(
+                'Controller receive that bone model %s changed attributes %O',
+                boneId, changedData
+            );
+
             // 以下更新各个面板视图
             if(!options.hasUpdatedWorkspace){
                 workspacePanelView.updateBone(boneId, changedData, options);
@@ -274,13 +278,16 @@ define([
             }
         },
 
-        onDestroyBoneModel: function(){},
-
         /**
         @triggerObj {KeyframeCollection}
         @event add 当有关键帧model被添加进某个关键帧collection时触发
         **/
         onAddKeyFrameModel: function(keyframeModel, keyframeColl, options){
+            console.debug(
+                'Controller receive that keyframe collection %s add new keyframe model %s, then sync to panel views',
+                keyframeColl.id, keyframeModel.id
+            );
+
             timeLinePanelView.addKeyframe(
                 keyframeModel.get('bone'),
                 keyframeModel.toJSON()
@@ -367,6 +374,12 @@ define([
 
         onActionCollAddModel: function(actionModel, actionColl, options){
             var actionData = actionModel.toJSON()
+
+            console.debug(
+                'Controller receive that action collection %s added action model %s, then sync to views',
+                actionColl.id, actionModel.id
+            );
+
             actionPanelView
                 .addAction(actionData)
                 .changeActiveAction(actionData.id);
@@ -377,7 +390,10 @@ define([
         onceCertainPanelAddBone: function(boneData, options){
             // 对于第一个骨骼，如果还没有动作，创建初始动作
             if(!actionColl.length){
-                console.debug('Controller add a new action');
+                console.debug(
+                    'Controller create a default action for the first bone %s',
+                    boneData.id
+                );
                 actionColl.add(new ActionModel);
             }
 
@@ -452,8 +468,8 @@ define([
         **/
         onBoneTreePanelRemoveBone: function(bones, options){
             console.debug(
-                'Controller receive that panel %s removed bones %O',
-                this.panelName, bones
+                'Controller receive that panel %s removed bones %s, then sync to model',
+                this.panelName, JSON.stringify(bones)
             );
 
             options = options || {};
@@ -592,6 +608,12 @@ define([
         **/
         onTimeLinePanelToRemoveKeyframe: function(ids){
             var keyframeModels;
+
+            console.debug(
+                'Controller receive that panel %s want to remove keyframes %O',
+                this.panelName, ids
+            );
+
             keyframeModels = ids.map(function(id){
                 return this.get(id);
             }, keyframeColl);
@@ -617,6 +639,11 @@ define([
 
         onTimeLinePanelChangedNowTime: function(now){
             var boneId;
+
+            console.debug(
+                'Controller receive that panel %s changed its now time to %s',
+                this.panelName, now
+            );
 
             boneId = boneTreePanelView.getActiveBoneId();
             displayBoneData( now, boneId, actionPanelView.getActiveActionId() );

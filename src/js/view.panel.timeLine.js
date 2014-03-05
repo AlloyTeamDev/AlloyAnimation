@@ -106,7 +106,10 @@ define([
         @return this
         **/
         removeTimeLine: function(boneId){
-            
+            console.debug(
+                'Panel %s remove timeline for bone %s',
+                this.panelName, boneId
+            );
             
             this._$bd
                 .children('[data-bone-id="' + boneId + '"]')
@@ -155,6 +158,12 @@ define([
                     time: keyframeData.time,
                     left: this._time2Left(keyframeData.time)
                 }));
+
+            console.debug(
+                'Panel %s add keyframe %s',
+                this.panelName, keyframeData.id
+            );
+
             return this;
         },
 
@@ -168,18 +177,15 @@ define([
             @param {String} keyframes 指定关键帧的id
         **/
         removeKeyframe: function(ids){
-            var $timeLine;
-
+            ids = _.isArray(ids) ? ids : [ids];
             console.debug(
-                'Panel %s remove keyframe %O',
-                this.panelName, ids
+                'Panel %s remove keyframe %s',
+                this.panelName, JSON.stringify(ids)
             );
 
-            $timeLine = this._$bd.children('.js-timeLine');
-            ids = _.isArray(ids) ? ids : [ids];
             ids.forEach(function(id){
                 this.find('#js-keyframe-' + id).remove();
-            }, $timeLine);
+            }, this._$bd.children('.js-timeLine'));
         },
 
         events: {
