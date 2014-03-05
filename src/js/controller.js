@@ -385,27 +385,24 @@ define([
             if(typeof timeLinePanelView.now !== 'number'){
                 timeLinePanelView.now = 0;
             }
-
-            // 确保此函数只被调用一次
-            workspacePanelView.off('add', handler.onceCertainPanelAddBone);
-            boneTreePanelView.off('add', handler.onceCertainPanelAddBone);
         },
 
         /**
         @triggerObj workspacePanelView|boneTreePanelView
-        @event addBone 当有新骨骼从某个面板（目前支持的有工作区和骨骼树面板）中添加时触发
+        @event addBone 当有新骨骼从某个面板中添加时触发，目前支持添加骨骼的面板有工作区、骨骼树面板
         @param {Object} boneData 新骨骼的数据
         @param {Object} [options]
         **/
         onCertainPanelAddBone: function(boneData, options){
-            var boneModel, keyframeModel,
-                flag = PANEL_NAME_2_FLAG[this.panelName];
+            var boneModel, keyframeModel;
 
             console.debug('Controller receive a new bone added by panel %s', this.panelName);
 
             options = options || {};
-            options[flag] = true;
+            options[PANEL_NAME_2_FLAG[this.panelName]] = true;
 
+            // 确保骨骼model和关键帧model都存在之后，再触发 `add` 事件，
+            // 因为 `add` 事件的处理函数中需要用到它们
             options.silent = true;
             boneModel = boneColl.add(extractBoneData(boneData), options);
 

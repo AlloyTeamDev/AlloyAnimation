@@ -22,9 +22,6 @@ define([
                 boneData.h = img.height;
                 boneData.jointY = img.height / 2;
             }
-            if(workspaceView._activeBone){
-                boneData.parent = workspaceView._activeBone.id;
-            }
             workspaceView.trigger('addBone', boneData);
         };
     };

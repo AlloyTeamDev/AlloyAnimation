@@ -35,41 +35,43 @@ define([
         /* Start: 对本面板中的骨骼的增删改 */
 
         /**
-        使用所提供的骨骼数据，给此面板创建并添加一个骨骼。
-        如果所提供的骨骼数据中有指定父骨骼，使用指定的父骨骼；
-        如果所提供的骨骼数据中没有指定父骨骼，使用激活骨骼作为父骨骼；
-        如果没有激活骨骼（即还没有任何骨骼），添加此骨骼为根骨骼并激活之；
-        如果所提供的骨骼数据中带有子骨骼的数据，递归添加子骨骼。
+        使用所提供的骨骼数据，给此面板创建并添加一个骨骼，并激活之。
+        如果所提供的骨骼数据中有指定父骨骼，添加为它的子骨骼；
+        如果没有指定父骨骼，添加为根骨骼；
         @param {Object} boneData 要添加的骨骼的数据
         @param {Object} [options]
         @return {this._Bone} 新创建的骨骼实例
         **/
         addBone: function(boneData, options){
-            var parent, bone, childrenData;
+            var parentBone, bone;
 
-            console.debug(
-                'Panel %s start adding bone %s',
-                this.panelName, boneData.id
-            );
-            if(parent = boneData.parent){
-                bone = this._addBone(
-                    boneData,
-                    this._boneHash[parent],
-                    options
+            if(boneData.parent){
+                parentBone = this._boneHash[boneData.parent];
+                bone = parentBone.addChild(boneData, options);
+                this._boneHash[boneData.id] = bone;
+
+                console.debug(
+                    'Panel %s add bone %s as child of bone %s',
+                    this.panelName, boneData.id, boneData.parent
                 );
             }
-            else if(this._activeBone){
-                bone = this._addBone(boneData, this._activeBone, options);
-            }
             else{
-                bone = this._addBone(boneData, options);
-                this.changeActiveBone(bone.id);
+                bone = new this._Bone();
+                bone.render(
+                    boneData,
+                    this._boneDefaultContainer,
+                    options
+                );
+                this._boneHash[boneData.id] = bone;
+
+                console.debug(
+                    'Panel %s add bone %s as a root bone',
+                    this.panelName, bone.id
+                );
             }
 
-            console.debug(
-                'Panel %s end adding bone %s',
-                this.panelName, boneData.id
-            );
+            this.changeActiveBone(bone.id);
+            
             return bone;
         },
 
@@ -173,46 +175,9 @@ define([
             }
 
             return true;
-        },
-
-        /* End: 对本面板中的骨骼的增删改 */
-
-
-        /* Start: 私有成员 */
-
-        /**
-        使用提供的骨骼数据创建骨骼，并添加为指定父骨骼的子骨骼。
-        如果有子骨骼的数据，递归添加子骨骼
-        @param {Object} boneData 要添加的骨骼的数据
-        @param {this._Bone} [parentBone] 要添加为哪个骨骼的子骨骼
-        @param {Object} [options]
-        @return {this._Bone} 所创建的骨骼
-        **/
-        _addBone: function(boneData, parentBone, options){
-            var bone, childrenData;
-
-            if(!parentBone){
-                options = parentBone;
-                parentBone = undefined;
-
-                (bone = this._boneHash[boneData.id] = new this._Bone())
-                    .render(boneData, this._boneDefaultContainer, options);
-            }
-            else{
-                bone
-                    = this._boneHash[boneData.id]
-                    = parentBone.addChild(boneData, options);
-            }
-
-            if( (childrenData = boneData.children) && childrenData.length ){
-                childrenData.forEach(function(childData){
-                    this._addBone(childData, bone);
-                }, this);
-            }
-            return bone;
         }
 
-        /* End: 私有成员 */
+        /* End: 对本面板中的骨骼的增删改 */
     });
 
     return AbstractSkeleton;    
