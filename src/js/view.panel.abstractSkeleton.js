@@ -120,9 +120,11 @@ define([
             // 更新父子骨骼view的引用关系
             if(data.parent){
                 bone = this._boneHash[id];
-                // 删除在父骨骼中的引用
-                siblings = bone.parent.children;
-                siblings.splice(siblings.indexOf(bone), 1);
+                // 如果原来有父骨骼，删除在原来的父骨骼中的引用
+                if(bone.parent){
+                    siblings = bone.parent.children;
+                    siblings.splice(siblings.indexOf(bone), 1);
+                }
                 // 引用新的父骨骼
                 bone.parent = this._boneHash[data.parent];
                 // 将自身引用插入到新的父骨骼中
