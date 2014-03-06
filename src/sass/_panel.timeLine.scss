@@ -22,18 +22,17 @@
         position: relative;
     }
 
-    .js-nowVernier {
+    .js-nowVernier,
+    .js-mouseVernier {
         position: absolute;
         top: 0;
         height: 100%;
         width: 2px;
-        background-color: $panel-color;
         margin-left: -1px;
         // 浮于关键帧上方
         z-index: 10;
         // 以防阻碍拖动关键帧
         pointer-events: none;
-        @include prefix(transition, left .15s);
 
         &::before {
             $triangle-height: 6px;
@@ -48,8 +47,35 @@
             border-width: $triangle-height $triangle-width / 2;
             border-style: solid;
             border-color: transparent;
-            border-top-color: $panel-color;
         }
+    }
+
+    .js-nowVernier {
+        $c: $panel-color;
+
+        background-color: $c;
+        @include prefix(transition, left .15s);
+
+        &::before {
+            border-top-color: $c;
+        }
+    }
+
+    .js-mouseVernier {
+        $c: rgba($panel-color, 0.5);
+
+        background-color: $c;
+        display: none;
+
+        &::before {
+            border-top-color: $c;
+        }
+    }
+
+    // 这里逻辑正确的前提是：
+    // `.bd` 的border-box被 `.js-axis` 和 `.js-timeLine` 填满
+    .bd:hover .js-mouseVernier {
+        display: block;
     }
 
     .js-axis {

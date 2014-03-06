@@ -73,9 +73,13 @@ define([
                 }, this);
             }
 
-            // 缓存DOM元素
+            // 缓存DOM元素：
+            // 面板主体
             this._$bd = this.$el.children('.bd');
+            // 表示当前时刻的游标
             this._$nowVernier = this._$bd.children('.js-nowVernier');
+            // 表示鼠标在哪一时刻的游标
+            this._$mouseVernier = this._$bd.children('.js-mouseVernier');
 
             return this;
         },
@@ -195,6 +199,7 @@ define([
             // 因为它们触发的事件有先后关系
             'click .js-timeLine': '_onClickTimeLine',
             'click .js-timeLine, .js-axis': '_onClickTimeLineOrAxis',
+            'mousemove .js-timeLine, .js-axis': '_onMouseMoveTimeLineOrAxis',
             'mousedown .js-keyframe': '_onMouseDownKeyframe'
         },
 
@@ -252,9 +257,9 @@ define([
                 return;
             }
 
-            // 获取 `.js-timeLine` 或 `.js-axis`
+            // 获取所点击的时间轴或坐标轴
             $currentTarget = $($event.currentTarget);
-            // 鼠标到所点击的 `.js-timeLine` 左边的距离
+            // 鼠标到$currentTarget的左边的距离
             left = $event.pageX - $currentTarget.offset().left;
 
             // 将表示当前时刻的游标移到最近的刻度上
@@ -372,6 +377,21 @@ define([
             this.$el.css('user-select', 'text');
 
             this.trigger('updatedKeyframe', keyframeId, {time: time});
+        },
+
+        // 当在.bd中移动鼠标时，显示游标以表示鼠标当前在哪一帧
+        _onMouseMoveTimeLineOrAxis: function($event){
+            var $currentTarget, left;
+
+            // 获取所点击的时间轴或坐标轴
+            $currentTarget = $($event.currentTarget);
+            // 鼠标到$currentTarget的左边的距离
+            left = $event.pageX - $currentTarget.offset().left;
+
+            // 将表示当前时刻的游标移到最近的刻度上
+            left = this._makeNearby(left);
+            this._$mouseVernier
+                .css('left', left + 'px');
         },
 
         _left2Time: function(left){

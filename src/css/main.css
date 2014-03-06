@@ -543,21 +543,18 @@ html, body,
   padding-top: 25px;
   position: relative;
 }
-#js-timeLinePanel .js-nowVernier {
+#js-timeLinePanel .js-nowVernier,
+#js-timeLinePanel .js-mouseVernier {
   position: absolute;
   top: 0;
   height: 100%;
   width: 2px;
-  background-color: #897cbf;
   margin-left: -1px;
   z-index: 10;
   pointer-events: none;
-  -webkit-transition: left 0.15s;
-  -moz-transition: left 0.15s;
-  -ms-transition: left 0.15s;
-  transition: left 0.15s;
 }
-#js-timeLinePanel .js-nowVernier::before {
+#js-timeLinePanel .js-nowVernier::before,
+#js-timeLinePanel .js-mouseVernier::before {
   content: '';
   position: absolute;
   top: -4px;
@@ -568,7 +565,26 @@ html, body,
   border-width: 6px 6.5px;
   border-style: solid;
   border-color: transparent;
+}
+#js-timeLinePanel .js-nowVernier {
+  background-color: #897cbf;
+  -webkit-transition: left 0.15s;
+  -moz-transition: left 0.15s;
+  -ms-transition: left 0.15s;
+  transition: left 0.15s;
+}
+#js-timeLinePanel .js-nowVernier::before {
   border-top-color: #897cbf;
+}
+#js-timeLinePanel .js-mouseVernier {
+  background-color: rgba(137, 124, 191, 0.5);
+  display: none;
+}
+#js-timeLinePanel .js-mouseVernier::before {
+  border-top-color: rgba(137, 124, 191, 0.5);
+}
+#js-timeLinePanel .bd:hover .js-mouseVernier {
+  display: block;
 }
 #js-timeLinePanel .js-axis {
   margin-top: -25px;
