@@ -67,12 +67,13 @@ define([
 
             // 缓存DOM元素：
             this._$emptyWording = this.$('#empty_wording');
-            // 工作区面板的坐标系元素，其位置表示坐标系原点，
+            // 工作区面板的坐标系原点，
+            // 坐标系的原点，骨骼相对于原点定位，骨骼元素是原点的子元素，
             // x轴水平向右，y轴竖直向下，
             // 骨骼的坐标就是相对于这个坐标系而言的
-            this._$coordSys = this.$el.children('.js-coordinate-system');
-            // 覆盖从父类继承的、骨骼的默认DOM容器
-            this._boneDefaultContainer = this._$coordSys.get(0);
+            this._$coordSys = this.$el.find('.js-coordinateSystem');
+            // 覆盖从父类继承的、默认的骨骼容器
+            this._boneDefaultContainer = this._$coordSys.find('.js-boneContainer').get(0);
 
             return this;
         },

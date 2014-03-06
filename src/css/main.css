@@ -172,11 +172,6 @@ html, body,
   width: 76.3924%;
   height: 61.8%;
   border: 0 none;
-  -webkit-box-shadow: inset 0 0 10px black;
-  -moz-box-shadow: inset 0 0 10px black;
-  -ms-box-shadow: inset 0 0 10px black;
-  box-shadow: inset 0 0 10px black;
-  background: transparent url(../img/workspace-bg.png);
 }
 
 #js-boneTreePanel {
@@ -306,6 +301,25 @@ html, body,
   font-size: 0;
 }
 
+#js-workspacePanel {
+  background-color: #fff;
+  position: relative;
+  z-index: 0;
+}
+#js-workspacePanel::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  -webkit-box-shadow: inset 0 0 10px black;
+  -moz-box-shadow: inset 0 0 10px black;
+  -ms-box-shadow: inset 0 0 10px black;
+  box-shadow: inset 0 0 10px black;
+  z-index: -100000000;
+}
 #js-workspacePanel #empty_wording {
   display: table;
   width: 100%;
@@ -328,10 +342,45 @@ html, body,
   vertical-align: middle;
   text-align: center;
 }
-#js-workspacePanel > .js-coordinate-system {
-  position: relative;
+#js-workspacePanel .js-coordinateSystem {
+  position: absolute;
   left: 50%;
   top: 50%;
+  width: 1px;
+  height: 1px;
+}
+#js-workspacePanel .coordinateBg {
+  position: absolute;
+  z-index: -100000001;
+  left: -5000px;
+  top: -5000px;
+  width: 10000px;
+  height: 10000px;
+  background-image: url(../img/workspace-bg.png);
+}
+#js-workspacePanel .coordinateBg::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: rgba(46, 49, 56, 0.5);
+}
+#js-workspacePanel .coordinateBg::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 100%;
+  width: 1px;
+  background-color: rgba(46, 49, 56, 0.5);
+}
+#js-workspacePanel .js-boneContainer {
+  z-index: 0;
+  position: relative;
 }
 #js-workspacePanel .js-bone {
   position: absolute;

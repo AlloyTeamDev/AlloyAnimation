@@ -3,8 +3,30 @@
 @import "_util";
 
 #js-workspacePanel {
-
     $active-color: darken(#26A9E0, 5%);
+    // 用于展示面板内部box-shadow的元素的z-index
+    $panel-shadow-z: -100000000;
+
+    background-color: #fff;
+    // z-index为非auto的定位元素，会创建stacking context
+    position: relative;
+    z-index: 0;
+
+    // 用伪元素做box-shadow，因为直接在#js-workspacePanel元素上做box-shadow的话，
+    // 这个box-shadow会位于#js-workspacePanel所创建的stacking context的最低层，
+    // 会被用于展示工作区背景图的.js-coordinateSystem::before覆盖
+    &::before {
+        content: '';
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        @include prefix(box-shadow, inset 0 0 10px #000);
+        z-index: $panel-shadow-z;
+        //pointer-events: none;
+    }
 
     #empty_wording {
         display: table;
@@ -23,10 +45,55 @@
         text-align: center;
     }
 
-    &>.js-coordinate-system {
-        position: relative;
+    .js-coordinateSystem {
+        position: absolute;
         left: 50%;
         top: 50%;
+        width: 1px;
+        height: 1px;
+    }
+
+    .coordinateBg {
+        $size: 10000px;
+        $axis-line-color: rgba($app-bg, 0.5);
+
+        position: absolute;
+        // 保证工作区背景图要在工作区box-shadow的下方，
+        // 这里有个隐藏的问题：如果用户设置骨骼的z小于此元素的z-index的话，骨骼就会被背景图覆盖
+        // TODO: 用户设置
+        z-index: $panel-shadow-z - 1;
+        left: $size / -2;
+        top: $size / -2;
+        width: $size;
+        height: $size;
+        background-image: url(../img/workspace-bg.png);
+
+        &::before {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: $axis-line-color;
+        }
+        &::after {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 50%;
+            top: 0;
+            height: 100%;
+            width: 1px;
+            background-color: $axis-line-color;
+        }
+    }
+
+    .js-boneContainer {
+        // 创建局部stacking context，使得不管用户设置骨骼的z-index多小，都不会被背景图覆盖
+        z-index: 0;
+        position: relative;
     }
 
     .js-bone {
