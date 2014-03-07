@@ -488,6 +488,8 @@ define([
             this._resetState();
         },
 
+        // 如果鼠标在工作区上滑动鼠标滚轮，缩放骨骼坐标系
+        // TODO: 研究怎么阻止浏览器在按住ctrl且滑动鼠标滚轮时缩放页面
         _onMouseWheel: function($event){
             var event = $event.originalEvent;
             if(event.wheelDelta > 0){
