@@ -1,0 +1,12 @@
+-webkit-transform: scale(0.5, 0.5);
+-webkit-transform: scale(0.5, .5);
+-webkit-transform: scale(0.5,.5);
+-webkit-transform: scale(0.5,5);
+-webkit-transform: scale(5542642532,3);
+-webkit-transform: scale(5542642532.223);
+-webkit-transform: scale(5542642532.223,);
+-webkit-transform: scale(5542642532.223, );
+-webkit-transform: scale(5542642532.223,fa);
+-webkit-transform: scale(5542642532.223,32);
+-webkit-transform: scale(5542642532.223, 32);
+rotate(30deg) rotate(30.1deg)   rotate(30.10deg) rotate(30.10deg) rotate(.10deg) rotate(-.10deg) rotate(-1.10deg) 
