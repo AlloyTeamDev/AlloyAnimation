@@ -21,7 +21,7 @@ define([
             dom: dom,
             lowercase: pre,
             css: '-' + pre + '-',
-            js: pre[0].toUpperCase() + pre.substr(1)
+            js: pre[0].toLowerCase() + pre.substr(1)
         };
     })();
 

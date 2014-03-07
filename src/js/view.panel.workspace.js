@@ -47,6 +47,14 @@ define([
             this._PI_DIV_180 = Math.PI / 180;
             this._stringify = win.JSON.stringify;
             this._rotationAngle = math.rotationAngle;
+
+            // 匹配transform的scale函数的正则表达式
+            this._SCALE_REG = /scale\(((?:-?\d+(?:\.\d\d*)?)|(?:-?\.\d+))(?:,?\s*((?:-?\d+(?:\.\d\d*)?)|(?:-?\.\d+)))?\)/i;
+            // 缩放的最大、最小比例
+            this._ZOOM_MAX = 5;
+            this._ZOOM_MIN = 0.1;
+            // 每次缩放调整的步长
+            this._ZOOM_STEP = 0.1;
         },
 
         /**
@@ -74,6 +82,9 @@ define([
             this._$coordSys = this.$el.find('.js-coordinateSystem');
             // 覆盖从父类继承的、默认的骨骼容器
             this._boneDefaultContainer = this._$coordSys.find('.js-boneContainer').get(0);
+
+            // 初始化骨骼坐标系的缩放比例
+            this._$coordSys.css('transform', 'scale(1,1)');
 
             return this;
         },
@@ -122,7 +133,8 @@ define([
             'mousedown .js-rotate': 'onMouseDownRotatePoint',
             'mousedown .js-joint': 'onMouseDownJoint',
             'mousemove': 'onMouseMove',
-            'mouseup': 'onMouseUp'
+            'mouseup': 'onMouseUp',
+            'mousewheel': '_onMouseWheel'
         },
 
         /**
@@ -476,6 +488,16 @@ define([
             this._resetState();
         },
 
+        _onMouseWheel: function($event){
+            var event = $event.originalEvent;
+            if(event.wheelDelta > 0){
+                this._zoomIn();
+            }
+            else{
+                this._zoomOut();
+            }
+        },
+
         /* Start: 私有成员 */
         // 重置调节骨骼时的状态表示
         _resetState: function(){
@@ -522,6 +544,54 @@ define([
             this._boneChangedData = null;
 
             return this;
+        },
+
+        // 放大骨骼坐标系
+        // TODO: scale变换函数，提供第一个参数就可以了
+        _zoomIn: function(){
+            var $coordSys = this._$coordSys,
+                oldTransform, oldScale,
+                scaleX, scaleY;
+
+            oldTransform = $coordSys.css('transform');
+            oldScale = oldTransform.match(this._SCALE_REG);
+            scaleX = parseFloat(oldScale[1]) + this._ZOOM_STEP;
+            scaleY = parseFloat(oldScale[2]) + this._ZOOM_STEP;
+
+            if(scaleX <= this._ZOOM_MAX){
+                $coordSys.css(
+                    'transform',
+                    'scale(' + scaleX + ',' + scaleY + ')'
+                );
+                console.debug(
+                    'Panel %s zoom in coordinate system to %s',
+                    this.panelName, scaleX
+                );
+            }
+        },
+
+        // 缩小骨骼坐标系
+        _zoomOut: function(){
+            var $coordSys = this._$coordSys,
+                oldTransform, oldScale,
+                scaleX, scaleY;
+
+            oldTransform = $coordSys.css('transform');
+            oldScale = oldTransform.match(this._SCALE_REG);
+            scaleX = parseFloat(oldScale[1]) - this._ZOOM_STEP;
+            scaleY = parseFloat(oldScale[2]) - this._ZOOM_STEP;
+
+            if(scaleX >= this._ZOOM_MIN){
+                $coordSys.css(
+                    'transform',
+                    'scale(' + scaleX + ',' + scaleY + ')'
+                );
+
+                console.debug(
+                    'Panel %s zoom out coordinate system to %s',
+                    this.panelName, scaleX
+                );
+            }
         }
         /* End: 私有成员 */
     });

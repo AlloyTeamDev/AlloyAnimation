@@ -11,6 +11,15 @@ define([
     // cssHooks at this time and will blow away your functions
     // if they exist.
     $(function($){
+        var FLOAT = '(?:-?\d+(?:\.\d\d*)?)|(?:-?\.\d+)',
+            // 将transform的变换函数名映射到相匹配正则，
+            // 有多个变换函数时要保持这里的顺序
+            // TODO: 1)支持更多的变换函数; 2)单元测试
+            // @param {String} $1 旋转的角度（不带单位）
+            ROTATE_FUNC_REG = new RegExp('rotate\((' + FLOAT + ')(?:deg)?\)', 'i'),
+            // @param {String} $1 x方向上的缩放
+            // @param {String} [$2] y方向上的缩放
+            SCALE_FUNC_REG = new RegExp('scale\((' + FLOAT + ')(?:,?\s*(' + FLOAT + '))?\)', 'i');
         var validProp, prop,
             validFormOf = detector.validFormOf;
 
@@ -68,61 +77,59 @@ define([
             get: function(elem, computed, extra){
                 return elem.style[validProp.transform];
             },
-            // TODO:
-            // transform属性中的变换函数的顺序会对变换产生影响，
-            // 不要改变变换函数的顺序
-            set: function(elem, newVal){
+            /**
+            TODO:
+            transform属性中的变换函数的顺序会对变换产生影响，
+            不要改变变换函数的顺序
+            @example set(elem, options)
+                对于新值中的每一个变换函数：
+                若存在于旧值中，替换旧值中的这个变换函数；
+                若不存在，按 `options.funcOrder` 中指定的顺序添加进去
+                @param {DOMElement} elem
+                @param {Object} options
+                    @param {String} options.val
+                        要设置成的新值
+                        TODO: 支持新值中有多个变换函数的情况
+                    @param {Array} options.funcOrder
+                        变换函数名组成的数组
+                        TODO: 有待支持此参数
+            @example set(elem, newVal)
+                @param {DOMElement} elem
+                @param {String} newVal 要设置的新值
+            **/
+            set: function(elem){
                 var MATCHER = /^(\w)+\(.+\)$/i,
-                    SPLITER = ' ';
+                    SPLITER = ') ';
                 var prop = validProp.transform,
-                    val, i, j, funcName;
+                    val, valMatched,
+                    newVal, newValMached;
 
-                // 如果新值为matrix矩阵或 `none` ，直接设置
-                if( newVal.search(/(matrix)|(none)/i) !== -1
-                ){
+                newVal = (typeof arguments[1] === 'string')?
+                    arguments[1]:
+                    arguments[1].val;
+
+                // 如果新值为matrix或 `none` ，直接设置新值
+                if( newVal.search(/(matrix)|(none)/i) !== -1 ){
                     elem.style[prop] = newVal;
                     return;
                 }
 
+                // TODO: 考虑这里是不是应该使用 `getComputedStyle`
                 val = elem.style[prop];
+                // 如果旧值不存在，直接设置新值
                 if(val){
-                    val = val.trim();
-                    if(val === 'none'){
-                        elem.style[prop] = newVal;
-                        return;
-                    }
-
-                    // 如果旧值中，存在一个变换函数与新值中的某个变换函数同名，
-                    // 则移除旧值中的这个变换函数，
-                    // 并将新值中相应的变换函数移出，添加到旧值末尾。
-                    // 添加到末尾，有利于在连续设置同一个变换函数时尽快遍历到该函数，而当新值中没有变换函数时，即可提前结束遍历
-                    newVal = newVal.split(SPLITER);
-                    val = val.split(SPLITER);
-                    i = val.length;
-                    while(i--){
-                        if( !(funcName = val[i].match(MATCHER)[1]) ) continue;
-                        j = newVal.length;
-                        while(j--){
-                            if(newVal[j].indexOf(funcName) === -1) continue;
-                            val.splice(i, 1);
-                            val.push(newVal.splice(j, 1));
-                            break;
-                        }
-                        if(!newVal.length) break;
-                    }
-
-                    // 如果新值中还有变换函数，添加到旧值末尾
-                    if(newVal.length){
-                        val.concat(newVal);
-                    }
-
-                    // 此时旧值就是新值了
-                    elem.style[prop] = val;
-                }
-                else{
                     elem.style[prop] = newVal;
                     return;
                 }
+                val = val.trim();
+                // 如果旧值为 `none` ，直接设置新值
+                if(val === 'none'){
+                    elem.style[prop] = newVal;
+                    return;
+                }
+
+                // TODO: 新值中有多个变换函数的情况，还有待支持
+                elem.style[prop] = newVal;
             }
         };
 
