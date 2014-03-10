@@ -28,6 +28,7 @@ define([
     PANEL_NAME_2_FLAG[timeLinePanelView.panelName] = 'hasUpdatedTimeline';
     PANEL_NAME_2_FLAG[actionPanelView.panelName] = 'hasUpdatedAction';
 
+    // TODO: 这些collection放在 `window` 下只是为了方便调试，发布的时候记得去掉。谁有空给这个项目配个grunt处理这部分逻辑呀？
     // 整个WebApp中所有关键帧的collection
     window.keyframeColl = keyframeColl = new KeyframeCollection();
     // 整个WebApp中所有骨骼的collection
