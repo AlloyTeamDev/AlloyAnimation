@@ -5,7 +5,7 @@
 #js-workspacePanel {
     $active-color: darken(#26A9E0, 5%);
     // 用于展示面板内部box-shadow的元素的z-index
-    $panel-shadow-z: -100000000;
+    $panel-shadow-z: 1;
 
     background-color: #fff;
     // z-index为非auto的定位元素，会创建stacking context
@@ -25,7 +25,15 @@
         top: 0;
         @include prefix(box-shadow, inset 0 0 10px #000);
         z-index: $panel-shadow-z;
-        //pointer-events: none;
+        // DOUBT: 
+        // 不知道为什么，即使这个伪元素跟坐标系背景在一个局部stacking context中，
+        // 且伪元素的z-index较小，伪元素还是在坐标系背景的下方，之前有在Chrome下成功过，
+        // 但后来不记得改了什么又失败了，期间Chrome有升级，但Chrome和FF都是失败，不确定是Chrome升级导致的
+        // TODO: 
+        // 1) checkout以前成功的版本，排查失败的原因
+        // 2) 确认stacking context的创建机制，写测试例子
+        // 目前先用 `pointer-events` 属性兼容
+        pointer-events: none;
     }
 
     #empty_wording {
@@ -92,7 +100,7 @@
 
     .js-boneContainer {
         // 创建局部stacking context，使得不管用户设置骨骼的z-index多小，都不会被背景图覆盖
-        z-index: 0;
+        z-index: $panel-shadow-z + 1;
         position: relative;
     }
 
