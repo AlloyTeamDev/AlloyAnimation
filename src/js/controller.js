@@ -724,8 +724,12 @@ define([
     @param {Number} time 指定帧的时间
     @param {String} bone 指定骨骼的id
     @param {String} action 指定动作的id
+    @param {Object} [options]
+        以下参数表示各个面板的视图是否已更新，已更新的不必再次更新
+        @param {Boolean} [options.hasUpdatedBoneProp=false]
+        @param {Boolean} [options.hasUpdatedWorkspace=false]
     **/
-    function displayBoneData(time, bone, action){
+    function displayBoneData(time, bone, action, options){
         var fields, frameData, boneData;
 
         fields = {
@@ -738,7 +742,10 @@ define([
 
         // TODO: 先判断相应的骨骼model是否存在，再 `toJSON()`
         boneData = _.extend( frameData, boneColl.get(bone).toJSON() );
-        bonePropPanelView.updateProp(boneData);
-        workspacePanelView.updateBone(bone, boneData);
+
+        options = options || {};
+
+        !options.hasUpdatedBoneProp && bonePropPanelView.updateProp(boneData);
+        !options.hasUpdatedWorkspace && workspacePanelView.updateBone(bone, boneData);
     }
 });
