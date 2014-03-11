@@ -538,7 +538,7 @@ define([
             var frameData, boneModel;
 
             options = options || {};
-            options.silent = true;
+            options.silentChangedActiveBone = true;
 
             console.debug(
                 'Controller receive that panel %s changed active bone to %s, and sync active bone to other panels',

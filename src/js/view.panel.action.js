@@ -52,7 +52,8 @@ define([
         将激活动作切换为指定的动作
         @param {String} id
         @param {Object} [options]
-            @param {Boolean} [options.silent=false] 是否不触发通知事件
+            @param {Boolean} [options.silentChangedActiveAction=false]
+                不触发 `changedActiveBone` 事件
         **/
         changeActiveAction: function(id, options){
             var action;
@@ -65,7 +66,7 @@ define([
                     .find('#js-action-' + action.id)
                     .addClass('js-active');
 
-                if(!options.silent){
+                if(!options.silentChangedActiveAction){
                     this.trigger('changedActiveAction', id, options);
                 }
             }
