@@ -116,12 +116,13 @@ define([
 
         /**
         按 **后序遍历** 的顺序删除子骨骼和此骨骼。
-        注意：此方法不会删除此骨骼在其父骨骼中的引用，更不会删除此骨骼在其它地方的引用
+        注意：此方法还会删除此骨骼在父骨骼中的引用（即父骨骼对此骨骼的引用）
         @return this
         **/
         remove: function(){
-            var l, children, child, parent, brothers,
-                removed = [];
+            var l, children, child,
+                removed = [],
+                parent, siblings;
 
             // 如果有子骨骼，先递归删除子骨骼
             children = this.children;
@@ -132,7 +133,12 @@ define([
                 removed.push(child.remove());
             }
 
-            // 删除对父骨骼的引用
+            // 删除父骨骼对此骨骼的引用
+            if( (parent = this.parent) ){
+                siblings = parent.children;
+                siblings.splice(siblings.indexOf(this), 1);
+            }
+            // 删除此骨骼对父骨骼的引用
             delete this.parent;
 
             // 解除监听DOM事件，删除DOM元素，解除绑定在view实例上的事件

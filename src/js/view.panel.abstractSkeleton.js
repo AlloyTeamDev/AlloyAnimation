@@ -82,24 +82,17 @@ define([
         @return this
         **/
         removeBone: function(id, options){
-            var bone = this._boneHash[id],
-                parent, siblings;
+            var bone = this._boneHash[id];
 
             if(!bone){
                 console.warn(
                     'Panel %s remove bone %s that does not exist in this panel',
-                    this.panel, id
+                    this.panelName, id
                 );
             }
 
             // 删除指定的骨骼及其子骨骼
             bone.remove();
-
-            // 删除指定骨骼在其父骨骼中的引用
-            if( (parent = bone.parent) ){
-                siblings = parent.children;
-                siblings.splice(siblings.indexOf(bone), 1);
-            }
 
             // 删除此骨架对指定骨骼的引用
             delete this._boneHash[id];
