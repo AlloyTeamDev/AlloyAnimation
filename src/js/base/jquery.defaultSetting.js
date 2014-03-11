@@ -11,15 +11,16 @@ define([
     // cssHooks at this time and will blow away your functions
     // if they exist.
     $(function($){
-        var FLOAT = '(?:-?\d+(?:\.\d\d*)?)|(?:-?\.\d+)',
+        var // 有符浮点数的正则，匹配例子：-1, -1.1, -.1, -1.10
+            FLOAT = '(?:-?\\d+(?:\\.\\d\\d*)?)|(?:-?\\.\\d+)',
             // 将transform的变换函数名映射到相匹配正则，
             // 有多个变换函数时要保持这里的顺序
             // TODO: 1)支持更多的变换函数; 2)单元测试
             // @param {String} $1 旋转的角度（不带单位）
-            ROTATE_FUNC_REG = new RegExp('rotate\((' + FLOAT + ')(?:deg)?\)', 'i'),
+            ROTATE_FUNC_REG = new RegExp('rotate\\((' + FLOAT + ')(?:deg)?\\)', 'i'),
             // @param {String} $1 x方向上的缩放
             // @param {String} [$2] y方向上的缩放
-            SCALE_FUNC_REG = new RegExp('scale\((' + FLOAT + ')(?:,?\s*(' + FLOAT + '))?\)', 'i');
+            SCALE_FUNC_REG = new RegExp('scale\\((' + FLOAT + ')(?:,?\\s*(' + FLOAT + '))?\\)', 'i');
         var validProp, prop,
             validFormOf = detector.validFormOf;
 
@@ -78,9 +79,6 @@ define([
                 return elem.style[validProp.transform];
             },
             /**
-            TODO:
-            transform属性中的变换函数的顺序会对变换产生影响，
-            不要改变变换函数的顺序
             @example set(elem, options)
                 对于新值中的每一个变换函数：
                 若存在于旧值中，替换旧值中的这个变换函数；
@@ -88,25 +86,27 @@ define([
                 @param {DOMElement} elem
                 @param {Object} options
                     @param {String} options.val
-                        要设置成的新值
-                        TODO: 支持新值中有多个变换函数的情况
-                    @param {Array} options.funcOrder
-                        变换函数名组成的数组
+                        要设置成的新值，最多包括一个变换函数，或者是 `none` 或 `matrix` 。
+                        如果旧值中有同名的变换函数，替换之，且顺序不变；
+                        如果没有，将新值插入到最后。
+                        如果需要保证变换函数的顺序，请使用参数 `options.funcOrder`
+                    @param {Array} [options.funcOrder]
+                        变换函数名组成的数组，表示所设置的变换函数（如果需要设置）要按照这个顺序来设置。
                         TODO: 有待支持此参数
             @example set(elem, newVal)
                 @param {DOMElement} elem
-                @param {String} newVal 要设置的新值
+                @param {String} newVal 要设置的新值，直接覆盖整个 `transform` 属性
             **/
             set: function(elem){
-                var MATCHER = /^(\w)+\(.+\)$/i,
-                    SPLITER = ') ';
                 var prop = validProp.transform,
-                    val, valMatched,
-                    newVal, newValMached;
+                    val, newVal;
 
-                newVal = (typeof arguments[1] === 'string')?
-                    arguments[1]:
-                    arguments[1].val;
+                if(typeof arguments[1] === 'string'){
+                    elem.style[prop] = arguments[1];
+                    return;
+                }
+
+                newVal = arguments[1].val;
 
                 // 如果新值为matrix或 `none` ，直接设置新值
                 if( newVal.search(/(matrix)|(none)/i) !== -1 ){
@@ -117,7 +117,7 @@ define([
                 // TODO: 考虑这里是不是应该使用 `getComputedStyle`
                 val = elem.style[prop];
                 // 如果旧值不存在，直接设置新值
-                if(val){
+                if(!val){
                     elem.style[prop] = newVal;
                     return;
                 }
@@ -128,8 +128,23 @@ define([
                     return;
                 }
 
-                // TODO: 新值中有多个变换函数的情况，还有待支持
-                elem.style[prop] = newVal;
+                [
+                    ROTATE_FUNC_REG,
+                    SCALE_FUNC_REG
+                ].forEach(function(FUNC_REG){
+                    var valMatched, isInVal;
+                    valMatched = newVal.match(FUNC_REG);
+                    if(valMatched && valMatched[0]){
+                        isInVal = false;
+                        val = val.replace(FUNC_REG, function(){
+                            isInVal = true;
+                            return valMatched[0];
+                        });
+                        !isInVal && (val += ' ' + valMatched[0]);
+                    }
+                });
+                // 此时 `val` 已经成了新值
+                elem.style[prop] = val;
             }
         };
 
