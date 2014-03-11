@@ -304,7 +304,7 @@ define([
             var keyframeId = keyframeModel.get('id'),
                 time, bone, action;
             console.debug(
-                'Controller receive that keyframe model %s is removed, and remove corresponding view',
+                'Controller receive that keyframe %s is removed, and remove corresponding view',
                 keyframeId
             );
             timeLinePanelView.removeKeyframe(keyframeId);
@@ -557,6 +557,7 @@ define([
                     bone: boneId,
                     time: timeLinePanelView.now
                 });
+                if(!frameData) return;
                 boneModel = boneColl.get(boneId);
 
                 bonePropPanelView.changeBoneTo(
@@ -719,21 +720,24 @@ define([
 
     /**
     将指定的混合骨骼数据（由指定的帧和骨骼混合而得）展示到骨骼属性面板和工作区面板。
+    如果指定的混合骨骼数据不存在，什么也不做
     @param {Number} time 指定帧的时间
     @param {String} bone 指定骨骼的id
     @param {String} action 指定动作的id
     **/
     function displayBoneData(time, bone, action){
-        var boneData;
-        boneData = _.extend(
-            keyframeColl.getFrameData({
-                time: time,
-                bone: bone,
-                action: action
-            }),
-            boneColl.get(bone).toJSON()
-        );
+        var fields, frameData, boneData;
 
+        fields = {
+            time: time,
+            bone: bone,
+            action: action
+        };
+        frameData = keyframeColl.getFrameData(fields);
+        if(!frameData) return;
+
+        // TODO: 先判断相应的骨骼model是否存在，再 `toJSON()`
+        boneData = _.extend( frameData, boneColl.get(bone).toJSON() );
         bonePropPanelView.updateProp(boneData);
         workspacePanelView.updateBone(bone, boneData);
     }
