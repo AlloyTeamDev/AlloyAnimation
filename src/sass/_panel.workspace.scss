@@ -6,6 +6,10 @@
     $active-color: darken(#26A9E0, 5%);
     // 用于展示面板内部box-shadow的元素的z-index
     $panel-shadow-z: 1;
+    $bone-ctn-z: $panel-shadow-z + 1;
+    $scale-util-height: 20px;
+    $scale-util-z: $bone-ctn-z + 1;
+    $scale-util-color: $app-bg;
 
     background-color: #fff;
     // z-index为非auto的定位元素，会创建stacking context
@@ -51,6 +55,57 @@
         display: table-cell;
         vertical-align: middle;
         text-align: center;
+    }
+
+    .js-coordSysScaleUtil {
+        $pos: 20px;
+
+        position: absolute;
+        left: $pos;
+        top: $pos;
+        height: $scale-util-height;
+        z-index: $panel-shadow-z + 2;
+        color: $scale-util-color;
+        @extend .clearfix;
+        border: 1px solid $scale-util-color;
+        @include prefix(border-radius, $border-radius);
+    }
+    .js-zoomOut,
+    .js-currentScale,
+    .js-zoomIn {
+        padding: 0 5px;
+        float: left;
+        height: $scale-util-height;
+        line-height: $scale-util-height;
+    }
+    .js-zoomOut,
+    .js-zoomIn {
+        font-size: 16px;
+        cursor: pointer;
+        vertical-align: baseline;
+    }
+    .js-currentScale {
+        $unit-width: 10px;
+        border-left: 1px solid $scale-util-color;
+        border-right: 1px solid $scale-util-color;
+        font-size: 13px;
+
+        &::after {
+            content: '%';
+            display: inline;
+            padding-left: 1px;
+        }
+    }
+    .js-reset {
+        $w: 30px;
+        position: absolute;
+        right: ($w + 10px) * -1;
+        height: $scale-util-height;
+        width: 30px;
+        @include prefix(box-sizing, border-box);
+        border: 1px solid $scale-util-color;
+        @include prefix(border-radius, $border-radius);
+        cursor: pointer;
     }
 
     .js-coordinateSystem {

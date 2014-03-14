@@ -1,5 +1,5 @@
 @charset "UTF-8";
-.clearfix:after, #js-panelWrap:after {
+.clearfix:after, #js-panelWrap:after, #js-workspacePanel .js-coordSysScaleUtil:after {
   content: '';
   display: block;
   overflow: hidden;
@@ -291,7 +291,7 @@ html, body,
   line-height: 13px;
 }
 
-.clearfix:after, #js-panelWrap:after {
+.clearfix:after, #js-panelWrap:after, #js-workspacePanel .js-coordSysScaleUtil:after {
   content: '';
   display: block;
   overflow: hidden;
@@ -342,6 +342,59 @@ html, body,
   display: table-cell;
   vertical-align: middle;
   text-align: center;
+}
+#js-workspacePanel .js-coordSysScaleUtil {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  height: 20px;
+  z-index: 3;
+  color: #2e3138;
+  border: 1px solid #2e3138;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  border-radius: 5px;
+}
+#js-workspacePanel .js-zoomOut,
+#js-workspacePanel .js-currentScale,
+#js-workspacePanel .js-zoomIn {
+  padding: 0 5px;
+  float: left;
+  height: 20px;
+  line-height: 20px;
+}
+#js-workspacePanel .js-zoomOut,
+#js-workspacePanel .js-zoomIn {
+  font-size: 16px;
+  cursor: pointer;
+  vertical-align: baseline;
+}
+#js-workspacePanel .js-currentScale {
+  border-left: 1px solid #2e3138;
+  border-right: 1px solid #2e3138;
+  font-size: 13px;
+}
+#js-workspacePanel .js-currentScale::after {
+  content: '%';
+  display: inline;
+  padding-left: 1px;
+}
+#js-workspacePanel .js-reset {
+  position: absolute;
+  right: -40px;
+  height: 20px;
+  width: 30px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 1px solid #2e3138;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 #js-workspacePanel .js-coordinateSystem {
   position: absolute;

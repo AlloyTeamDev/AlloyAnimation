@@ -13,7 +13,7 @@
         height: $item-height;
         line-height: $item-height;
         padding: 0 15px;
-        @include prefix(border-radius, 5px);
+        @include prefix(border-radius, $border-radius);
         @include prefix(box-sizing, border-box);
         border: 1px solid transparent;
         outline: 0 none;
