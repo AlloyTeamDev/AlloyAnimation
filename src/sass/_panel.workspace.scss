@@ -80,6 +80,7 @@
         @extend .clearfix;
         border: 1px solid $scale-util-color;
         @include prefix(border-radius, $border-radius);
+        @include prefix(user-select, none);
     }
     .js-zoomOut,
     .js-currentScale,
@@ -100,6 +101,7 @@
         border-left: 1px solid $scale-util-color;
         border-right: 1px solid $scale-util-color;
         font-size: 13px;
+        cursor: pointer;
 
         &::after {
             content: '%';

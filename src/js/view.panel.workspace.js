@@ -80,6 +80,7 @@ define([
             // x轴水平向右，y轴竖直向下，
             // 骨骼的坐标就是相对于这个坐标系而言的
             this._$coordSys = this.$el.find('.js-coordinateSystem');
+            this._$currentScale = this.$el.find('.js-currentScale');
             // 覆盖从父类继承的、默认的骨骼容器
             this._boneDefaultContainer = this._$coordSys.find('.js-boneContainer').get(0);
 
@@ -134,7 +135,10 @@ define([
             'mousedown .js-joint': 'onMouseDownJoint',
             'mousemove': 'onMouseMove',
             'mouseup': 'onMouseUp',
-            'mousewheel': '_onMouseWheel'
+            'mousewheel': '_onMouseWheel',
+            'click .js-zoomOut': '_onClickZoomOut',
+            'click .js-zoomIn': '_onClickZoomIn',
+            'click .js-reset': '_onClickScaleReset'
         },
 
         /**
@@ -500,6 +504,23 @@ define([
             }
         },
 
+        // 当点击骨骼坐标系的放大按钮时，放大骨骼坐标系
+        _onClickZoomOut: function(){
+            this._zoomOut();
+        },
+
+        // 当点击骨骼坐标系的缩小按钮时，缩小骨骼坐标系
+        _onClickZoomIn: function(){
+            this._zoomIn();
+        },
+
+        // 当点击骨骼坐标系的缩放重置按钮时，重置骨骼坐标系的缩放
+        // TODO: scale变换函数，提供第一个参数就可以了
+        _onClickScaleReset: function(){
+            this._$coordSys.css('transform', 'scale(1,1)');
+            this._$currentScale.text('100');
+        }, 
+
         /* Start: 私有成员 */
         // 重置调节骨骼时的状态表示
         _resetState: function(){
@@ -548,7 +569,8 @@ define([
             return this;
         },
 
-        // 放大骨骼坐标系
+        // 放大骨骼坐标系。
+        // 如果已经放大到最大值，就什么也不做。
         // TODO: scale变换函数，提供第一个参数就可以了
         _zoomIn: function(){
             var $coordSys = this._$coordSys,
@@ -565,6 +587,7 @@ define([
                     'transform',
                     'scale(' + scaleX + ',' + scaleY + ')'
                 );
+                this._$currentScale.text(parseInt(scaleX * 100));
                 console.debug(
                     'Panel %s zoom in coordinate system to %s',
                     this.panelName, scaleX
@@ -572,7 +595,8 @@ define([
             }
         },
 
-        // 缩小骨骼坐标系
+        // 缩小骨骼坐标系。
+        // 如果已经缩小到最小值，就什么也不做
         _zoomOut: function(){
             var $coordSys = this._$coordSys,
                 oldTransform, oldScale,
@@ -588,7 +612,7 @@ define([
                     'transform',
                     'scale(' + scaleX + ',' + scaleY + ')'
                 );
-
+                this._$currentScale.text(parseInt(scaleX * 100));
                 console.debug(
                     'Panel %s zoom out coordinate system to %s',
                     this.panelName, scaleX

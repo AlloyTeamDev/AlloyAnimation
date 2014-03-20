@@ -355,6 +355,10 @@ html, body,
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
   border-radius: 5px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 #js-workspacePanel .js-zoomOut,
 #js-workspacePanel .js-currentScale,
@@ -374,6 +378,7 @@ html, body,
   border-left: 1px solid #393d46;
   border-right: 1px solid #393d46;
   font-size: 13px;
+  cursor: pointer;
 }
 #js-workspacePanel .js-currentScale::after {
   content: '%';
