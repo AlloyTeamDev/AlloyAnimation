@@ -349,8 +349,8 @@ html, body,
   top: 20px;
   height: 20px;
   z-index: 3;
-  color: #2e3138;
-  border: 1px solid #2e3138;
+  color: #393d46;
+  border: 1px solid #393d46;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -371,14 +371,24 @@ html, body,
   vertical-align: baseline;
 }
 #js-workspacePanel .js-currentScale {
-  border-left: 1px solid #2e3138;
-  border-right: 1px solid #2e3138;
+  border-left: 1px solid #393d46;
+  border-right: 1px solid #393d46;
   font-size: 13px;
 }
 #js-workspacePanel .js-currentScale::after {
   content: '%';
   display: inline;
   padding-left: 1px;
+}
+#js-workspacePanel .js-reset::before, #js-workspacePanel .js-reset::after,
+#js-workspacePanel .reset-icon::before,
+#js-workspacePanel .reset-icon::after {
+  content: '';
+  position: absolute;
+  display: block;
+  border: 2px solid #393d46;
+  width: 4px;
+  height: 2px;
 }
 #js-workspacePanel .js-reset {
   position: absolute;
@@ -389,12 +399,43 @@ html, body,
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
-  border: 1px solid #2e3138;
+  border: 1px solid #393d46;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
   border-radius: 5px;
   cursor: pointer;
+}
+#js-workspacePanel .js-reset::before {
+  left: 6px;
+  top: 3px;
+  border-bottom: 0 none;
+  border-right: 0 none;
+}
+#js-workspacePanel .js-reset::after {
+  right: 6px;
+  top: 3px;
+  border-bottom: 0 none;
+  border-left: 0 none;
+}
+#js-workspacePanel .reset-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+#js-workspacePanel .reset-icon::before {
+  left: 6px;
+  bottom: 3px;
+  border-top: 0 none;
+  border-right: 0 none;
+}
+#js-workspacePanel .reset-icon::after {
+  right: 6px;
+  bottom: 3px;
+  border-top: 0 none;
+  border-left: 0 none;
 }
 #js-workspacePanel .js-coordinateSystem {
   position: absolute;

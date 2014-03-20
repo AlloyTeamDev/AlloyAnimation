@@ -3,13 +3,19 @@
 @import "_util";
 
 #js-workspacePanel {
+    // 坐标轴线条的颜色
+    $line-color: rgba($app-bg, 0.5);
     $active-color: darken(#26A9E0, 5%);
     // 用于展示面板内部box-shadow的元素的z-index
     $panel-shadow-z: 1;
     $bone-ctn-z: $panel-shadow-z + 1;
     $scale-util-height: 20px;
     $scale-util-z: $bone-ctn-z + 1;
-    $scale-util-color: $app-bg;
+    // 缩放坐标轴的按钮的颜色
+    $scale-util-color: lighten($app-bg, 5%);
+    $scale-util-reset-width: 30px;
+    $scale-util-reset-icon-space1: 6px;
+    $scale-util-reset-icon-space2: 3px;
 
     background-color: #fff;
     // z-index为非auto的定位元素，会创建stacking context
@@ -96,16 +102,60 @@
             padding-left: 1px;
         }
     }
+    .js-reset,
+    .reset-icon {
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            display: block;
+            border: 2px solid $scale-util-color;
+            width: 4px;
+            height: 2px;
+        }
+    }
     .js-reset {
-        $w: 30px;
         position: absolute;
-        right: ($w + 10px) * -1;
+        right: ($scale-util-reset-width + 10px) * -1;
         height: $scale-util-height;
-        width: 30px;
+        width: $scale-util-reset-width;
         @include prefix(box-sizing, border-box);
         border: 1px solid $scale-util-color;
         @include prefix(border-radius, $border-radius);
         cursor: pointer;
+
+        &::before {
+            left: $scale-util-reset-icon-space1;
+            top: $scale-util-reset-icon-space2;
+            border-bottom: 0 none;
+            border-right: 0 none;
+        }
+        &::after {
+            right: $scale-util-reset-icon-space1;
+            top: $scale-util-reset-icon-space2;
+            border-bottom: 0 none;
+            border-left: 0 none;
+        }
+    }
+    .reset-icon {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+
+        &::before {
+            left: $scale-util-reset-icon-space1;
+            bottom: $scale-util-reset-icon-space2;
+            border-top: 0 none;
+            border-right: 0 none;
+        }
+        &::after {
+            right: $scale-util-reset-icon-space1;
+            bottom: $scale-util-reset-icon-space2;
+            border-top: 0 none;
+            border-left: 0 none;
+        }
     }
 
     .js-coordinateSystem {
@@ -118,7 +168,6 @@
 
     .coordinateBg {
         $size: 10000px;
-        $axis-line-color: rgba($app-bg, 0.5);
 
         position: absolute;
         // 保证工作区背景图要在工作区box-shadow的下方，
@@ -139,7 +188,7 @@
             left: 0;
             width: 100%;
             height: 1px;
-            background-color: $axis-line-color;
+            background-color: $line-color;
         }
         &::after {
             content: '';
@@ -149,7 +198,7 @@
             top: 0;
             height: 100%;
             width: 1px;
-            background-color: $axis-line-color;
+            background-color: $line-color;
         }
     }
 
