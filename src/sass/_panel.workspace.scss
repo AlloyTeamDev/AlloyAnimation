@@ -8,13 +8,18 @@
     $active-color: darken(#26A9E0, 5%);
     // 用于展示面板内部box-shadow的元素的z-index
     $panel-shadow-z: 1;
+    // 骨骼容器的z-index
     $bone-ctn-z: $panel-shadow-z + 1;
+
+    // 坐标系的缩放按钮：
     $scale-util-height: 20px;
     $scale-util-z: $bone-ctn-z + 1;
-    // 缩放坐标轴的按钮的颜色
     $scale-util-color: lighten($app-bg, 5%);
+    // 重置按钮的宽度
     $scale-util-reset-width: 30px;
+    // 重置按钮中的icon到左右两边的宽度
     $scale-util-reset-icon-space1: 6px;
+    // 重置按钮中的icon到上下两边的宽度
     $scale-util-reset-icon-space2: 3px;
 
     background-color: #fff;
@@ -116,10 +121,10 @@
     }
     .js-reset {
         position: absolute;
+        top: -1px;
         right: ($scale-util-reset-width + 10px) * -1;
         height: $scale-util-height;
         width: $scale-util-reset-width;
-        @include prefix(box-sizing, border-box);
         border: 1px solid $scale-util-color;
         @include prefix(border-radius, $border-radius);
         cursor: pointer;
