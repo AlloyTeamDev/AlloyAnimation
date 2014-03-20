@@ -86,18 +86,20 @@
     .js-currentScale,
     .js-zoomIn {
         padding: 0 5px;
+        text-align: center;
         float: left;
         height: $scale-util-height;
         line-height: $scale-util-height;
     }
     .js-zoomOut,
     .js-zoomIn {
+        width: 0.8em;
         font-size: 16px;
         cursor: pointer;
         vertical-align: baseline;
     }
     .js-currentScale {
-        $unit-width: 10px;
+        width: 3em;
         border-left: 1px solid $scale-util-color;
         border-right: 1px solid $scale-util-color;
         font-size: 13px;
