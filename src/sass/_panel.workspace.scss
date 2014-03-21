@@ -175,8 +175,8 @@
         height: 1px;
     }
 
-    .coordinateBg {
-        $size: 10000px;
+    .js-coordinateBg {
+        $size: 100000px;
 
         position: absolute;
         // 保证工作区背景图要在工作区box-shadow的下方，
@@ -188,6 +188,8 @@
         width: $size;
         height: $size;
         background-image: url(../img/workspace-bg.png);
+        // 表示骨骼坐标系可以拖拽移动
+        cursor: grab;
 
         &::before {
             content: '';

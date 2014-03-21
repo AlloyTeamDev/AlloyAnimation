@@ -449,16 +449,17 @@ html, body,
   width: 1px;
   height: 1px;
 }
-#js-workspacePanel .coordinateBg {
+#js-workspacePanel .js-coordinateBg {
   position: absolute;
   z-index: 0;
-  left: -5000px;
-  top: -5000px;
-  width: 10000px;
-  height: 10000px;
+  left: -50000px;
+  top: -50000px;
+  width: 100000px;
+  height: 100000px;
   background-image: url(../img/workspace-bg.png);
+  cursor: grab;
 }
-#js-workspacePanel .coordinateBg::before {
+#js-workspacePanel .js-coordinateBg::before {
   content: '';
   display: block;
   position: absolute;
@@ -468,7 +469,7 @@ html, body,
   height: 1px;
   background-color: rgba(46, 49, 56, 0.5);
 }
-#js-workspacePanel .coordinateBg::after {
+#js-workspacePanel .js-coordinateBg::after {
   content: '';
   display: block;
   position: absolute;

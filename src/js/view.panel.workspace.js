@@ -43,6 +43,7 @@ define([
             this._sin = Math.sin;
             this._atan = Math.atan;
             this._pow = Math.pow;
+            this._round = Math.round;
             this._180_DIV_PI = 180 / Math.PI;
             this._PI_DIV_180 = Math.PI / 180;
             this._stringify = win.JSON.stringify;
@@ -138,7 +139,8 @@ define([
             'mousewheel': '_onMouseWheel',
             'click .js-zoomOut': '_onClickZoomOut',
             'click .js-zoomIn': '_onClickZoomIn',
-            'click .js-reset': '_onClickScaleReset'
+            'click .js-reset': '_onClickScaleReset',
+            'mousedown .js-coordinateBg': '_onMouseDownCoordBg'
         },
 
         /**
@@ -519,7 +521,14 @@ define([
         _onClickScaleReset: function(){
             this._$coordSys.css('transform', 'scale(1,1)');
             this._$currentScale.text('100');
-        }, 
+            console.debug('Panel %s scale coordinate system to 1', this.panelName);
+        },
+
+        // 当在骨骼坐标系的背景上按下鼠标时，兼容事件 `mousemove` 和 `mouseup` ，
+        // 以实现移动骨骼坐标系
+        _onMouseDownCoordBg: function($event){
+
+        },
 
         /* Start: 私有成员 */
         // 重置调节骨骼时的状态表示
@@ -579,8 +588,8 @@ define([
 
             oldTransform = $coordSys.css('transform');
             oldScale = oldTransform.match(this._SCALE_REG);
-            scaleX = parseFloat(oldScale[1]) + this._ZOOM_STEP;
-            scaleY = parseFloat(oldScale[2]) + this._ZOOM_STEP;
+            scaleX = this._round((parseFloat(oldScale[1]) + this._ZOOM_STEP) * 10) / 10;
+            scaleY = this._round((parseFloat(oldScale[2]) + this._ZOOM_STEP) * 10) / 10;
 
             if(scaleX <= this._ZOOM_MAX){
                 $coordSys.css(
@@ -604,8 +613,8 @@ define([
 
             oldTransform = $coordSys.css('transform');
             oldScale = oldTransform.match(this._SCALE_REG);
-            scaleX = parseFloat(oldScale[1]) - this._ZOOM_STEP;
-            scaleY = parseFloat(oldScale[2]) - this._ZOOM_STEP;
+            scaleX = this._round((parseFloat(oldScale[1]) - this._ZOOM_STEP) * 10) / 10;
+            scaleY = this._round((parseFloat(oldScale[2]) - this._ZOOM_STEP) * 10) / 10;
 
             if(scaleX >= this._ZOOM_MIN){
                 $coordSys.css(
