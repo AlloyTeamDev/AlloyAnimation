@@ -189,8 +189,11 @@
         height: $size;
         background-image: url(../img/workspace-bg.png);
         // 表示骨骼坐标系可以拖拽移动
-        cursor: grab;
+        @include prefixVal(cursor, grab);
 
+        &.js-grabbing {
+            @include prefixVal(cursor, grabbing);
+        }
         &::before {
             content: '';
             display: block;

@@ -457,7 +457,16 @@ html, body,
   width: 100000px;
   height: 100000px;
   background-image: url(../img/workspace-bg.png);
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  cursor: -ms-grab;
   cursor: grab;
+}
+#js-workspacePanel .js-coordinateBg.js-grabbing {
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+  cursor: -ms-grabbing;
+  cursor: grabbing;
 }
 #js-workspacePanel .js-coordinateBg::before {
   content: '';

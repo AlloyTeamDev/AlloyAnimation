@@ -32,9 +32,21 @@ define([
             // 复用父类的initialize方法
             WorkspacePanel.__super__.initialize.apply(this, arguments);
 
+            // 这些事件回调函数虽然是此类的方法，但是并不通过 `events` 配置来绑定，
+            // 所以绑定其执行上下文为此类的实例，
+            // 以便跟通过 `events` 配置的事件回调函数的执行上下文保持一致
+            [
+                '_onMouseMoveCoordBg',
+                '_onMouseUpCoordBg'
+            ].forEach(function(method){
+                this[method] = _.bind(this[method], this);
+            }, this);
+
             // 保存具体的骨骼构造函数，覆盖从父类继承过来的抽象的骨骼构造函数
             this._Bone = Bone;
 
+            // 当拖拽移动坐标系时，传递的数据
+            this._grabCoordDataTransfer = {};
             // 重置调节骨骼时的状态表示
             this._resetState();
 
@@ -76,17 +88,25 @@ define([
 
             // 缓存DOM元素：
             this._$emptyWording = this.$('#empty_wording');
-            // 工作区面板的坐标系原点，
-            // 坐标系的原点，骨骼相对于原点定位，骨骼元素是原点的子元素，
+            // 骨骼坐标系，
+            // 此坐标系的原点就是此元素所在的位置，
             // x轴水平向右，y轴竖直向下，
-            // 骨骼的坐标就是相对于这个坐标系而言的
+            // 而骨骼的坐标就是相对于这个坐标系而言的
             this._$coordSys = this.$el.find('.js-coordinateSystem');
+            // 骨骼坐标系的背景
+            this._$coordSysBg = this.$el.find('.js-coordinateBg');
+            // 展示骨骼坐标系当前缩放值的元素
             this._$currentScale = this.$el.find('.js-currentScale');
+            // 骨骼坐标系
             // 覆盖从父类继承的、默认的骨骼容器
             this._boneDefaultContainer = this._$coordSys.find('.js-boneContainer').get(0);
 
-            // 初始化骨骼坐标系的缩放比例
-            this._$coordSys.css('transform', 'scale(1,1)');
+            // 初始化骨骼坐标系的缩放比例、位置偏移
+            this._$coordSys.css({
+                'transform': 'scale(1,1)',
+                'margin-left': '0px',
+                'margin-top': '0px'
+            });
 
             return this;
         },
@@ -527,7 +547,57 @@ define([
         // 当在骨骼坐标系的背景上按下鼠标时，兼容事件 `mousemove` 和 `mouseup` ，
         // 以实现移动骨骼坐标系
         _onMouseDownCoordBg: function($event){
+            var dataTransfer = this._grabCoordDataTransfer,
+                $coordSys = this._$coordSys;
 
+            dataTransfer.mouseOldX = $event.pageX;
+            dataTransfer.mouseOldY = $event.pageY;
+            dataTransfer.coordSysOldX = parseFloat($coordSys.css('margin-left'));
+            dataTransfer.coordSysOldY = parseFloat($coordSys.css('margin-top'));
+
+            console.debug(
+                'Start grabbing bone coordinate system whose offset is (%f, %f)',
+                dataTransfer.coordSysOldX, dataTransfer.coordSysOldY
+            );
+
+            // 修改鼠标手势，表示正在拖拽移动
+            this._$coordSysBg.addClass('js-grabbing');
+
+            $(window)
+                .on('mousemove', this._onMouseMoveCoordBg)
+                .on('mouseup', this._onMouseUpCoordBg);
+        },
+
+        _onMouseMoveCoordBg: function($event){
+            var dataTransfer = this._grabCoordDataTransfer;
+            this._$coordSys
+                .css({
+                    'margin-left': dataTransfer.coordSysOldX + $event.pageX - dataTransfer.mouseOldX,
+                    'margin-top': dataTransfer.coordSysOldY + $event.pageY - dataTransfer.mouseOldY
+                });
+        },
+
+        _onMouseUpCoordBg: function($event){
+            var $coordSys = this._$coordSys;
+
+            $(window)
+                .off('mousemove', this._onMouseMoveCoordBg)
+                .off('mouseup', this._onMouseUpCoordBg);
+
+            // 修改鼠标手势，表示结束拖拽移动
+            this._$coordSysBg.removeClass('js-grabbing');
+
+            // 清理此次拖拽移动的数据
+            _.keys( this._grabCoordDataTransfer )
+                .forEach(function(key){
+                    this[key] = null;
+                }, this._grabCoordDataTransfer);
+
+            console.debug(
+                'End grabbing bone coordinate system whose offset is (%f, %f)',
+                parseFloat($coordSys.css('margin-left')),
+                parseFloat($coordSys.css('margin-top'))
+            );
         },
 
         /* Start: 私有成员 */
