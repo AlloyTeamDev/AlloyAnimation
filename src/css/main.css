@@ -381,7 +381,7 @@ html, body,
   border-left: 1px solid #393d46;
   border-right: 1px solid #393d46;
   font-size: 13px;
-  cursor: pointer;
+  cursor: default;
 }
 #js-workspacePanel .js-currentScale::after {
   content: '%';

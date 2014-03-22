@@ -103,7 +103,7 @@
         border-left: 1px solid $scale-util-color;
         border-right: 1px solid $scale-util-color;
         font-size: 13px;
-        cursor: pointer;
+        cursor: default;
 
         &::after {
             content: '%';
