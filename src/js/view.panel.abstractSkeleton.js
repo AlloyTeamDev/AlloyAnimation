@@ -142,7 +142,7 @@ define([
         @param {String} boneId 要激活的骨骼的id
         @param {Object} [options]
             @param {Boolean} [options.silentChangedActiveBone=false]
-                不触发 `changedActiveBone` 事件
+                    不触发 `changedActiveBone` 事件
         @return {Boolean} true: 有改变；false: 没改变
         **/
         changeActiveBone: function(boneId, options){

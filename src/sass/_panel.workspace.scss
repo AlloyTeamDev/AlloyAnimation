@@ -245,18 +245,23 @@
     .js-activeBone {
         cursor: move;
 
-        &::before{
-            content: "";
-            display: block;
-            position: absolute;
-            left: -1 * $active-border-offset;
-            top: -1 * $active-border-offset;
-            width: 100%;
-            height: 100%;
-            border: $active-border-width solid rgba($active-color, 0.5);
+        &.js-activeStyleHidden {
+            cursor: default;
+
+            .js-transform-util {
+                display: none;
+            }
         }
     }
 
+    .activeOutline {
+        position: absolute;
+        left: -1 * $active-border-offset;
+        top: -1 * $active-border-offset;
+        width: 100%;
+        height: 100%;
+        border: $active-border-width solid rgba($active-color, 0.5);
+    }
     .js-joint {
         $size: 8px;
         position: absolute;

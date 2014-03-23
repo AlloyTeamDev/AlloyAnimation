@@ -163,7 +163,8 @@ define([
             'click .js-zoomOut': '_onClickZoomOut',
             'click .js-zoomIn': '_onClickZoomIn',
             'click .js-reset': '_onClickScaleReset',
-            'mousedown .js-coordinateBg': '_onMouseDownCoordBg'
+            'mousedown .js-coordinateBg': '_onMouseDownCoordBg',
+            'click .js-coordinateBg': '_onClickCoordBg'
         },
 
         /**
@@ -624,7 +625,13 @@ define([
             );
         },
 
-        /* Start: 私有成员 */
+        // 如果没点击到骨骼，去除激活骨骼的样式，但不切换激活骨骼。
+        // 这里之所以能把“点击坐标系的背景”认为是“没点击到骨骼”，前提是满足骨骼元素不是背景元素的子元素
+        _onClickCoordBg: function($event){
+            this._activeBone
+                .hideActiveStyle();
+        },
+
         // 重置调节骨骼时的状态表示
         _resetState: function(){
             // 表示当前状态的各种私有属性
@@ -725,7 +732,6 @@ define([
                 );
             }
         }
-        /* End: 私有成员 */
     });
 
 
@@ -786,13 +792,32 @@ define([
         @return this
         **/
         deactivate: function(){
-            this.$el.children('.js-transform-util').remove();
+            this.$el
+                .removeClass('js-activeStyleHidden')
+                .children('.js-transform-util').remove();
 
             // 复用父类中被覆盖的同名方法。
             // 执行移除操作的方法，先执行子类中的，再执行父类中的，
             // 因为父类中的逻辑更根本
             Bone.__super__.deactivate.apply(this, arguments);
             return this;
+        },
+
+        /*
+        如果此骨骼是激活骨骼，隐藏其激活样式，但保持其为激活骨骼；
+        如果不是激活骨骼，什么也不做。
+        */
+        hideActiveStyle: function(){
+            var $el = this.$el;
+
+            if( !$el.hasClass('js-activeBone') ) return;
+
+            $el.addClass('js-activeStyleHidden');
+
+            console.debug(
+                'Panel %s hide active style of bone %s',
+                Bone._panelName, this.id
+            );
         },
 
         /**

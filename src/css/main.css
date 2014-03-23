@@ -504,9 +504,13 @@ html, body,
 #js-workspacePanel .js-activeBone {
   cursor: move;
 }
-#js-workspacePanel .js-activeBone::before {
-  content: "";
-  display: block;
+#js-workspacePanel .js-activeBone.js-activeStyleHidden {
+  cursor: default;
+}
+#js-workspacePanel .js-activeBone.js-activeStyleHidden .js-transform-util {
+  display: none;
+}
+#js-workspacePanel .activeOutline {
   position: absolute;
   left: -1px;
   top: -1px;
