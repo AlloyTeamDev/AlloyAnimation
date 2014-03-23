@@ -443,13 +443,6 @@ define([
                         changedData.y = this._boneOldY + boneYVar
                     );
                 }
-                console.log({
-                    mouseHoriVar: mouseHoriVar,
-                    mouseVertVar: mouseVertVar,
-                    parentRotateRadianToGlobal: this._parentRotateRadianToGlobal,
-                    boneXVar: boneXVar,
-                    boneYVar: boneYVar
-                });
 
                 // 清除无效缓存
                 this._offsetTop = null;
