@@ -148,14 +148,17 @@ define([
         events: {
             // 这个函数是是需要的,不然会按照浏览器的默认行为
             'dragover': function(){ return false },
-            'drop': 'onDrop',
-            'click': 'onClick',
-            'mousedown .js-activeBone': 'onMouseDownActiveBone',
-            'mousedown .js-resize': 'onMouseDownResizePoint',
-            'mousedown .js-rotate': 'onMouseDownRotatePoint',
-            'mousedown .js-joint': 'onMouseDownJoint',
-            'mousemove': 'onMouseMove',
-            'mouseup': 'onMouseUp',
+            'drop': '_onDrop',
+            'mousedown .js-bone': '_onMouseDownBone',
+            'mousedown .js-activeBone': '_onMouseDownActiveBone',
+            'mousedown .js-resize': '_onMouseDownResizePoint',
+            'mousedown .js-rotate': '_onMouseDownRotatePoint',
+            'mousedown .js-joint': '_onMouseDownJoint',
+            // TODO: 
+            // 在mousedown的时候先清除再给window绑定mousemove和mouseup，以免在工作区面板以外mouseup而没能触发相应操作，
+            // 并且当mouseout window时，认为其mouseup了
+            'mousemove': '_onMouseMove',
+            'mouseup': '_onMouseUp',
             'mousewheel': '_onMouseWheel',
             'click .js-zoomOut': '_onClickZoomOut',
             'click .js-zoomIn': '_onClickZoomIn',
@@ -173,7 +176,7 @@ define([
         @triggerObj `workspacePanelView.$el` 工作区面板的根DOM元素
         @event drop DOM事件drop
         **/
-        onDrop: function(e){
+        _onDrop: function(e){
             var panel = this,
                 files, reader, i;
 
@@ -228,22 +231,22 @@ define([
             }
         },
 
-        onClick: function($event){
-            var $target = $($event.target),
-                $bone, boneId;
+        // 当 `mousedown` 某个骨骼时，不管该骨骼是否激活，都激活之，
+        // 并且为移动激活骨骼做好准备
+        _onMouseDownBone: function($event){
+            var $bone = $($event.currentTarget),
+                boneId;
 
-            // 当点击此面板时，如果点击了某个骨骼，改变激活元素为所点击的元素。
-            // **只要有骨骼，总有一个骨骼处于激活状态**
-            if( ( $target.hasClass('js-bone') && ($bone = $target) ) ||
-                ( $bone = $target.parentsUntil(this.$el, '.js-bone') ).length
-            ){
-                boneId = Bone.htmlId2Id($bone.attr('id'));
-                this.changeActiveBone(boneId)
-            }
+            boneId = Bone.htmlId2Id($bone.attr('id'));
+            this.changeActiveBone(boneId);
+
+            // 为移动激活骨骼做好准备
+            this._onMouseDownActiveBone($event);
         },
 
-        onMouseDownActiveBone: function($event){
-            var bone;
+        // 当鼠标左键 `mousedown` 激活骨骼时，记录下移动激活骨骼所需要的初始数据
+        _onMouseDownActiveBone: function($event){
+            var bone, parent;
 
             // 不是鼠标左键，直接返回，避免不必要的运算
             if($event.which !== 1) return;
@@ -259,11 +262,20 @@ define([
             this._boneOldX = bone.positionX();
             this._boneOldY = bone.positionY();
 
-            // 避免冒泡到父骨骼
-            $event.stopPropagation();
+            this._parentRotateRadianToGlobal = 0;
+            while(parent = bone.parent){
+                this._parentRotateRadianToGlobal +=
+                    parent.rotate() * this._PI_DIV_180;
+                bone = parent;
+            }
+
+            // 避免冒泡到父骨骼；
+            // 并确保 `_onMouseDownActiveBone` 在一次mousedown中只调用一次。
+            // 因为 `_onMouseDownBone` 中会调用 `_onMouseDownActiveBone` ，而在 `events` 中也配置了 `_onMouseDownActiveBone` ，有可能重复调用
+            $event.stopImmediatePropagation();
         },
             
-        onMouseDownResizePoint: function($event){
+        _onMouseDownResizePoint: function($event){
             var bone;
 
             // 不是鼠标左键，直接返回，避免不必要的运算
@@ -290,7 +302,7 @@ define([
             $event.stopPropagation();
         },
 
-        onMouseDownRotatePoint: function($event){
+        _onMouseDownRotatePoint: function($event){
             var bone, jointX, jointY;
 
             // 如果按下的不是鼠标左键，则直接返回，避免不必要的运算
@@ -330,7 +342,7 @@ define([
             $event.stopPropagation();
         },
 
-        onMouseDownJoint: function($event){
+        _onMouseDownJoint: function($event){
             var bone;
 
             // 不是鼠标左键，直接返回，避免不必要的运算
@@ -357,18 +369,23 @@ define([
         // TODO:
         // 可以实现监测这个函数的运行时间，如果时长太长，或太频繁，
         // 可以选择性的执行其中的计算，比如每两次执行一次
-        onMouseMove: function($event){
-            // 建立用于此函数中的坐标系：
-            // 原点为骨骼的关节点，
-            // x轴为水平向右按顺时针旋转rotate度的方向，
-            // y轴为竖直向下按顺时针旋转rotate度的方向，
-            // 其中rotate为 **进入此函数时** 骨骼按顺时针旋转的角度，
+        _onMouseMove: function($event){
+            // 在此函数中建立一个坐标系：
+            // 此坐标系是正在调节的骨骼的坐标系，
+            // 原点为骨骼的关节点；
+            // x轴为父骨骼的x轴按顺时针旋转rotate度的方向；
+            // y轴为父骨骼的y轴按顺时针旋转rotate度的方向；
+            // 其中rotate为 **进入此函数时** 骨骼按顺时针旋转的角度；
+            // 同理，递归的建立父骨骼的坐标系即可得到父骨骼的x/y轴，进而得到骨骼的x/y轴，
+            // 如果没有父骨骼，用水平向右/竖直向下代替父骨骼的x/y轴。
             // 此函数结束前，坐标系不变；重新进入此函数，重新建立坐标系
 
-                // 改变了的骨骼数据
-            var changedData,
+            var // 改变了的骨骼数据
+                changedData,
                 // 激活的骨骼
                 bone,
+                // 骨骼在x/y轴上的变化量
+                boneXVar, boneYVar,
                 // 如果正在调节大小，表示骨骼当前的旋转角度；
                 // 如果正在调节旋转角度，表示调节前骨骼的旋转角度；
                 rotate,
@@ -408,17 +425,31 @@ define([
             pow = this._pow;
 
             if(this._isMoving){
+                // 将鼠标在水平/竖直方向上的变化量转变为x/y轴方向上的变化量
+                boneXVar =
+                    mouseHoriVar * cos(this._parentRotateRadianToGlobal) +
+                    mouseVertVar * sin(this._parentRotateRadianToGlobal);
+                boneYVar =
+                    mouseHoriVar * sin(this._parentRotateRadianToGlobal) * -1 +
+                    mouseVertVar * cos(this._parentRotateRadianToGlobal);
                 // 变化量不为0才做出修改
-                if(mouseHoriVar){
+                if(boneXVar){
                     bone.positionX(
-                        changedData.x = this._boneOldX + mouseHoriVar
+                        changedData.x = this._boneOldX + boneXVar
                     );
                 }
-                if(mouseVertVar){
+                if(boneYVar){
                     bone.positionY(
-                        changedData.y = this._boneOldY + mouseVertVar
+                        changedData.y = this._boneOldY + boneYVar
                     );
                 }
+                console.log({
+                    mouseHoriVar: mouseHoriVar,
+                    mouseVertVar: mouseVertVar,
+                    parentRotateRadianToGlobal: this._parentRotateRadianToGlobal,
+                    boneXVar: boneXVar,
+                    boneYVar: boneYVar
+                });
 
                 // 清除无效缓存
                 this._offsetTop = null;
@@ -487,7 +518,7 @@ define([
             }
         },
 
-        onMouseUp: function($event){
+        _onMouseUp: function($event){
             var activeBone;
 
             if( !(this._isMoving ||
@@ -612,6 +643,9 @@ define([
             this._isResizing = false;
             // 是否正在调节已激活骨骼的关节位置
             this._isMovingJoint = false;
+
+            // 开始调节时，父骨骼相对于世界的旋转
+            this._parentRotateRadianToGlobal = null;
 
             // 开始调节时，鼠标相对于 `document` 的坐标
             this._mouseOldX = null;
@@ -975,7 +1009,7 @@ define([
         /***** End: 原子性的设置或获取骨骼数据的方法 *****/
 
         /**
-        获取旋转角度为0时，相对于文档左边的偏移
+        获取当旋转角度为0时，相对于文档左边的偏移
         @return {Number}
         **/
         offsetLeftOnRotate0: function(){
@@ -993,7 +1027,7 @@ define([
         },
 
         /**
-        获取旋转角度为0时，相对于文档顶部的偏移
+        获取当旋转角度为0时，相对于文档顶部的偏移
         @return {Number}
         **/
         offsetTopOnRotate0: function(){
