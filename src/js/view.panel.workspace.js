@@ -306,6 +306,8 @@ define([
                 bone = parent;
             }
 
+            this._resizeIndex = $($event.currentTarget).data('index');
+
             // 避免事件冒泡到骨骼元素，进入moving状态
             $event.stopPropagation();
         },
@@ -406,8 +408,10 @@ define([
                 mouseHoriVar, mouseVertVar,
                 // 鼠标移动向量在x/y轴上的投影
                 mouseXVar, mouseYVar,
-                // 骨骼宽、高的变化量，宽、高的方向与x, y轴平行
-                widthVar, heightVar,
+                // 骨骼的css属性left的变化量的相反数
+                leftVar,
+                // 骨骼的css属性left的变化量
+                topVar,
                 // 骨骼旋转角度的变化量，
                 // 即鼠标起始位置与关节点连成的直线，关于关节点旋转多少度，到达鼠标当前位置与关节点连成的直线。
                 // 取值范围为 [-180deg, 180deg]
@@ -438,15 +442,18 @@ define([
             sin = this._sin;
             pow = this._pow;
 
-            // 将鼠标在水平/竖直方向上的变化量转变为x/y轴方向上的变化量
-            mouseXVar =
-                mouseHoriVar * cos(parentRotateRadianToGlobal) +
-                mouseVertVar * sin(parentRotateRadianToGlobal);
-            mouseYVar =
-                mouseVertVar * cos(parentRotateRadianToGlobal) -
-                mouseHoriVar * sin(parentRotateRadianToGlobal);
 
             if(this._isMoving){
+                // 将鼠标在水平/竖直方向上的变化量转变为x/y轴上的变化量，
+                // 注意这里只需要用到的是 **父骨骼** 相对世界的旋转弧度，
+                // 因为这是在计算位移
+                mouseXVar =
+                    mouseHoriVar * cos(parentRotateRadianToGlobal) +
+                    mouseVertVar * sin(parentRotateRadianToGlobal);
+                mouseYVar =
+                    mouseVertVar * cos(parentRotateRadianToGlobal) -
+                    mouseHoriVar * sin(parentRotateRadianToGlobal);
+
                 // 变化量不为0才做出修改
                 mouseXVar && bone.positionX(
                     changedData.x = this._boneOldX + mouseXVar
@@ -462,33 +469,57 @@ define([
 
             // TODO: 兼容缩小到0的边界情况
             if(this._isResizing){
-                // 骨骼宽、高的变化量，就是鼠标移动向量（在水平竖直坐标系中）在此函数的坐标系的x, y轴上的投影
-                widthVar =
+                // 将鼠标在水平/竖直方向上的变化量转变为x/y轴上的变化量，
+                // 注意这里需要用到的是 **骨骼自身** 相对世界的旋转弧度，
+                // 因为这是在计算resize
+                mouseXVar =
                     mouseHoriVar * cos(rotateRadianToGlobal) +
                     mouseVertVar * sin(rotateRadianToGlobal);
-                heightVar =
+                mouseYVar =
                     mouseVertVar * cos(rotateRadianToGlobal) -
                     mouseHoriVar * sin(rotateRadianToGlobal);
 
-                // 变化量不为0时做出修改
-                widthVar && bone.width(
-                    changedData.w = this._boneOldW + widthVar
-                );
-                heightVar && bone.height(
-                    changedData.h = this._boneOldH + heightVar
-                );
+                switch(this._resizeIndex){
+                    case 1:
+                        mouseXVar *= -1;
+                        mouseYVar *= -1;
+                        break;
+                    case 2:
+                        mouseYVar *= -1;
+                        break;
+                    case 3:
+                        mouseXVar *= -1;
+                        break;
+                }
+
+                // 变化量不为0时才做出修改
+                if(mouseXVar){
+                    leftVar = mouseXVar / (this._boneOldW / this._jointOldX - 1);
+                    changedData.w = leftVar + this._boneOldW + mouseXVar;
+                    // TODO: 如果是负数，则翻转之
+                    if(changedData.w >= 0){
+                        bone.width(changedData.w)
+                            .positionX(changedData.x = this._boneOldX - leftVar)
+                            .jointX(changedData.jointX = this._jointOldX + leftVar);
+                        this._$joint
+                            .css('left', changedData.jointX + bone.SIZE_UNIT);
+                    }
+                }
+                if(mouseYVar){
+                    topVar = mouseYVar / (this._boneOldH / this._jointOldY - 1);
+                    changedData.h = topVar + this._boneOldH + mouseYVar;
+                    if(changedData.h >= 0){
+                        bone.height(changedData.h)
+                            .positionY(changedData.y = this._boneOldY - topVar)
+                            .jointY(changedData.jointY = this._jointOldY + topVar);
+                        this._$joint
+                            .css('top', changedData.jointY + bone.SIZE_UNIT);
+                    }
+                }
 
                 // 清除无效缓存
                 this._offsetTop = null;
                 this._offsetLeft = null;
-
-                // console.log({
-                //     parentRotateRadianToGlobal: parentRotateRadianToGlobal,
-                //     rotateRadian: rotateRadian,
-                //     rotateRadianToGlobal: rotateRadianToGlobal,
-                //     widthVar: widthVar,
-                //     heightVar: heightVar
-                // });
             }
 
             if(this._isRotating){
@@ -704,6 +735,10 @@ define([
             // 在调节骨骼的过程中，有修改过的数据的最新值。
             // 只在调节过程中有值。没包含的字段，表示没有修改
             this._boneChangedData = null;
+
+            // resize控制点的序号。
+            // 使用不同的控制点进行resize，算法有所不同
+            this._resizeIndex = null;
 
             return this;
         },

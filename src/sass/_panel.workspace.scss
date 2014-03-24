@@ -320,7 +320,7 @@
             background-color: #fff;
         }
     }
-    .js-resize1 {
+    .resize1 {
         right: 0;
         bottom: 0;
         cursor: nw-resize;
@@ -329,7 +329,7 @@
             top: $resize-offset * -1;
         }
     }
-    .js-resize2 {
+    .resize2 {
         left: 0;
         bottom: 0;
         cursor: sw-resize;
@@ -338,7 +338,7 @@
             top: $resize-offset * -1;
         }
     }
-    .js-resize3 {
+    .resize3 {
         right: 0;
         top: 0;
         cursor: sw-resize;
@@ -347,7 +347,7 @@
             bottom: $resize-offset * -1;
         }
     }
-    .js-resize4 {
+    .resize4 {
         left: 0;
         top: 0;
         cursor: nw-resize;

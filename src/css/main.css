@@ -567,39 +567,39 @@ html, body,
   border: 1px solid rgba(26, 138, 185, 0.5);
   background-color: #fff;
 }
-#js-workspacePanel .js-resize1 {
+#js-workspacePanel .resize1 {
   right: 0;
   bottom: 0;
   cursor: nw-resize;
 }
-#js-workspacePanel .js-resize1::before {
+#js-workspacePanel .resize1::before {
   left: -2px;
   top: -2px;
 }
-#js-workspacePanel .js-resize2 {
+#js-workspacePanel .resize2 {
   left: 0;
   bottom: 0;
   cursor: sw-resize;
 }
-#js-workspacePanel .js-resize2::before {
+#js-workspacePanel .resize2::before {
   right: -2px;
   top: -2px;
 }
-#js-workspacePanel .js-resize3 {
+#js-workspacePanel .resize3 {
   right: 0;
   top: 0;
   cursor: sw-resize;
 }
-#js-workspacePanel .js-resize3::before {
+#js-workspacePanel .resize3::before {
   left: -2px;
   bottom: -2px;
 }
-#js-workspacePanel .js-resize4 {
+#js-workspacePanel .resize4 {
   left: 0;
   top: 0;
   cursor: nw-resize;
 }
-#js-workspacePanel .js-resize4::before {
+#js-workspacePanel .resize4::before {
   right: -2px;
   bottom: -2px;
 }
