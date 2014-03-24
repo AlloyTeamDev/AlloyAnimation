@@ -299,6 +299,13 @@ define([
             this._jointOldX = bone.jointX();
             this._jointOldY = bone.jointY();
 
+            this._parentRotateRadianToGlobal = 0;
+            while(parent = bone.parent){
+                this._parentRotateRadianToGlobal +=
+                    parent.rotate() * this._PI_DIV_180;
+                bone = parent;
+            }
+
             // 避免事件冒泡到骨骼元素，进入moving状态
             $event.stopPropagation();
         },
@@ -385,16 +392,20 @@ define([
                 changedData,
                 // 激活的骨骼
                 bone,
-                // 骨骼在x/y轴上的变化量
-                boneXVar, boneYVar,
                 // 如果正在调节大小，表示骨骼当前的旋转角度；
                 // 如果正在调节旋转角度，表示调节前骨骼的旋转角度；
                 rotate,
-                // 旋转角度对应的弧度
+                // `rotate` 对应的弧度
                 rotateRadian,
+                // 骨骼相对于世界的旋转角度所对应的弧度
+                rotateRadianToGlobal,
+                // 父骨骼相对于世界的旋转角度所对应的弧度
+                parentRotateRadianToGlobal,
                 // 鼠标位置在水平、竖直方向上的变化量（当前位置相对于起始位置的变化量），
                 // **鼠标移动向量** 由这两个分量构成
                 mouseHoriVar, mouseVertVar,
+                // 鼠标移动向量在x/y轴上的投影
+                mouseXVar, mouseYVar,
                 // 骨骼宽、高的变化量，宽、高的方向与x, y轴平行
                 widthVar, heightVar,
                 // 骨骼旋转角度的变化量，
@@ -415,35 +426,34 @@ define([
             changedData = this._boneChangedData = this._boneChangedData || {};
 
             // TODO: 先判断是否需要这些数据
-            mouseHoriVar = $event.pageX - this._mouseOldX
-            mouseVertVar = $event.pageY - this._mouseOldY
+            mouseHoriVar = $event.pageX - this._mouseOldX;
+            mouseVertVar = $event.pageY - this._mouseOldY;
             rotate = bone.rotate();
             rotateRadian = rotate * this._PI_DIV_180;
+            rotateRadianToGlobal = this._parentRotateRadianToGlobal + rotateRadian;
+            parentRotateRadianToGlobal = this._parentRotateRadianToGlobal;
             jointX = bone.jointX();
             jointY = bone.jointY();
             cos = this._cos;
             sin = this._sin;
             pow = this._pow;
 
+            // 将鼠标在水平/竖直方向上的变化量转变为x/y轴方向上的变化量
+            mouseXVar =
+                mouseHoriVar * cos(parentRotateRadianToGlobal) +
+                mouseVertVar * sin(parentRotateRadianToGlobal);
+            mouseYVar =
+                mouseVertVar * cos(parentRotateRadianToGlobal) -
+                mouseHoriVar * sin(parentRotateRadianToGlobal);
+
             if(this._isMoving){
-                // 将鼠标在水平/竖直方向上的变化量转变为x/y轴方向上的变化量
-                boneXVar =
-                    mouseHoriVar * cos(this._parentRotateRadianToGlobal) +
-                    mouseVertVar * sin(this._parentRotateRadianToGlobal);
-                boneYVar =
-                    mouseHoriVar * sin(this._parentRotateRadianToGlobal) * -1 +
-                    mouseVertVar * cos(this._parentRotateRadianToGlobal);
                 // 变化量不为0才做出修改
-                if(boneXVar){
-                    bone.positionX(
-                        changedData.x = this._boneOldX + boneXVar
-                    );
-                }
-                if(boneYVar){
-                    bone.positionY(
-                        changedData.y = this._boneOldY + boneYVar
-                    );
-                }
+                mouseXVar && bone.positionX(
+                    changedData.x = this._boneOldX + mouseXVar
+                );
+                mouseYVar && bone.positionY(
+                    changedData.y = this._boneOldY + mouseYVar
+                );
 
                 // 清除无效缓存
                 this._offsetTop = null;
@@ -453,16 +463,32 @@ define([
             // TODO: 兼容缩小到0的边界情况
             if(this._isResizing){
                 // 骨骼宽、高的变化量，就是鼠标移动向量（在水平竖直坐标系中）在此函数的坐标系的x, y轴上的投影
-                widthVar = mouseHoriVar * cos(rotateRadian) + mouseVertVar * sin(rotateRadian);
-                heightVar = mouseVertVar * cos(rotateRadian) - mouseHoriVar * sin(rotateRadian);
+                widthVar =
+                    mouseHoriVar * cos(rotateRadianToGlobal) +
+                    mouseVertVar * sin(rotateRadianToGlobal);
+                heightVar =
+                    mouseVertVar * cos(rotateRadianToGlobal) -
+                    mouseHoriVar * sin(rotateRadianToGlobal);
 
-                // 宽高变换量不为0时才修改宽高
-                widthVar && bone.width(changedData.w = this._boneOldW + widthVar);
-                heightVar && bone.height(changedData.h = this._boneOldH + heightVar);
+                // 变化量不为0时做出修改
+                widthVar && bone.width(
+                    changedData.w = this._boneOldW + widthVar
+                );
+                heightVar && bone.height(
+                    changedData.h = this._boneOldH + heightVar
+                );
 
                 // 清除无效缓存
                 this._offsetTop = null;
                 this._offsetLeft = null;
+
+                // console.log({
+                //     parentRotateRadianToGlobal: parentRotateRadianToGlobal,
+                //     rotateRadian: rotateRadian,
+                //     rotateRadianToGlobal: rotateRadianToGlobal,
+                //     widthVar: widthVar,
+                //     heightVar: heightVar
+                // });
             }
 
             if(this._isRotating){
