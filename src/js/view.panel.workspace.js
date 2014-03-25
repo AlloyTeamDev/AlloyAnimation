@@ -372,6 +372,13 @@ define([
             // 缓存的关节控制点
             this._$joint = $($event.target);
 
+            this._parentRotateRadianToGlobal = 0;
+            while(parent = bone.parent){
+                this._parentRotateRadianToGlobal +=
+                    parent.rotate() * this._PI_DIV_180;
+                bone = parent;
+            }
+
             // 避免事件冒泡到骨骼元素，进入moving状态
             $event.stopPropagation();
         },
@@ -538,23 +545,17 @@ define([
             // BUG: 关节点的移动跟鼠标不一致
             // TODO: 实现移动关节点时，骨骼不动
             if(this._isMovingJoint){
-                // 用于操作关节点位置的html元素，其left/top属性是相对于骨骼元素在无旋转时的左上角，有旋转时，相对于这个角旋转后的位置
-                // this._$joint.css({
-                //     left: 
-                //     top: 
-                // });
+                mouseXVar =
+                    mouseHoriVar * cos(parentRotateRadianToGlobal) +
+                    mouseVertVar * sin(parentRotateRadianToGlobal);
+                mouseYVar =
+                    mouseVertVar * cos(parentRotateRadianToGlobal) -
+                    mouseHoriVar * sin(parentRotateRadianToGlobal);
 
                 // 而表示关节点的 `transform-origin` 属性，其坐标是相对于骨骼div无旋转时左上角所在的那个点，而这个点不随着旋转改变
-                bone.jointX( changedData.jointX =
-                        mouseHoriVar * cos(parentRotateRadianToGlobal) +
-                        mouseVertVar * sin(parentRotateRadianToGlobal) +
-                        this._jointOldX
-                    )
-                    .jointY( changedData.jointY =
-                        mouseVertVar * cos(parentRotateRadianToGlobal) -
-                        mouseHoriVar * sin(parentRotateRadianToGlobal) +
-                        this._jointOldY
-                    );
+                bone.jointX( changedData.jointX = mouseXVar + this._jointOldX )
+                    .jointY( changedData.jointY = mouseYVar + this._jointOldY );
+                // 用于操作关节点位置的html元素，其left/top属性是相对于骨骼元素在无旋转时的左上角，有旋转时，相对于这个角旋转后的位置
                 this._$joint
                     .css({
                         'left': changedData.jointX + bone.SIZE_UNIT,
