@@ -533,16 +533,6 @@ define([
                 bone.rotate(
                     changedData.rotate = joint2MouseRotate - this._joint2MouseOldRotate + this._boneOldRotate
                 );
-
-                // 这句输出用于调试旋转
-                // console.debug(
-                //     'bone rotate %fdeg, joint-mouse vector rotate %fdeg, joint-mouse vector {%f, %f}, mouse position {%f, %f}',
-                //     changedData.rotate,
-                //     joint2MouseRotate,
-                //     joint2MouseVectorHori,
-                //     joint2MouseVectorVert,
-                //     $event.pageX, $event.pageY
-                // );
             }
 
             // BUG: 关节点的移动跟鼠标不一致
@@ -556,16 +546,20 @@ define([
 
                 // 而表示关节点的 `transform-origin` 属性，其坐标是相对于骨骼div无旋转时左上角所在的那个点，而这个点不随着旋转改变
                 bone.jointX( changedData.jointX =
-                        mouseHoriVar * cos(rotateRadian) +
-                        mouseVertVar * sin(rotateRadian) +
+                        mouseHoriVar * cos(parentRotateRadianToGlobal) +
+                        mouseVertVar * sin(parentRotateRadianToGlobal) +
                         this._jointOldX
                     )
                     .jointY( changedData.jointY =
-                        mouseVertVar * cos(rotateRadian) -
-                        mouseHoriVar * sin(rotateRadian) +
+                        mouseVertVar * cos(parentRotateRadianToGlobal) -
+                        mouseHoriVar * sin(parentRotateRadianToGlobal) +
                         this._jointOldY
                     );
-                
+                this._$joint
+                    .css({
+                        'left': changedData.jointX + bone.SIZE_UNIT,
+                        'top': changedData.jointY + bone.SIZE_UNIT
+                    });
             }
         },
 
