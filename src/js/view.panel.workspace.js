@@ -53,6 +53,7 @@ define([
             // 保存在实例上，避免搜索作用域链，尤其是在频繁调用的函数中
             this._cos = Math.cos;
             this._sin = Math.sin;
+            this._tan = Math.tan;
             this._atan = Math.atan;
             this._pow = Math.pow;
             this._round = Math.round;
@@ -366,11 +367,15 @@ define([
             this._mouseOldY = $event.pageY;
 
             bone = this._activeBone;
+
+            this._boneOldX = bone.positionX();
+            this._boneOldY = bone.positionY();
+
             this._jointOldX = bone.jointX();
             this._jointOldY = bone.jointY();
 
             // 缓存的关节控制点
-            this._$joint = $($event.target);
+            this._$joint = $($event.currentTarget);
 
             this._parentRotateRadianToGlobal = 0;
             while(parent = bone.parent){
@@ -429,7 +434,7 @@ define([
                 jointX, jointY,
                 joint2MouseRotate,
                 joint2MouseVectorHori, joint2MouseVectorVert,
-                cos, sin, pow;
+                cos, sin, tan, pow;
 
             // 如果没有激活骨骼，直接返回
             if( !(bone = this._activeBone) ) return;
@@ -447,6 +452,7 @@ define([
             jointY = bone.jointY();
             cos = this._cos;
             sin = this._sin;
+            tan = this._tan;
             pow = this._pow;
 
 
@@ -461,11 +467,10 @@ define([
                     mouseVertVar * cos(parentRotateRadianToGlobal) -
                     mouseHoriVar * sin(parentRotateRadianToGlobal);
 
-                // 变化量不为0才做出修改
-                mouseXVar && bone.positionX(
+                bone.positionX(
                     changedData.x = this._boneOldX + mouseXVar
                 );
-                mouseYVar && bone.positionY(
+                bone.positionY(
                     changedData.y = this._boneOldY + mouseYVar
                 );
 
@@ -499,29 +504,28 @@ define([
                         break;
                 }
 
-                // 变化量不为0时才做出修改
-                if(mouseXVar){
-                    leftVar = mouseXVar / (this._boneOldW / this._jointOldX - 1);
-                    changedData.w = leftVar + this._boneOldW + mouseXVar;
-                    // TODO: 如果是负数，则翻转之
-                    if(changedData.w >= 0){
-                        bone.width(changedData.w)
-                            .positionX(changedData.x = this._boneOldX - leftVar)
-                            .jointX(changedData.jointX = this._jointOldX + leftVar);
-                        this._$joint
-                            .css('left', changedData.jointX + bone.SIZE_UNIT);
-                    }
+                // x轴方向上的修改
+                leftVar = mouseXVar / (this._boneOldW / this._jointOldX - 1);
+                changedData.w = leftVar + this._boneOldW + mouseXVar;
+                // TODO: 如果是负数，则翻转之
+                if(changedData.w >= 0){
+                    bone.width(changedData.w)
+                        .positionX(changedData.x = this._boneOldX - leftVar)
+                        .jointX(changedData.jointX = this._jointOldX + leftVar);
+                    this._$joint
+                        .css('left', changedData.jointX + bone.SIZE_UNIT);
                 }
-                if(mouseYVar){
-                    topVar = mouseYVar / (this._boneOldH / this._jointOldY - 1);
-                    changedData.h = topVar + this._boneOldH + mouseYVar;
-                    if(changedData.h >= 0){
-                        bone.height(changedData.h)
-                            .positionY(changedData.y = this._boneOldY - topVar)
-                            .jointY(changedData.jointY = this._jointOldY + topVar);
-                        this._$joint
-                            .css('top', changedData.jointY + bone.SIZE_UNIT);
-                    }
+
+                // y轴方向上的修改
+                topVar = mouseYVar / (this._boneOldH / this._jointOldY - 1);
+                changedData.h = topVar + this._boneOldH + mouseYVar;
+                // TODO: 如果是负数，则翻转之
+                if(changedData.h >= 0){
+                    bone.height(changedData.h)
+                        .positionY(changedData.y = this._boneOldY - topVar)
+                        .jointY(changedData.jointY = this._jointOldY + topVar);
+                    this._$joint
+                        .css('top', changedData.jointY + bone.SIZE_UNIT);
                 }
 
                 // 清除无效缓存
@@ -542,7 +546,6 @@ define([
                 );
             }
 
-            // BUG: 关节点的移动跟鼠标不一致
             // TODO: 实现移动关节点时，骨骼不动
             if(this._isMovingJoint){
                 mouseXVar =
@@ -552,9 +555,27 @@ define([
                     mouseVertVar * cos(parentRotateRadianToGlobal) -
                     mouseHoriVar * sin(parentRotateRadianToGlobal);
 
-                // 而表示关节点的 `transform-origin` 属性，其坐标是相对于骨骼div无旋转时左上角所在的那个点，而这个点不随着旋转改变
-                bone.jointX( changedData.jointX = mouseXVar + this._jointOldX )
-                    .jointY( changedData.jointY = mouseYVar + this._jointOldY );
+                changedData.jointX = mouseXVar + this._jointOldX;
+                changedData.jointY = mouseYVar + this._jointOldY;
+
+                var jointXVar = this._jointOldX - changedData.jointX,
+                    jointYVar = changedData.jointY - this._jointOldY,
+                    tanJointVar = jointYVar - jointXVar,
+                    tanRotate = tan(rotateRadian),
+                    bDivA = (tanRotate - tanJointVar) / (1 - tanRotate * tanJointVar),
+                    a = pow(
+                        (1 + pow(tanJointVar, 2)) * pow(jointXVar, 2) / (1 + pow(bDivA, 2)),
+                        1 /2
+                    );
+
+                leftVar = jointXVar - a;
+                topVar = jointYVar + a * bDivA;
+
+                // 表示关节点的 `transform-origin` 属性，其坐标是相对于骨骼div无旋转时左上角所在的那个点，而这个点不随着旋转改变
+                bone.jointX( changedData.jointX )
+                    .jointY( changedData.jointY )
+                    .positionX( this._boneOldX + leftVar )
+                    .positionY( this._boneOldY + topVar );
                 // 用于操作关节点位置的html元素，其left/top属性是相对于骨骼元素在无旋转时的左上角，有旋转时，相对于这个角旋转后的位置
                 this._$joint
                     .css({
