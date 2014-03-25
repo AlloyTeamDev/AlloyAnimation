@@ -19,6 +19,10 @@ define([
             // 表示父子关系的引用
             this.children = [];
             this.parent = null;
+
+            // 骨骼在任意时刻都会处于且只处于一个状态。
+            // 默认状态为非激活态
+            this._state = AbstractBone.DEACTIVE;
         },
 
         /**
@@ -61,35 +65,79 @@ define([
             return this;
         },
 
+        // Start: 使骨骼状态转换的方法
+
         /**
-        激活此骨骼，表示开始操作此骨骼
+        激活此骨骼，并展示激活样式，表示开始操作此骨骼。
+        如果已处于此状态，什么也不做
         @return this
         **/
         activate: function(){
+            if(this._state === AbstractBone.ACTIVE_STYLE_SHOWN) return this;
+
+            this.$el
+                // 确保有这个class
+                .addClass('js-activeBone')
+                // 确保没有这个class
+                .removeClass('js-activeStyleHidden');
+
+            this._state = AbstractBone.ACTIVE_STYLE_SHOWN;
+
             console.debug(
                 'Panel %s activate bone %s',
+                // 使用子类的构造函数上提供的面板名
                 this.constructor._panelName, this.id
             );
-
-            this.$el.addClass('js-activeBone');
 
             return this;
         },
 
         /**
-        取消激活此骨骼，表示结束操作此骨骼
+        取消激活此骨骼，表示结束操作此骨骼。
+        如果已处于此状态，什么也不做
         @return this
         **/
         deactivate: function(){
-            this.$el.removeClass('js-activeBone');
+            if(this._state === AbstractBone.DEACTIVE) return this;
+
+            this.$el
+                // 确保没有这两个class
+                .removeClass('js-activeBone js-activeStyleHidden');
+
+            this._state = AbstractBone.DEACTIVE;
 
             console.debug(
                 'Panel %s deactivate bone %s',
+                // 使用子类的构造函数上提供的面板名
                 this.constructor._panelName, this.id
             );
 
             return this;
         },
+
+        /*
+        如果是激活骨骼，隐藏其激活样式；
+        如果不是激活骨骼，什么也不做（确保此状态只能从激活且展示激活样式的状态进入）；
+        */
+        hideActiveStyle: function(){
+            if( this._state === AbstractBone.ACTIVE_STYLE_HIDDEN ||
+                this._state === AbstractBone.DEACTIVE
+            ){
+                return this;
+            }
+
+            this.$el.addClass('js-activeStyleHidden');
+
+            console.debug(
+                'Panel %s hide active style of bone %s',
+                // 使用子类的构造函数上提供的面板名
+                this.constructor._panelName, this.id
+            );
+
+            return this;
+        },
+
+        // End: 使骨骼状态转换的方法
 
         /**
         给此骨骼添加一个子骨骼。
@@ -298,8 +346,8 @@ define([
         /* End: 私有成员 */
     }, {
         // 所在的面板名，用于构成骨骼的html id
-        // **子类要覆盖这个属性**
-        _panelName: 'unknown',
+        // **子类要覆盖这个属性** ，提供所在的面板名
+        _panelName: 'unknownPanel',
 
         /**
         获取骨骼的html id，其前缀表示这是工作区面板中的骨骼
@@ -322,6 +370,14 @@ define([
         htmlId2Id: function(htmlId){
             return htmlId.split('-').pop();
         },
+
+        // 骨骼状态值的常量：
+        // 非激活态
+        DEACTIVE: 0,
+        // 激活态，且展示激活样式
+        ACTIVE_STYLE_SHOWN: 1,
+        // 激活态，但不展示激活样式
+        ACTIVE_STYLE_HIDDEN: 2
     });
 
     return AbstractBone;

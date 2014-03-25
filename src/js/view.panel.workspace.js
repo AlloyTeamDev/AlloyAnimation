@@ -828,13 +828,12 @@ define([
             this._opacity = null;
         },
 
-        /**
-        激活此骨骼，表示开始操作此骨骼
-        @return this
-        **/
+        // 激活此骨骼，表示开始操作此骨骼
         activate: function(){
+            var returnFromSuperClass;
+
             // 复用父类中被覆盖的同名方法
-            Bone.__super__.activate.apply(this, arguments);
+            returnFromSuperClass = Bone.__super__.activate.apply(this, arguments);
 
             // TODO: 缓存 `.js-transform-util` 元素
             this.$el
@@ -845,40 +844,18 @@ define([
                     top: this.jointY()
                 });
 
-            return this;
+            return returnFromSuperClass;
         },
 
-        /**
-        取消激活此骨骼，表示结束操作此骨骼
-        @return this
-        **/
+        // 取消激活此骨骼，表示结束操作此骨骼
         deactivate: function(){
             this.$el
-                .removeClass('js-activeStyleHidden')
                 .children('.js-transform-util').remove();
 
             // 复用父类中被覆盖的同名方法。
             // 执行移除操作的方法，先执行子类中的，再执行父类中的，
             // 因为父类中的逻辑更根本
-            Bone.__super__.deactivate.apply(this, arguments);
-            return this;
-        },
-
-        /*
-        如果此骨骼是激活骨骼，隐藏其激活样式，但保持其为激活骨骼；
-        如果不是激活骨骼，什么也不做。
-        */
-        hideActiveStyle: function(){
-            var $el = this.$el;
-
-            if( !$el.hasClass('js-activeBone') ) return;
-
-            $el.addClass('js-activeStyleHidden');
-
-            console.debug(
-                'Panel %s hide active style of bone %s',
-                Bone._panelName, this.id
-            );
+            return Bone.__super__.deactivate.apply(this, arguments);
         },
 
         /**

@@ -146,12 +146,13 @@ define([
         @return {Boolean} true: 有改变；false: 没改变
         **/
         changeActiveBone: function(boneId, options){
-            var oldActiveBone = this._activeBone;
+            var isChanged = true;
+                oldActiveBone = this._activeBone;
 
             options = options || {};
 
             if(oldActiveBone){
-                if(oldActiveBone.id === boneId) return false;
+                if(oldActiveBone.id === boneId) isChanged = false;
                 oldActiveBone.deactivate();
             }
             if( this._activeBone = this._boneHash[boneId] ){
@@ -166,7 +167,9 @@ define([
                 return;
             }
 
-            if(!options.silentChangedActiveBone){
+            if( !options.silentChangedActiveBone &&
+                isChanged
+            ){
                 this.trigger('changedActiveBone', boneId);
             }
 
