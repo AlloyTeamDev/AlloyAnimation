@@ -411,6 +411,8 @@ define([
                 rotate,
                 // `rotate` 对应的弧度
                 rotateRadian,
+                // `rotateRadian` 的正弦/余弦
+                sinRotateRadian, cosRotateRadian,
                 // 骨骼相对于世界的旋转角度所对应的弧度
                 rotateRadianToGlobal,
                 // 父骨骼相对于世界的旋转角度所对应的弧度
@@ -418,12 +420,12 @@ define([
                 // 鼠标位置在水平、竖直方向上的变化量（当前位置相对于起始位置的变化量），
                 // **鼠标移动向量** 由这两个分量构成
                 mouseHoriVar, mouseVertVar,
+                // 鼠标移动向量在 **父骨骼的坐标系的** x/y轴上的投影
+                mouseParentXVar, mouseParentYVar,
                 // 鼠标移动向量在x/y轴上的投影
                 mouseXVar, mouseYVar,
-                // 骨骼的css属性left的变化量的相反数
-                leftVar,
-                // 骨骼的css属性left的变化量
-                topVar,
+                // 骨骼位置在x/y轴上的变化量
+                xVar, yVar,
                 // 骨骼旋转角度的变化量，
                 // 即鼠标起始位置与关节点连成的直线，关于关节点旋转多少度，到达鼠标当前位置与关节点连成的直线。
                 // 取值范围为 [-180deg, 180deg]
@@ -457,21 +459,19 @@ define([
 
 
             if(this._isMoving){
-                // 将鼠标在水平/竖直方向上的变化量转变为x/y轴上的变化量，
-                // 注意这里只需要用到的是 **父骨骼** 相对世界的旋转弧度，
-                // 因为这是在计算位移
-                mouseXVar =
+                // 将鼠标在水平/竖直方向上的变化量转变为 **父骨骼坐标系的** x/y轴上的变化量
+                mouseParentXVar =
                     mouseHoriVar * cos(parentRotateRadianToGlobal) +
                     mouseVertVar * sin(parentRotateRadianToGlobal);
-                mouseYVar =
+                mouseParentYVar =
                     mouseVertVar * cos(parentRotateRadianToGlobal) -
                     mouseHoriVar * sin(parentRotateRadianToGlobal);
 
                 bone.positionX(
-                    changedData.x = this._boneOldX + mouseXVar
+                    changedData.x = this._boneOldX + mouseParentXVar
                 );
                 bone.positionY(
-                    changedData.y = this._boneOldY + mouseYVar
+                    changedData.y = this._boneOldY + mouseParentYVar
                 );
 
                 // 清除无效缓存
@@ -481,9 +481,7 @@ define([
 
             // TODO: 兼容缩小到0的边界情况
             if(this._isResizing){
-                // 将鼠标在水平/竖直方向上的变化量转变为x/y轴上的变化量，
-                // 注意这里需要用到的是 **骨骼自身** 相对世界的旋转弧度，
-                // 因为这是在计算resize
+                // 将鼠标在水平/竖直方向上的变化量转变为x/y轴上的变化量
                 mouseXVar =
                     mouseHoriVar * cos(rotateRadianToGlobal) +
                     mouseVertVar * sin(rotateRadianToGlobal);
@@ -505,25 +503,25 @@ define([
                 }
 
                 // x轴方向上的修改
-                leftVar = mouseXVar / (this._boneOldW / this._jointOldX - 1);
-                changedData.w = leftVar + this._boneOldW + mouseXVar;
+                xVar = mouseXVar / (this._boneOldW / this._jointOldX - 1) * -1;
+                changedData.w = this._boneOldW + mouseXVar - xVar;
                 // TODO: 如果是负数，则翻转之
                 if(changedData.w >= 0){
                     bone.width(changedData.w)
-                        .positionX(changedData.x = this._boneOldX - leftVar)
-                        .jointX(changedData.jointX = this._jointOldX + leftVar);
+                        .positionX(changedData.x = this._boneOldX + xVar)
+                        .jointX(changedData.jointX = this._jointOldX - xVar);
                     this._$joint
                         .css('left', changedData.jointX + bone.SIZE_UNIT);
                 }
 
                 // y轴方向上的修改
-                topVar = mouseYVar / (this._boneOldH / this._jointOldY - 1);
-                changedData.h = topVar + this._boneOldH + mouseYVar;
+                yVar = mouseYVar / (this._boneOldH / this._jointOldY - 1);
+                changedData.h = yVar + this._boneOldH + mouseYVar;
                 // TODO: 如果是负数，则翻转之
                 if(changedData.h >= 0){
                     bone.height(changedData.h)
-                        .positionY(changedData.y = this._boneOldY - topVar)
-                        .jointY(changedData.jointY = this._jointOldY + topVar);
+                        .positionY(changedData.y = this._boneOldY - yVar)
+                        .jointY(changedData.jointY = this._jointOldY + yVar);
                     this._$joint
                         .css('top', changedData.jointY + bone.SIZE_UNIT);
                 }
@@ -548,35 +546,28 @@ define([
 
             // TODO: 实现移动关节点时，骨骼不动
             if(this._isMovingJoint){
+                // 将鼠标在水平/竖直方向上的变化量转变为x/y轴上的变化量
                 mouseXVar =
-                    mouseHoriVar * cos(parentRotateRadianToGlobal) +
-                    mouseVertVar * sin(parentRotateRadianToGlobal);
+                    mouseHoriVar * cos(rotateRadianToGlobal) +
+                    mouseVertVar * sin(rotateRadianToGlobal);
                 mouseYVar =
-                    mouseVertVar * cos(parentRotateRadianToGlobal) -
-                    mouseHoriVar * sin(parentRotateRadianToGlobal);
+                    mouseVertVar * cos(rotateRadianToGlobal) -
+                    mouseHoriVar * sin(rotateRadianToGlobal);
 
                 changedData.jointX = mouseXVar + this._jointOldX;
                 changedData.jointY = mouseYVar + this._jointOldY;
 
-                var jointXVar = this._jointOldX - changedData.jointX,
-                    jointYVar = changedData.jointY - this._jointOldY,
-                    tanJointVar = jointYVar - jointXVar,
-                    tanRotate = tan(rotateRadian),
-                    bDivA = (tanRotate - tanJointVar) / (1 - tanRotate * tanJointVar),
-                    a = pow(
-                        (1 + pow(tanJointVar, 2)) * pow(jointXVar, 2) / (1 + pow(bDivA, 2)),
-                        1 /2
-                    );
+                sinRotateRadian = sin(rotateRadian);
+                cosRotateRadian = cos(rotateRadian);
 
-                leftVar = jointXVar - a;
-                topVar = jointYVar + a * bDivA;
+                xVar = (cosRotateRadian - 1) * mouseXVar - mouseYVar * sinRotateRadian;
+                yVar = sinRotateRadian * mouseXVar + (cosRotateRadian - 1) * mouseYVar;
 
-                // 表示关节点的 `transform-origin` 属性，其坐标是相对于骨骼div无旋转时左上角所在的那个点，而这个点不随着旋转改变
+                // 表示关节点的 `transform-origin` 属性，其坐标是相对于骨骼div在无旋转时的左上角
                 bone.jointX( changedData.jointX )
                     .jointY( changedData.jointY )
-                    .positionX( this._boneOldX + leftVar )
-                    .positionY( this._boneOldY + topVar );
-                // 用于操作关节点位置的html元素，其left/top属性是相对于骨骼元素在无旋转时的左上角，有旋转时，相对于这个角旋转后的位置
+                    .positionX( this._boneOldX + xVar )
+                    .positionY( this._boneOldY + yVar );
                 this._$joint
                     .css({
                         'left': changedData.jointX + bone.SIZE_UNIT,
