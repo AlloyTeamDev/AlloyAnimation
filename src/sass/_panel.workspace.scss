@@ -229,12 +229,24 @@
         // 新建骨骼的默认位置
         left: 0;
         top: 0;
-        background-repeat: no-repeat;
-        // 固定纹理图的位置
-        background-position: 0 0;
-        // 因为要用背景图来显示纹理，所以设置背景图的大小为容器div的大小，
-        // 这样就能方便的通过容器的大小来控制纹理图的大小。
-        background-size: 100% 100%;
+
+        > .js-texture {
+            // 因为要用背景图来显示纹理，所以设置背景图的大小为容器div的大小，
+            // 这样就能方便的通过容器的大小来控制纹理图的大小。
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        // 如果用于展示纹理图的img没有src属性，或src属性为空字符串，
+        // 则隐藏img，避免出现浏览器为img展示默认样式。
+        // TODO: 至于是否性能敏感，则有待测试
+        > .js-texture:not([src]),
+        > .js-texture[src=""] {
+            display: none;
+        }
     }
 
     $active-border-width: 1px;
