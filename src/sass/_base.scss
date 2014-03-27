@@ -15,6 +15,7 @@ body {
         linear-gradient(150deg, $topic-color1, $topic-color4 28%, $topic-color2 40%, $topic-color3 65%, $topic-color1 90%)
     );
     background-color: $app-bg;
+    @include prefix(user-select, none);
 }
 
 input {
