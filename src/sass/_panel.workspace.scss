@@ -275,9 +275,8 @@
 
     $rotate-size: 26px;
     $rotate-pos: $rotate-size / -2 - 2;
-    .rotate {
+    .js-rotate {
         position: absolute;
-        //visibility: hidden;
         width: $rotate-size;
         height: $rotate-size;
         cursor: url(../img/refresh.png), auto;
@@ -304,7 +303,7 @@
 
     $resize-offset: 2px;
     $resize-size: $rotate-size + $rotate-pos + $resize-offset;
-    .resize {
+    .js-resize {
         position: absolute;
         width: $resize-size;
         height: $resize-size;

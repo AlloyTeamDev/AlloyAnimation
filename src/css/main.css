@@ -534,7 +534,7 @@ html, body,
   -ms-border-radius: 4px;
   border-radius: 4px;
 }
-#js-workspacePanel .rotate {
+#js-workspacePanel .js-rotate {
   position: absolute;
   width: 26px;
   height: 26px;
@@ -557,12 +557,12 @@ html, body,
   right: -15px;
   bottom: -15px;
 }
-#js-workspacePanel .resize {
+#js-workspacePanel .js-resize {
   position: absolute;
   width: 13px;
   height: 13px;
 }
-#js-workspacePanel .resize::before {
+#js-workspacePanel .js-resize::before {
   content: "";
   display: block;
   position: absolute;
