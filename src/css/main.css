@@ -501,9 +501,18 @@ html, body,
   z-index: 0;
   left: 0;
   top: 0;
-  background-repeat: no-repeat;
-  background-position: 0 0;
-  background-size: 100% 100%;
+}
+#js-workspacePanel .js-bone > .js-texture {
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+#js-workspacePanel .js-bone > .js-texture:not([src]),
+#js-workspacePanel .js-bone > .js-texture[src=""] {
+  display: none;
 }
 #js-workspacePanel .js-activeBone {
   cursor: move;
@@ -609,7 +618,7 @@ html, body,
 }
 #js-workspacePanel .js-activeBone::before,
 #js-workspacePanel .js-transform-util {
-  z-index: -1;
+  z-index: 0;
 }
 
 /**

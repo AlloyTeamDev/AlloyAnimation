@@ -835,6 +835,24 @@ define([
             this._opacity = null;
         },
 
+        // 覆盖父类的同名方法
+        render: function(boneData, container, options){
+            var texture;
+
+            texture = boneData.texture || '';
+
+            // 缓存DOM元素
+            this._$texture = $('<img class="js-texture" src="' + texture + '"/>');
+
+            // 确保添加为第一个子元素
+            this.$el.prepend( this._$texture );
+            // 纹理图已添加，不需要在父类方法中添加
+            delete boneData.texture;
+
+            // 复用父类中被覆盖的同名方法
+            return Bone.__super__.render.apply(this, arguments);
+        },
+
         // 激活此骨骼，表示开始操作此骨骼
         activate: function(){
             var returnFromSuperClass;
@@ -843,8 +861,9 @@ define([
             returnFromSuperClass = Bone.__super__.activate.apply(this, arguments);
 
             // TODO: 缓存 `.js-transform-util` 元素
+            this._$texture
+                .after(this.transformUtilTmpl())
             this.$el
-                .append(this.transformUtilTmpl())
                 .children('.js-joint')
                 .css({
                     left: this.jointX(),
@@ -943,7 +962,7 @@ define([
         **/
         texture: function(url){
             if(url !== void 0 && url !== this._texture){
-                this.$el.css('backgroundImage', url);
+                this._$texture.attr('src', url);
                 this._texture = url;
                 return this;
             }
