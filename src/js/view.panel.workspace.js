@@ -861,8 +861,9 @@ define([
             returnFromSuperClass = Bone.__super__.activate.apply(this, arguments);
 
             // TODO: 缓存 `.js-transform-util` 元素
+            this._$texture
+                .after(this.transformUtilTmpl())
             this.$el
-                .append(this.transformUtilTmpl())
                 .children('.js-joint')
                 .css({
                     left: this.jointX(),

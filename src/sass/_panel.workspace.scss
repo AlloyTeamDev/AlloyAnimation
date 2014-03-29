@@ -370,7 +370,7 @@
     .js-activeBone::before,
     .js-transform-util {
         // 使其衬在非激活骨骼的下方
-        z-index: -1;
+        z-index: 0;
     }
 
 } // end of workspace panel

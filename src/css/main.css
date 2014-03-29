@@ -618,7 +618,7 @@ html, body,
 }
 #js-workspacePanel .js-activeBone::before,
 #js-workspacePanel .js-transform-util {
-  z-index: -1;
+  z-index: 0;
 }
 
 /**
