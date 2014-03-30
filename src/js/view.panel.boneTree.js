@@ -20,8 +20,6 @@ define([
     @extends AbstractSkeleton
     **/
     BoneTreePanel = AbstractSkeleton.extend({
-        el: '#js-boneTreePanel',
-
         initialize: function(){
             // 复用父类的`initialize`方法
             BoneTreePanel.__super__.initialize.apply(this, arguments);
@@ -513,5 +511,8 @@ define([
         _panelName: PANEL_NAME
     });
 
-    return new BoneTreePanel({panelName: PANEL_NAME});
+    return new BoneTreePanel({
+        panelName: PANEL_NAME,
+        el: '#js-boneTreePanel'
+    });
 });

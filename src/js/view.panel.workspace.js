@@ -24,10 +24,6 @@ define([
     @extends AbstractSkeleton
     **/
     WorkspacePanel = AbstractSkeleton.extend({
-
-        // 使用DOM中已有的元素作为此view的根元素
-        el: '#js-workspacePanel',
-
         initialize: function(){
             // 复用父类的initialize方法
             WorkspacePanel.__super__.initialize.apply(this, arguments);
@@ -1166,5 +1162,8 @@ define([
         _panelName: PANEL_NAME
     });
 
-    return new WorkspacePanel({panelName: PANEL_NAME});
+    return new WorkspacePanel({
+        panelName: PANEL_NAME,
+        el: '#js-workspacePanel'
+    });
 });

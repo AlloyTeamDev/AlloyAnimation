@@ -16,8 +16,6 @@ define([
         isNaN = _.isNaN;
 
     BonePropPanel = Panel.extend({
-        el: '#js-bonePropPanel',
-
         initialize: function(){
             // 复用父类的`initialize`方法
             BonePropPanel.__super__.initialize.apply(this, arguments);
@@ -159,5 +157,8 @@ define([
         }
     });
 
-    return new BonePropPanel({panelName: 'bone-prop'});
+    return new BonePropPanel({
+        panelName: 'bone-prop',
+        el: '#js-bonePropPanel'
+    });
 });

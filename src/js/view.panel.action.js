@@ -16,8 +16,6 @@ define([
     @extends Panel
     **/
     ActionPanel = Panel.extend({
-        el: '#js-actionPanel',
-
         initialize: function(){
             // 复用父类的`initialize`方法
             ActionPanel.__super__.initialize.apply(this, arguments);
@@ -117,5 +115,8 @@ define([
         }
     });
 
-    return new ActionPanel({panelName: 'action'});
+    return new ActionPanel({
+        panelName: 'action',
+        el: '#js-actionPanel'
+    });
 });
