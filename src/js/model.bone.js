@@ -42,39 +42,6 @@ define([
             this.set('name', 'bone' + Bone._boneCount);
         },
 
-        /**
-        @param {Object} [options]
-            @param {Number} [options.time] 只获取指定时间点的数据
-            @param {Boolean} [options.mixin=true] 是否将关键帧的数据混入到骨骼数据中。只有当设置了 `options.time` 时才有效
-        **/
-        // toJSON: function(options){
-        //     var keyframeData,
-        //         boneJson;
-
-        //     options = options || {};
-
-        //     boneJson = Bone.__super__.toJSON.call(this, options);
-        //     if('time' in options){
-        //         keyframeData = findWhere(boneJson.keyframes, {time: options.time});
-        //         delete boneJson.keyframes;
-
-        //         if(keyframeData){
-        //             delete keyframeData.id;
-        //             delete keyframeData.bone;
-        //             extend(boneJson, keyframeData);
-        //         }
-        //         else{
-        //             // TODO: 支持获取关键帧范围内某个时间点的数据，即指定的时间点不一定是关键帧所在的时间点
-        //             console.warn(
-        //                 'Cannot find keyframe with time %s in the model of bone %s',
-        //                 options.time, boneJson.id
-        //             );
-        //         }
-        //     }
-
-        //     return boneJson;
-        // },
-
         fetch: function(){},
 
         save: function(){},

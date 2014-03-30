@@ -544,7 +544,6 @@ define([
                 );
             }
 
-            // TODO: 实现移动关节点时，骨骼不动
             if(this._isMovingJoint){
                 // 将鼠标在水平/竖直方向上的变化量转变为x/y轴上的变化量
                 mouseXVar =
