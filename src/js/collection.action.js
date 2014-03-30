@@ -4,7 +4,7 @@
 **/
 define([
     'backbone',
-    'model.action', 'modelUtil'
+    'model.action', 'util'
 ], function(
     Backbone,
     Action, util

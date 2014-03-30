@@ -4,7 +4,7 @@
 **/
 define([
     'backbone',
-    'model.keyframe', 'modelUtil',
+    'model.keyframe', 'util',
     'base/tween'
 ], function(
     Backbone,

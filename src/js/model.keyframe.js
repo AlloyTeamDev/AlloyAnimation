@@ -4,7 +4,7 @@
 **/
 define([
     'backbone',
-    'modelUtil'
+    'util'
 ], function(
     Backbone,
     util

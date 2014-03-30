@@ -4,7 +4,7 @@
 **/
 define([
     'backbone',
-    'model.bone', 'modelUtil'
+    'model.bone', 'util'
 ], function(
     Backbone,
     Bone, util

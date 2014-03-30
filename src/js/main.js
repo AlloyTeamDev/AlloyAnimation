@@ -3,6 +3,7 @@ require.config({
     paths: {
         'base': 'base/',
         'test': '../test/',
+        'util': 'base/util',
         'tmpl': 'base/require.tmpl',
         'jquery': 'base/jquery',
         'jquery.defaultSetting': 'base/jquery.defaultSetting',

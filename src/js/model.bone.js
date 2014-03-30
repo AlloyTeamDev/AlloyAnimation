@@ -4,7 +4,7 @@
 **/
 define([
     'underscore', 'backbone',
-    'modelUtil', 'model.keyframe', 'collection.keyframe', 'collection.Bone'
+    'util'
 ], function(
     _, Backbone,
     util
