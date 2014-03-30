@@ -44,31 +44,7 @@ define([
 
         fetch: function(){},
 
-        save: function(){},
-        /**
-        End: backbone内置属性/方法
-        **/
-
-        /**
-        判断是否含有子骨骼，或是否含有某个指定的子骨骼
-        @method hasChild
-        @param {String} [id] 子骨骼id
-        @return {Boolean}
-        @example
-            bodyBone.hasChild() 是否有子骨骼
-            bodyBone.hasChild(headBone.get('id')) 是否有某个子骨骼
-        **/
-        hasChild: function(id){
-            var childBoneColl;
-
-            if( (childBoneColl = this.get('children')).length ){
-                if(id) return !!childBoneColl.get(id);
-                else return true;
-            }
-            else{
-                return false;
-            }
-        }
+        save: function(){}
     }, {
         // 骨骼实例的数量
         _boneCount: 0
