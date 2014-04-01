@@ -61,8 +61,8 @@ define([
         // 注意：这些事件的处理逻辑跟事件回调函数的绑定顺序有关
         // 监听model/collection事件
         keyframeColl
-            .on('add', handler.onAddKeyFrameModel)
-            .on('remove', handler.onRemoveKeyFrameModel);
+            .on('add', handler.onKeyFrameCollAddModel)
+            .on('remove', handler.onKeyFrameCollRemoveModel);
         boneColl
             // 有骨骼之后，先确保各个视图里已渲染出骨骼，再同步所激活的骨骼
             .once('add', handler.onceBoneCollAddModel)
@@ -283,7 +283,7 @@ define([
         @triggerObj {KeyframeCollection}
         @event add 当有关键帧model被添加进某个关键帧collection时触发
         **/
-        onAddKeyFrameModel: function(keyframeModel, keyframeColl, options){
+        onKeyFrameCollAddModel: function(keyframeModel, keyframeColl, options){
             console.debug(
                 'Controller receive that keyframe collection %s add new keyframe model %s, then sync to panel views',
                 keyframeColl.id, keyframeModel.id
@@ -300,7 +300,7 @@ define([
         @triggerObj {KeyframeCollection}
         @event remove 当有关键帧model被从某个关键帧collection中移除时触发
         **/
-        onRemoveKeyFrameModel: function(keyframeModel, keyframeColl, options){
+        onKeyFrameCollRemoveModel: function(keyframeModel, keyframeColl, options){
             var keyframeId = keyframeModel.get('id'),
                 time, bone, action;
             console.debug(
