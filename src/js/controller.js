@@ -338,7 +338,7 @@ define([
             changedData = keyframeModel.changedAttributes();
 
             console.debug(
-                'Controller receive that keyframe %s changed attribute %O',
+                'Controller receive that keyframe model %s changed attribute %O',
                 keyframeId, changedData
             );
 
