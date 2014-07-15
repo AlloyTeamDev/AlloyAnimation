@@ -104,6 +104,16 @@ define([
 
             if($target.attr('type') === 'number'){
                 propVal = Number(propVal);
+
+                if($target.attr('min') && propVal < $target.attr('min')){
+                    propVal = Number($target.attr('min'));
+                    $target.val(propVal);
+                }
+                if($target.attr('max') && propVal > $target.attr('max')){
+                    propVal = Number($target.attr('max'));
+                    $target.val(propVal);
+                }
+
                 if( isNaN(propVal) ){
                     // TODO: 显示提示给用户
                     return;

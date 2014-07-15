@@ -30,15 +30,15 @@
 <div class="propItem">
     <label class="propName" for="boneProp-texture">纹理图</label>
     <input class="js-propVal" id="js-boneProp-texture" data-prop-name="texture" type="text" value="<%= bone.texture %>">
-    <input id="js-boneProp-texture-file" type="file" name="file" hidden>
+    <input id="js-boneProp-texture-file" type="file" accept="image/*" name="file" hidden>
 </div>
 <div class="propItem">
     <label class="propName" for="boneProp-w">宽度</label>
-    <input class="js-propVal" data-prop-name="w" type="number" value="<%= bone.w %>">
+    <input class="js-propVal" data-prop-name="w" type="number" min="0" value="<%= bone.w %>">
 </div>
 <div class="propItem">
     <label class="propName" for="boneProp-h">高度</label>
-    <input class="js-propVal" data-prop-name="h" type="number" value="<%= bone.h %>">
+    <input class="js-propVal" data-prop-name="h" type="number" min="0" value="<%= bone.h %>">
 </div>
 <div class="propItem">
     <label class="propName" for="boneProp-x">X坐标</label>
@@ -50,7 +50,7 @@
 </div>
 <div class="propItem">
     <label class="propName" for="boneProp-z">Z坐标</label>
-    <input class="js-propVal" data-prop-name="z" type="number" value="<%= bone.z %>">
+    <input class="js-propVal" data-prop-name="z" type="number" min="0" value="<%= bone.z %>">
 </div>
 <div class="propItem">
     <label class="propName" for="boneProp-rotate">旋转角度</label>
