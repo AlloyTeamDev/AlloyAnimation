@@ -49,6 +49,16 @@ define([
             // 为变化打log
             this.on('change', this._onChange);
         },
+
+        validate: function(attributes){
+            // if attribures are invalid, will trigger the keyframecoll invalid function
+            if(attributes.w < 0 || attributes.h < 0) {
+                return "Bone's width or height can't be negative";
+            }
+            if(attributes.opacity < 0 || attributes.opacity > 1){
+                return "Bone's opacity is not legal";
+            }
+        },
         
         _onChange: function(model, options){
             console.debug(

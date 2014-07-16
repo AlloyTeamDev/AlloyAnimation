@@ -62,7 +62,8 @@ define([
         // 监听model/collection事件
         keyframeColl
             .on('add', handler.onKeyFrameCollAddModel)
-            .on('remove', handler.onKeyFrameCollRemoveModel);
+            .on('remove', handler.onKeyFrameCollRemoveModel)
+            .on('recoverBoneProp', handler.onRecoverBoneProp);
         boneColl
             // 有骨骼之后，先确保各个视图里已渲染出骨骼，再同步所激活的骨骼
             .once('add', handler.onceBoneCollAddModel)
@@ -373,6 +374,15 @@ define([
             }
         },
 
+        onRecoverBoneProp: function(model, error){
+            console.debug(
+                'Model %s has invalid properties, bonePropPanelView recover the properties',
+                model.id
+            );
+            
+            bonePropPanelView.updateProp(model.toJSON());
+        },
+
         onActionCollAddModel: function(actionModel, actionColl, options){
             var actionData = actionModel.toJSON()
 
@@ -497,6 +507,7 @@ define([
             if(this.panelName in PANEL_NAME_2_FLAG){
                 options[PANEL_NAME_2_FLAG[this.panelName]] = true;
             }
+            options['validate'] = true;
 
             keyframeData = extractKeyframeData(updatedBoneData);
             // 如果有更新关键帧的字段
