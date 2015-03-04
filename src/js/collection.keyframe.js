@@ -28,6 +28,8 @@ define([
             // 为变化打log
             this.on('add', this._onAdd);
             this.on('remove', this._onRemove);
+
+            this.on('invalid', this._onInvalid);
         },
 
         /**
@@ -119,6 +121,10 @@ define([
                 'Keyframe collection %s removed keyframe %s',
                 this.id, bone.id
             );
+        },
+
+        _onInvalid: function(model, error){
+            this.trigger('recoverBoneProp', model);
         }
     });
 

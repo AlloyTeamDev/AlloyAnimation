@@ -104,6 +104,7 @@ define([
 
             if($target.attr('type') === 'number'){
                 propVal = Number(propVal);
+
                 if( isNaN(propVal) ){
                     // TODO: 显示提示给用户
                     return;

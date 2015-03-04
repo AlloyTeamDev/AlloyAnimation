@@ -176,15 +176,21 @@ define([
         **/
         _onDrop: function(e){
             var panel = this,
-                files, reader, i;
+                rFilter, files, reader, i;
 
             //这里有个注意的地方，jquery帮你封event，而且里面居然没有我们需要的数据
             e = window.event;
             e.stopPropagation();
             e.preventDefault();
+
+            //检测文件type是否为图片的正则表达式
+            rFilter = /^(?:image\/bmp|image\/cis\-cod|image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/pipeg|image\/png|image\/svg\+xml|image\/tiff|image\/x\-cmu\-raster|image\/x\-cmx|image\/x\-icon|image\/x\-portable\-anymap|image\/x\-portable\-bitmap|image\/x\-portable\-graymap|image\/x\-portable\-pixmap|image\/x\-rgb|image\/x\-xbitmap|image\/x\-xpixmap|image\/x\-xwindowdump)$/i;
+
            
             files = e.dataTransfer.files;
             for(i = 0; i < files.length; i++){
+                if (!rFilter.test(files[i].type)) continue;
+                
                 reader = new FileReader();
                 // 先监听事件，再读取数据，等待事件触发
                 reader.onload = onload;
