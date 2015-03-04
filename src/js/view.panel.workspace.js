@@ -190,26 +190,23 @@ define([
             files = e.dataTransfer.files;
             for(i = 0; i < files.length; i++){
                 if (!rFilter.test(files[i].type)) continue;
+
+                panel._onLoadFile(files[i]);
                 
-                reader = new FileReader();
-                // 先监听事件，再读取数据，等待事件触发
-                reader.onload = onload;
-                reader.readAsDataURL(files[i]);
             }
 
-            /**
-            写成函数声明而不是函数表达式，以免每循环一次重复创建一个函数对象
-            @triggerObj {FileReader} `reader`
-            @event onload
-            **/
-            function onload(){
-                // 使用 `this` 即可访问到触发 `onload` 事件的 `reader`
+        },
+
+        _onLoadFile: function(file){
+            var panel = this,
+                reader;
+            reader = new FileReader();
+            reader.onload = function(){
                 var texture = this.result,
                     img = new Image(),
                     boneData,
                     activeBone;
 
-                // TODO: 验证是否图片
                 img.src = texture;
                 boneData = {
                     texture: texture
@@ -222,17 +219,19 @@ define([
                     boneData.h = img.height;
                     boneData.jointY = img.height / 2;
                 }
-                if(activeBone = panel._activeBone){
+                /*if(activeBone = panel._activeBone){
                     boneData.parent = activeBone.id;
-                }
-
+                }*/
+               
                 // 通知外界
                 panel.trigger('addBone', boneData);
-
+                             
                 reader.onload = null;
                 reader = null;
                 img = null;
-            }
+            };
+            reader.readAsDataURL(file);
+
         },
 
         // 当 `mousedown` 某个骨骼时，不管该骨骼是否激活，都激活之，
